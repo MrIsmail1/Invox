@@ -1,8 +1,97 @@
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../font/Satoshi/Satoshi-Black.woff2') format('woff2') ;
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../font/Satoshi/Satoshi-Bold.woff2') format('woff2');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../font/Satoshi/Satoshi-Medium.woff2') format('woff2') ;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../font/Satoshi/Satoshi-Regular.woff2') format('woff2');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../font/Satoshi/Satoshi-Light.woff2') format('woff2');
+  font-weight: 300;
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  border-width: 0;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html[data-theme='default'] {
+    --background-color: #EFF4FB;
+    --color-button: red;
+    --color-sidebar: blue;
+  }
+
+  html[data-theme='neon'] {
+    --background-color: #EFF4FB;
+    --color-button: black;
+    --color-sidebar: blue;
+  }
+
+  html[data-theme='retro'] {
+    --background-color: black;
+    --color-button: red;
+    --color-sidebar: blue;
+  }
+}
 
 body {
-    background-color: lightgray;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    font-family: 'Satoshi',sans-serif;
+}
+
+h1 {
+    font-size: 44px;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+h3 {
+    font-size: 28px;
+    font-weight: 500;
+}
+
+h4 {
+    font-size: 26px;
+    font-weight: 400;
+}
+
+h5 {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+p {
+    font-size: 16px;
+    font-weight: 400;
 }
