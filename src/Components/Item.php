@@ -10,7 +10,7 @@ class Item
 {
     public string $ul;
     public string $li="";
-    public string $icone;
+    public string $icon;
     public string $linkUl="#";
     public string $linkLi="#";
     public string $type = "inactive";

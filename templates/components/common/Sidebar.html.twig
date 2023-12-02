@@ -4,20 +4,24 @@
 
 <div x-data="setup()" :class="{ 'dark': isDark }">
     <aside class="h-screen inset-y-0 z-10 flex-shrink-0 w-64 bg-pr-blue border-r lg:static  focus:outline-none">
-        <div class="flex flex-col h-full">
+        <div class="flex flex-col h-full pt-6">
+            <div class="px-10" >
+            <img class="w-full" src="{{ asset('build/images/logo.svg') }}" alt="Logo Invox">
+            </div>
         <!-- Sidebar links -->
-        <nav aria-label="Main" class="flex-1 px-2 py-4 space-y-2 overflow-y-hidden hover:overflow-y-auto">
-            <twig:Item icon="{{ asset('assets/images/dashboard.svg') }}" ul="Dashboard" linkUl="/Dashboard"/>
-            <twig:Item icon="../../../assets/images/dashboard.svg" ul="Devis" />
-            <twig:Item icon="../../../assets/images/dashboard.svg" ul="Factures" li="rere" />
-            <twig:Item icon="../../../assets/images/dashboard.svg" ul="Clients" li="rere" />
-            <twig:Item icon="" ul="Services" li="rere" />
+        <nav aria-label="Main" class="flex-1 px-3 py-8 space-y-2 overflow-y-hidden hover:overflow-y-auto">
+            <span class="text-pr-grey text-[14px] ml-6" >MENU</span>
+            <twig:Item icon="{{ asset('build/images/dashboard.svg') }}" ul="Dashboard" linkUl="/Dashboard"/>
+            <twig:Item icon="{{ asset('build/images/devis.svg') }}" ul="Devis" />
+            <twig:Item icon="{{ asset('build/images/factures.svg') }}" ul="Factures" li="rere" />
+            <twig:Item icon="{{ asset('build/images/clients.svg') }}" ul="Clients" li="rere" />
+            <twig:Item icon="{{ asset('build/images/services.svg') }}" ul="Services" li="rere" />
         </nav>
 
         <!-- Sidebar footer -->
         <div class="relative items-center justify-center flex-shrink-0 px-2 py-4 space-y-2">
-            <twig:Item icon="../../../assets/images/dashboard.svg" ul="Paramètres" li="" />
-            <twig:Item icon="../../../assets/images/dashboard.svg" ul="Se déconnecter" li="" />
+            <twig:Item icon="{{ asset('build/images/parametres.svg') }}" ul="Paramètres" li="" />
+            <twig:Item icon="{{ asset('build/images/deconnect.svg') }}" ul="Se déconnecter" li="" />
         </div>
         </div>
     </aside>
