@@ -13,6 +13,8 @@ module.exports = {
         'sd-blue': '#5A6B7A',
         'color-button': 'var(--color-button)',
         'color-sidebar': 'var(--color-sidebar)',
+        'bg-button': '#EFF4FB',
+        'white-font': '#FCFCFC',
       },
       fontFamily: {
         'Satoshi': ['Satoshi', 'sans-serif'],
