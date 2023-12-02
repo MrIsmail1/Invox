@@ -1,0 +1,136 @@
+<header class="bg-white">
+  <nav class="mx-auto flex max-w-7xl items-center justify-end p-6 lg:px-8" aria-label="Global">
+    <div class="flex lg:hidden">
+      <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
+        <span class="sr-only">Open main menu</span>
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+        </svg>
+      </button>
+    </div>
+    <div class="items-center hidden lg:flex lg:gap-x-10">
+      
+
+    {#Toggle Dark Mode Light Mode #}
+    <label class="relative inline-flex cursor-pointer">
+      <input type="checkbox" value="" class="sr-only peer">
+      <div class="w-14 h-7 bg-bg-button peer-focus:outline-none peer-focus:ring-4 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-focus:ring-blue-300 peer-checked:bg-gray-600 "></div>
+    </label>
+
+    {# Notifications button #}
+    <button type="button" class="relative items-center p-2 text-sm font-medium text-center text-pr-blue bg-bg-button rounded-full border-[1px] border-pr-grey ">
+    <svg width="16" height="16" viewBox="0 0 16 18" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15.1999 14.9344L14.6374 14.0625C14.5249 13.8938 14.4687 13.725 14.4687 13.5281V7.67815C14.4687 6.01877 13.7655 4.4719 12.4718 3.31877C11.4312 2.39065 10.0812 1.80002 8.64678 1.68752V1.12502C8.64678 0.787524 8.36553 0.478149 7.9999 0.478149C7.6624 0.478149 7.35303 0.759399 7.35303 1.12502V1.6594C7.29678 1.6594 7.24053 1.6594 7.18428 1.68752C3.92178 2.05315 1.4749 4.66877 1.4749 7.79065V13.5281C1.44678 13.8094 1.39053 13.95 1.33428 14.0344L0.799902 14.9344C0.631152 15.2156 0.631152 15.5531 0.799902 15.8344C0.968652 16.0875 1.2499 16.2563 1.55928 16.2563H7.38115V16.875C7.38115 17.2125 7.6624 17.5219 8.02803 17.5219C8.36553 17.5219 8.6749 17.2406 8.6749 16.875V16.2563H14.4687C14.778 16.2563 15.0593 16.0875 15.228 15.8344C15.3968 15.5531 15.3968 15.2156 15.1999 14.9344ZM2.23428 14.9906L2.43115 14.6531C2.5999 14.3719 2.68428 14.0344 2.74053 13.6406V7.79065C2.74053 5.31565 4.70928 3.2344 7.3249 2.95315C8.92803 2.7844 10.503 3.26252 11.6562 4.27502C12.6687 5.17502 13.2312 6.3844 13.2312 7.67815V13.5281C13.2312 13.95 13.3437 14.3438 13.5968 14.7375L13.7655 14.9906H2.23428Z" fill="currentColor"/>
+    </svg>
+
+    <span class="sr-only">Notifications</span>
+      <div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full -top-2 -end-2">20</div>
+    </button>
+
+       <!-- User avatar button -->
+            <div class="" x-data="{ open: false }">
+            <button
+                @click="open = !open; $nextTick(() => { if(open){ $refs.userMenu.focus() } })"
+                type="button"
+                aria-haspopup="true"
+                :aria-expanded="open ? 'true' : 'false'"
+                class="block transition-opacity duration-200 rounded-full dark:opacity-75 dark:hover:opacity-100 focus:outline-none focus:ring dark:focus:opacity-100"
+            >
+                <span class="sr-only">User menu</span>
+                <img
+                class="w-12 h-12 rounded-full"
+                src="https://avatars.githubusercontent.com/u/57622665?s=460&u=8f581f4c4acd4c18c33a87b3e6476112325e8b38&v=4"
+                alt="Hamza Mahmood"
+                />
+            </button>
+
+            <!-- User dropdown menu -->
+            <div
+                x-show="open"
+                x-ref="userMenu"
+                x-transition:enter="transition-all transform ease-out"
+                x-transition:enter-start="-translate-y-1/2 opacity-0"
+                x-transition:enter-end="translate-y-0 opacity-100"
+                x-transition:leave="transition-all transform ease-in"
+                x-transition:leave-start="translate-y-0 opacity-100"
+                x-transition:leave-end="-translate-y-1/2 opacity-0"
+                @click.away="open = false"
+                @keydown.escape="open = false"
+                class="absolute max-w-xs py-1 bg-white rounded-md shadow-lg min-w-max left-5 right-5 bottom-full ring-1 ring-black ring-opacity-5 dark:bg-dark focus:outline-none"
+                tabindex="-1"
+                role="menu"
+                aria-orientation="vertical"
+                aria-label="User menu"
+            >
+                <a
+                href="#"
+                role="menuitem"
+                class="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-light dark:hover:bg-indigo-600"
+                >
+                Your Profile
+                </a>
+                <a
+                href="#"
+                role="menuitem"
+                class="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-light dark:hover:bg-indigo-600"
+                >
+                Settings
+                </a>
+                <a
+                href="#"
+                role="menuitem"
+                class="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-light dark:hover:bg-indigo-600"
+                >
+                Logout
+                </a>
+            </div>
+            </div>
+    </div>
+   
+  </nav>
+
+
+
+
+  <!-- Mobile menu, show/hide based on menu open state. -->
+  <div class="lg:hidden" role="dialog" aria-modal="true">
+    <!-- Background backdrop, show/hide based on slide-over state. -->
+    <div class="fixed inset-0 z-10"></div>
+    <div class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+      <div class="flex items-center justify-between">
+        <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
+          <span class="sr-only">Close menu</span>
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="mt-6 flow-root">
+        <div class="-my-6 divide-y divide-gray-500/10">
+          <div class="space-y-2 py-6">
+            <div class="-mx-3">
+              <button type="button" class="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" aria-controls="disclosure-1" aria-expanded="false">
+                Product
+                <!--
+                  Expand/collapse icon, toggle classes based on menu open state.
+
+                  Open: "rotate-180", Closed: ""
+                -->
+                <svg class="h-5 w-5 flex-none" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              <!-- 'Product' sub-menu, show/hide based on menu state. -->
+              <div class="mt-2 space-y-2" id="disclosure-1">
+                <a href="#" class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50">Analytics</a>
+                <a href="#" class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50">Engagement</a>
+                <a href="#" class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50">Security</a>
+              </div>
+            </div>
+          </div>
+         
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
