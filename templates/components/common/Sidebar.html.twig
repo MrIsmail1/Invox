@@ -11,17 +11,17 @@
         <!-- Sidebar links -->
         <nav aria-label="Main" class="flex-1 px-3 py-8 space-y-2 overflow-y-hidden hover:overflow-y-auto">
             <span class="text-pr-grey text-[14px] ml-6" >MENU</span>
-            <twig:Item icon="{{ asset('build/images/dashboard.svg') }}" ul="Dashboard" linkUl="/Dashboard"/>
-            <twig:Item icon="{{ asset('build/images/devis.svg') }}" ul="Devis" />
-            <twig:Item icon="{{ asset('build/images/factures.svg') }}" ul="Factures" li="rere" />
-            <twig:Item icon="{{ asset('build/images/clients.svg') }}" ul="Clients" li="rere" />
-            <twig:Item icon="{{ asset('build/images/services.svg') }}" ul="Services" li="rere" />
+            <twig:Item icon="{{ asset('build/images/dashboard.svg') }}" ul="Dashboard" linkUl="/dashboard"/>
+            <twig:Item icon="{{ asset('build/images/devis.svg') }}" ul="Devis" linkUl="/devis"/>
+            <twig:Item icon="{{ asset('build/images/factures.svg') }}" ul="Factures" li="rere" linkUl="/factures"/>
+            <twig:Item icon="{{ asset('build/images/clients.svg') }}" ul="Clients" li="rere" linkUl="/clients"/>
+            <twig:Item icon="{{ asset('build/images/services.svg') }}" ul="Services" li="rere" linkUl="/services"/>
         </nav>
 
         <!-- Sidebar footer -->
         <div class="relative items-center justify-center flex-shrink-0 px-2 py-4 space-y-2">
-            <twig:Item icon="{{ asset('build/images/parametres.svg') }}" ul="Paramètres" li="" />
-            <twig:Item icon="{{ asset('build/images/deconnect.svg') }}" ul="Se déconnecter" li="" />
+            <twig:Item icon="{{ asset('build/images/parametres.svg') }}" ul="Paramètres" li="" linkUl="/parametres"/>
+            <twig:Item icon="{{ asset('build/images/deconnect.svg') }}" ul="Se déconnecter" li="" linkUl="/deconnect"/>
         </div>
         </div>
     </aside>
