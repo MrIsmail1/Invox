@@ -1,7 +1,9 @@
 twig:
-    paths:
-        '%kernel.project_dir%/templates/pages': ~
-        
+  form_themes: [ 'tailwind_2_layout.html.twig',
+                 'components/form/customForm.html.twig' ]
+  paths:
+    '%kernel.project_dir%/templates/pages': ~
+
 when@test:
-    twig:
-        strict_variables: true
+  twig:
+    strict_variables: true

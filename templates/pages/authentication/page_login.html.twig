@@ -1,52 +1,45 @@
 {% extends 'base.html.twig' %}
 
-   {% block title %}Log in!{% endblock %}
+{% set title = "Invox | Connexion " %}
 
    {% block body %}
        <main class="h-screen px-5 py-8 w-full ">
            <div class="border bg-bg-button h-full rounded-2xl">
                <div class="flex h-full justify-between">
-                   <div class="flex items-center w-1/2 justify-center ">
+                   <div class="flex items-center w-1/2 justify-center border-r-2 my-16">
                        <img src="{{ asset('build/images/logoAuthentication.png') }}" alt="logoInvox" height="450"
-                            width="450">s
+                            width="450">
                    </div>
-                   <hr class="h-px my-8 bg-pr-grey border-0 rotate-90">
                    <div class="flex justify-center w-1/2">
-                       <form method="post" class="flex flex-col justify-center w-full h-full">
-                           <div class="flex flex-col justify-center gap-4 w-full px-20 h-5/6">
-                               {% if error %}
-                                   <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                               {% endif %}
+                       {{ form_start(loginForm, {'attr': {'class': 'flex flex-col justify-center w-full h-full'}}) }}
+                       <div class="flex flex-col justify-center gap-4 w-full px-20 h-5/6">
+                           <h1 class="h1 mb-10 font-weight-bold text-bg-black">Toutes vos activités en un seul
+                               endroit.</h1>
 
-                               {% if app.user %}
-                                   <div class="mb-3">
-                                       You are logged in as {{ app.user.userIdentifier }}, <a
-                                               href="{{ path('app_logout') }}">Logout</a>
-                                   </div>
-                               {% endif %}
-                               <h1 class="h1 mb-10 font-weight-bold text-bg-black">Toutes vos activités en un seul
-                                   endroit.</h1>
-                               <twig:Input type="email" label="E-mail" name="email"
-                                           placeholder="Veuillez saisir vote adresse e-mail..."/>
-                               <twig:Input type="password" label="Password" name="email"
-                                           placeholder="Veuillez saisir vote mot de passe..."/>
+                           {{ form_row(loginForm.email) }}
+                           {% if error %}
+                               <p class="text-red-500 font-weight-light">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+                           {% endif %}
+                           {{ form_row(loginForm.password) }}
+                           {{ form_row(loginForm.remember_me) }}
 
-                               <input type="hidden" name="_csrf_token"
-                                      value="{{ csrf_token('authenticate') }}"
-                               >
-                               <div class="flex flex-col place-content-between text-center h-4/6">
-                                   <div class="mt-3">
-                                       <twig:ButtonDarkDefault type="submit" text="Se connecter"/>
-                                       <div class="mt-3">
-                                           <twig:ButtonDarkGoogleIcon type="button" text="Se-connecter avec Google"
-                                                                      icon="{{ asset('build/images/googleIcon.svg') }}"/>
-                                       </div>
+                           <input type="hidden" name="_csrf_token"
+                                  value="{{ csrf_token('authenticate') }}"
+                           >
+                           <div class="flex flex-col text-center">
+                               <div class="mt-3">
+                                   <twig:ButtonDarkDefault type="submit" text="Se-connecter"/>
+                                   <div class="mt-5">
+                                       <twig:ButtonDarkGoogleIcon type="button" text="Se-connecter avec Google"
+                                                                  icon="{{ asset('build/images/googleIcon.svg') }}"/>
                                    </div>
-                                   <h6 class="text-bg-black">Vous n'avez pas de compte? <span
-                                               class="font-bold text-pr-blue underline">Inscrivez-vous !</span></h6>
                                </div>
+                               <h6 class="text-bg-black mt-1">Vous n'avez pas de compte?
+                                   <a href="/register" class="font-bold text-pr-blue underline">Inscrivez-vous !</a>
+                               </h6>
                            </div>
-                       </form>
+                       </div>
+                       {{ form_end(loginForm) }}
                    </div>
                </div>
 

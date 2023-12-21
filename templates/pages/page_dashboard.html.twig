@@ -1,22 +1,28 @@
-<main class="mx-20 mt-11" >
-    <h1>Bonjour, Hamza !</h1>
-    <div class="flex mt-16 justify-between" >
-        <twig:CardDashboard />
-        <twig:CardDashboard />
-        <twig:CardDashboard />
-        <twig:CardDashboard />
-    </div>
-    <div class="flex mt-14" >
-        <div>
-            <div class="mb-6" >
-                <twig:RectangleCardDashboard title="New clients" number="54" stats="18,7%" />
-            </div>
+{% extends 'base.html.twig' %}
+
+{% set title = "Invox | Dashboard " %}
+
+{% block content %}
+    <main class="mx-20 mt-11">
+        <h1>Bonjour, Hamza !</h1>
+        <div class="flex mt-16 justify-between">
+            <twig:CardDashboard/>
+            <twig:CardDashboard/>
+            <twig:CardDashboard/>
+            <twig:CardDashboard/>
+        </div>
+        <div class="flex mt-14">
             <div>
-                <twig:RectangleCardDashboard title="New clients" number="54" stats="18,7%" />
+                <div class="mb-6">
+                    <twig:RectangleCardDashboard title="New clients" number="54" stats="18,7%"/>
+                </div>
+                <div>
+                    <twig:RectangleCardDashboard title="New clients" number="54" stats="18,7%"/>
+                </div>
+            </div>
+            <div class="ml-6">
+                <twig:ChartDashboard/>
             </div>
         </div>
-        <div class="ml-6" >
-            <twig:ChartDashboard />
-        </div>
-    </div>
-</main>
+    </main>
+{% endblock %}
