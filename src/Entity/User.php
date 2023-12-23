@@ -62,6 +62,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $agreeTerms = null;
 
+    #[ORM\Column]
+    private ?bool $isVerified = false;
+
     public function __construct()
     {
         $this->quotations = new ArrayCollection();
@@ -273,6 +276,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAgreeTerms(bool $agreeTerms): static
     {
         $this->agreeTerms = $agreeTerms;
+
+        return $this;
+    }
+
+    public function isIsVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
 
         return $this;
     }
