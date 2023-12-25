@@ -15,10 +15,10 @@ class LoginFormType extends AbstractType
     {
         $builder
             ->add('email', type: EmailType::class, options: [
-                'label' => 'Email',
+                'label' => 'E-mail',
                 'mapped' => true,
                 'attr' => [
-                    'placeholder' => 'Veuillez saisir votre email...',
+                    'placeholder' => 'Veuillez saisir votre e-mail...',
                 ],
             ])
             ->add('password', type: PasswordType::class, options: [
@@ -32,7 +32,7 @@ class LoginFormType extends AbstractType
             ->add('remember_me', type: CheckboxType::class, options: [
                 'label' => 'Se souvenir de moi',
                 'block_name' => 'remember_me',
-                'mapped' => true,
+                'mapped' => false,
                 'attr' => [
                     'placeholder' => 'Se souvenir de moi',
                 ],

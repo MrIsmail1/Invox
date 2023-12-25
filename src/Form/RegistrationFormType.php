@@ -19,11 +19,11 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('email', type: EmailType::class, options: [
-                'label' => 'Email',
+                'label' => 'E-mail',
                 'block_name' => 'email',
                 'mapped' => true,
                 'attr' => [
-                    'placeholder' => 'Veuillez saisir votre email...',
+                    'placeholder' => 'Veuillez saisir votre e-mail...',
                 ],
                 'constraints' => [
                     new Email(),

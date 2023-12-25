@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="x-ua-compatible" content="ie=edge"/>
-    <title>Invox | Confirmation Email</title>
+    <title>Invox | Réinitialisez votre mot de passe</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <style type="text/css">
         /**
@@ -119,8 +119,7 @@
         opacity: 0;
       "
 >
-    Vous avez reçu cet e-mail car nous avons reçu une demande de
-    confirmation d'email pour votre compte.
+    Vous avez demandé à réinitialiser votre mot de passe sur Invox.
 </div>
 <!-- end preheader -->
 
@@ -207,7 +206,7 @@
                     line-height: 48px;
                   "
                         >
-                            Confirmez votre adresse e-mail
+                            Réinitialisez votre mot de passe
                         </h1>
                     </td>
                 </tr>
@@ -275,11 +274,18 @@
                 "
                     >
                         <p style="margin: 0">
-                            Appuyez sur le bouton ci-dessous pour confirmer votre adresse
-                            e-mail. Si vous n'avez pas créé de compte avec
-                            <a href="https://invox.com">Invox</a>, vous pouvez supprimer
-                            cet e-mail en toute sécurité.
+                            Vous avez demandé à réinitialiser votre mot de passe. Pour procéder à
+                            cette étape, veuillez suivre les instructions ci-dessous :
                         </p>
+                        <p style="margin: 0">
+                            - Cliquez sur le bouton ci-dessous pour accéder à la page de réinitialisation de mot de
+                            passe.
+                        </p>
+                        <p style="margin: 0">
+                            - Une fois sur la page, suivez les instructions pour choisir un nouveau mot de passe
+                            sécurisé.
+                        </p>
+
                     </td>
                 </tr>
                 <!-- end copy -->
@@ -298,7 +304,7 @@
                                                     style="border-radius: 6px"
                                             >
                                                 <a
-                                                        href="{{ signedUrl }}"
+                                                        href="{{ url('app_reset_password', {token: resetToken.token}) }}"
                                                         target="_blank"
                                                         style="
                                 display: inline-block;
@@ -310,7 +316,7 @@
                                 text-decoration: none;
                                 border-radius: 6px;
                               "
-                                                >Confirmer e-mail</a
+                                                >Réinitialiser mot de passe</a
                                                 >
                                             </td>
                                         </tr>
@@ -381,10 +387,11 @@
                 "
                     >
                         <p style="margin: 0">
-                            Vous avez reçu cet e-mail car nous avons reçu une demande de
-                            confirmation d'email pour votre compte. Si vous n'avez pas
-                            demandé cette action, vous pouvez supprimer cet e-mail en
-                            toute sécurité.
+                            Ce lien de réinitialisation est valide pour une durée limitée
+                            de {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}
+                            par mesure de sécurité. Si vous n'avez pas initié cette demande ou si vous avez des
+                            préoccupations concernant la sécurité de votre compte, veuillez nous contacter immédiatement
+                            à support@invox.fr.
                         </p>
                     </td>
                 </tr>
@@ -402,4 +409,5 @@
 <!-- end body -->
 </body>
 </html>
+
 

@@ -26,14 +26,14 @@
                            <div class="flex flex-col place-content-between text-center h-4/6">
                                <div class="mt-3">
                                    <twig:ButtonDarkDefault type="submit" text="S'inscrire"/>
-
                                    <div class="mt-5">
                                        <twig:ButtonDarkGoogleIcon type="button" text="S'inscrire avec Google"
                                                                   icon="{{ asset('build/images/googleIcon.svg') }}"/>
                                    </div>
                                </div>
-                               <h6 class="text-bg-black mt-1">Êtes-vous déjà inscrit ? <span
-                                           class="font-bold text-pr-blue underline">Connectez-vous !</span></h6>
+                               <h6 class="text-bg-black mt-1">Êtes-vous déjà inscrit ? <a href="{{ path('app_login') }}"
+                                                                                          class="font-bold text-pr-blue underline">Connectez-vous
+                                       !</a></h6>
                                {{ form_end(registrationForm) }}
                            </div>
                        </div>

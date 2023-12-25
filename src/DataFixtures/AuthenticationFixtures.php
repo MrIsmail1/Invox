@@ -42,11 +42,13 @@ class AuthenticationFixtures extends Fixture
                 ->setEmail($user['email'])
                 ->setRoles($user['role']);
             $object->setPassword($this->passwordHasher->hashPassword($object, $pwd));
+            $object->setIsVerified(true);
+            $object->setAgreeTerms(true);
             $manager->persist($object);
             $this->addReference($user['reference'], $object);
         }
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $user = (new User())
                 ->setEmail($faker->email)
                 ->setRoles([]);

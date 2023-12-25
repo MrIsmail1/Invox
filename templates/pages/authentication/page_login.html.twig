@@ -15,14 +15,17 @@
                        <div class="flex flex-col justify-center gap-4 w-full px-20 h-5/6">
                            <h1 class="h1 mb-10 font-weight-bold text-bg-black">Toutes vos activités en un seul
                                endroit.</h1>
-
                            {{ form_row(loginForm.email) }}
                            {% if error %}
                                <p class="text-red-500 font-weight-light">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
                            {% endif %}
                            {{ form_row(loginForm.password) }}
-                           {{ form_row(loginForm.remember_me) }}
-
+                           <div class="flex justify-between">
+                               {{ form_row(loginForm.remember_me) }}
+                               <a href="{{ path('app_forgot_password_request') }}"
+                                  class="font-bold text-pr-blue underline text-sm">Mot de
+                                   passe oublié ?</a>
+                           </div>
                            <input type="hidden" name="_csrf_token"
                                   value="{{ csrf_token('authenticate') }}"
                            >
@@ -35,7 +38,8 @@
                                    </div>
                                </div>
                                <h6 class="text-bg-black mt-1">Vous n'avez pas de compte?
-                                   <a href="/register" class="font-bold text-pr-blue underline">Inscrivez-vous !</a>
+                                   <a href="{{ path('app_register') }}" class="font-bold text-pr-blue underline">Inscrivez-vous
+                                       !</a>
                                </h6>
                            </div>
                        </div>
