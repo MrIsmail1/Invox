@@ -11,3 +11,6 @@ live_component:
         # Namespace & directory for components
         App\Components\common\: 'components/common'
         App\Components\dashboard\: 'components/dashboard'
+        App\Components\authentication\: 'components/authentication'
+        App\Components\login\: 'components/login'
+        App\Components\register\: 'components/register'
