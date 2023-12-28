@@ -1,0 +1,69 @@
+{# CUSTOM FORM LABEL #}
+{%- block form_label -%}
+    <label class="block mb-2 text-md font-medium text-bg-black" for="{{- id -}}">{{- label -}}</label>
+{%- endblock form_label -%}
+
+{# CUSTOM FORM ERRORS #}
+{% block form_errors %}
+    {%- if errors|length > 0 -%}
+        <ul class="text-red-500 mt-2">
+            {%- for error in errors -%}
+                <li>{{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{% endblock form_errors %}
+
+{# CUSTOM EMAIL INPUT #}
+{% block email_widget %}
+    <div class="relative">
+        <div class="absolute inset-y-0 end-4 flex items-center ps-3.5 pointer-events-none">
+            <img src="{{ asset('build/images/emailIcon.svg') }}" alt="email-icon">
+        </div>
+        <input type="email" {{ block('widget_attributes') }}
+               class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 "/>
+    </div>
+{% endblock email_widget %}
+
+{# CUSTOM PASSWORD INPUT #}
+{% block password_widget %}
+    <div class="relative">
+        <div class="absolute inset-y-0 end-4 flex items-center ps-3.5 pointer-events-none">
+            <img src="{{ asset('build/images/passwordIcon.svg') }}" alt="password-icon">
+        </div>
+        <input type="password" {{ block('widget_attributes') }}
+               class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 "/>
+    </div>
+{% endblock password_widget %}
+
+{# CUSTOM CHECKBOX INPUT WITH CUSTOM LABEL #}
+{% block checkbox_row %}
+    <div class="flex items-center">
+        <input type="checkbox" id="{{- id -}}" name="{{- full_name -}}"
+               class="w-4 h-4 text-pr-blue bg-transparent border-pr-grey rounded">
+        <label for="{{- id -}}" class="ms-2 text-sm font-medium text-bg-black">
+            {{- label -}}</label>
+    </div>
+{% endblock checkbox_row %}
+
+{# CUSTOM AGREE_TERMS CHECKBOX INPUT WITH CUSTOM LABEL #}
+{% block _registration_form_agreeTerms_row %}
+    <div class="flex items-center">
+        <input type="checkbox" id="{{- id -}}" name="{{- full_name -}}"
+               class="w-4 h-4 text-pr-blue bg-transparent border-pr-grey rounded">
+        <label for="{{- id -}}" class=" underline ms-2 text-sm font-medium text-bg-black">
+            {{- label -}}</label>
+    </div>
+{% endblock _registration_form_agreeTerms_row %}
+
+
+{# CUSTOM DEFAULT FROM ROW #}
+{%- block form_row -%}
+    <div class="w-full mx-auto">
+        {{- form_label(form) -}}
+        {{- form_widget(form, {'attr' : { 'class' : 'border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5'}}) -}}
+        <p class="text-red-500 font-weight-light">
+            {{- form_errors(form) -}}
+        </p>
+    </div>
+{%- endblock form_row -%}

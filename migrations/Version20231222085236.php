@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20231202145441 extends AbstractMigration
+final class Version20231222085236 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -36,7 +36,7 @@ final class Version20231202145441 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN media.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE quotation (id INT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, expires_in DATE DEFAULT NULL, title VARCHAR(255) NOT NULL, amount NUMERIC(8, 2) DEFAULT NULL, option VARCHAR(255) DEFAULT NULL, option_price NUMERIC(8, 2) DEFAULT NULL, quantity INT DEFAULT NULL, total_with_out_taxes NUMERIC(8, 2) DEFAULT NULL, taxes NUMERIC(4, 2) DEFAULT NULL, total_with_taxes NUMERIC(8, 2) DEFAULT NULL, is_valid BOOLEAN DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN quotation.created_at IS \'(DC2Type:datetime_immutable)\'');
-        $this->addSql('CREATE TABLE "user" (id INT NOT NULL, accountings_id INT DEFAULT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, first_name VARCHAR(255) DEFAULT NULL, last_name VARCHAR(255) DEFAULT NULL, job VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE "user" (id INT NOT NULL, accountings_id INT DEFAULT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, first_name VARCHAR(255) DEFAULT NULL, last_name VARCHAR(255) DEFAULT NULL, job VARCHAR(255) DEFAULT NULL, agree_terms BOOLEAN NOT NULL, is_verified BOOLEAN NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON "user" (email)');
         $this->addSql('CREATE INDEX IDX_8D93D649A423299F ON "user" (accountings_id)');
         $this->addSql('CREATE TABLE user_quotation (user_id INT NOT NULL, quotation_id INT NOT NULL, PRIMARY KEY(user_id, quotation_id))');

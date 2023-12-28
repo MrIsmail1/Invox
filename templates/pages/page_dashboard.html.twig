@@ -1,37 +1,28 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <twig:Head title="Invox | Dashboard" />
-    </head>
-    <body class="bg-[#EFF4FB]" >
-        <div class="flex w-full " >
-            <twig:Sidebar />
-            <div class="w-full" >
-                <main class="mx-20 mt-11" >
-                    <div class="flex justify-between" >
-                        <h1>Bonjour, Hamza !</h1>
-                        {{ form(form) }}
-                    </div>
-                    <div class="flex mt-16 justify-between" >
-                        <twig:CardDashboard src="{{ asset('build/images/devis.svg') }}" title="Nombre de devis" number="{{quotation.count}}" />
-                        <twig:CardDashboard src="{{ asset('build/images/devis.svg') }}" title="Nombre de devis validé" number="{{quotation.valid}}" />
-                        <twig:CardDashboard src="{{ asset('build/images/factures.svg') }}" title="Nombre de facture" number="{{invoice.count}}" />
-                        <twig:CardDashboard src="{{ asset('build/images/factures.svg') }}" title="Facture encaisées" number="{{invoice.valid}}" />
-                    </div>
-                    {{ dump() }}
-                    <div class="flex mt-14 justify-between w-full">
-                        <div class="w-[39%]" >
-                            <div class="mb-6" >
-                            <twig:RectangleCardDashboard title="Nouveau clients" number="{{quotation.count}}" stats="18,7%" />
-                            </div>
-                            <div>
-                            <twig:RectangleCardDashboard title="Facture en retard (+ 30 jours)" number="{{invoice.count}}" stats="18,7%" />
-                            </div>
-                        </div>
-                        <twig:ChartDashboard />
-                    </div>
-                </div>
-            </main>
+{% extends 'base.html.twig' %}
+
+{% set title = "Invox | Dashboard " %}
+
+{% block content %}
+    <main class="mx-20 mt-11">
+        <h1>Bonjour, Hamza !</h1>
+        <div class="flex mt-16 justify-between">
+            <twig:CardDashboard/>
+            <twig:CardDashboard/>
+            <twig:CardDashboard/>
+            <twig:CardDashboard/>
         </div>
-    </body>
-</html>
+        <div class="flex mt-14">
+            <div>
+                <div class="mb-6">
+                    <twig:RectangleCardDashboard title="New clients" number="54" stats="18,7%"/>
+                </div>
+                <div>
+                    <twig:RectangleCardDashboard title="New clients" number="54" stats="18,7%"/>
+                </div>
+            </div>
+            <div class="ml-6">
+                <twig:ChartDashboard/>
+            </div>
+        </div>
+    </main>
+{% endblock %}
