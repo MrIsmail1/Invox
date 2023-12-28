@@ -7,17 +7,25 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: InvoiceRepository::class)]
 class Invoice
 {
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    /* #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    private ?string $customerName = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Email]
+    private ?string $customerEmail = null; */
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $expiresIn = null;
@@ -41,6 +49,7 @@ class Invoice
     private ?string $totalWithOutTaxes = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2, nullable: true)]
+    #[Assert\Range(min: 0, max: 100)]
     private ?string $taxes = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
@@ -52,29 +61,24 @@ class Invoice
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'invoices')]
     private Collection $users;
 
-    #[ORM\ManyToOne(inversedBy: 'Invocies')]
+    #[ORM\ManyToOne(inversedBy: 'Invoices')]
     private ?Quotation $quotation = null;
+
+    #[ORM\ManyToOne(inversedBy: 'Invoices')]
+    private ?Customer $customer = null;
+
+    #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: InvoiceItem::class, orphanRemoval: true)]
+    private Collection $invoiceItems;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->invoiceItems = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     public function getExpiresIn(): ?\DateTimeInterface
@@ -197,6 +201,36 @@ class Invoice
         return $this;
     }
 
+     /**
+     * @return Collection<int, InvoiceItem>
+     */
+    public function getInvoiceItems(): Collection
+    {
+        return $this->invoiceItems;
+    }
+
+    public function addInvoiceItem(InvoiceItem $invoiceItem): self
+    {
+        if (!$this->invoiceItems->contains($invoiceItem)) {
+            $this->invoiceItems->add($invoiceItem);
+            $invoiceItem->setInvoice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoiceItem(InvoiceItem $invoiceItem): self
+    {
+        if ($this->invoiceItems->removeElement($invoiceItem)) {
+            // set the owning side to null (unless already changed)
+            if ($invoiceItem->getInvoice() === $this) {
+                $invoiceItem->setInvoice(null);
+            }
+        }
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, User>
      */
@@ -234,5 +268,22 @@ class Invoice
         $this->quotation = $quotation;
 
         return $this;
+    }
+
+    public function getCustomer(): ?Customer
+    {
+        return $this->customer;
+    }
+
+    public function setCustomer(?Customer $customer): static
+    {
+        $this->customer = $customer;
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->id;
     }
 }

@@ -1,0 +1,27 @@
+{% extends "base.html.twig" %}
+
+{% set title = "Dashboard" %}
+
+{% block content %}
+    <div class="flex justify-between" >
+        <h1>Bonjour, Hamza !</h1>
+        {# {{ form(form) }} #}
+    </div>
+    <div class="flex mt-16 justify-between" >
+        <twig:CardDashboard src="{{ asset('build/images/devis.svg') }}" title="Nombre de devis" number="{{quotation.count}}" />
+        <twig:CardDashboard src="{{ asset('build/images/devis.svg') }}" title="Nombre de devis validé" number="{{quotation.valid}}" />
+        <twig:CardDashboard src="{{ asset('build/images/factures.svg') }}" title="Nombre de facture" number="{{invoice.count}}" />
+        <twig:CardDashboard src="{{ asset('build/images/factures.svg') }}" title="Facture encaisées" number="{{invoice.valid}}" />
+    </div>
+    <div class="flex mt-14 justify-between w-full">
+        <div class="w-[39%]" >
+            <div class="mb-6" >
+                <twig:RectangleCardDashboard title="Nouveau clients" number="{{quotation.count}}" stats="18,7%" />
+            </div>
+            <div>
+                <twig:RectangleCardDashboard title="Facture en retard (+ 30 jours)" number="{{invoice.count}}" stats="18,7%" />
+            </div>
+        </div>
+        <twig:ChartDashboard />
+    </div>
+{% endblock %}

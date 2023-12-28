@@ -1,0 +1,77 @@
+<tr {{ attributes }}>
+    <td>
+        {% if isEditing %}
+            <select
+                data-model="service"
+                aria-label="Choose a Service"
+                class="form-control {{ _errors.has('service') ? 'is-invalid' }}"
+            >
+                <option value="" {{ not service ? 'selected' }}>Choose a Service</option>
+                {% for serviceOption in service %}
+                    <option
+                        value="{{ serviceOption.id }}"
+                        {% if serviceOption == service %}selected{% endif %}
+                    >
+                        {{ serviceOption.name }} ({{ serviceOption.priceInCents|format_currency('EUR') }})
+                    </option>
+                {% endfor %}
+            </select>
+            {% if _errors.has('service') %}
+                <div class="invalid-feedback">
+                    {{ _errors.get('service') }}
+                </div>
+            {% endif %}
+        {% else %}
+            {{ service.name }}
+        {% endif %}
+    </td>
+
+    <td>
+        {% if not isEditing %}
+            {{ service.pricePriceInCents|format_currency('EUR') }}
+        {% endif %}
+    </td>
+
+    <td>
+        {% if isEditing %}
+            <input
+                type="number"
+                data-model="quantity"
+                aria-label="Quantity"
+                class="form-control {{ _errors.has('quantity') ? 'is-invalid' }}"
+            >
+            {% if _errors.has('quantity') %}
+                <div class="invalid-feedback">
+                    {{ _errors.get('quantity') }}
+                </div>
+            {% endif %}
+        {% else %}
+            {{ quantity }}
+        {% endif %}
+    </td>
+    <td class="text-end">
+        {% if isEditing %}
+            <button
+                data-action="live#action"
+                data-action-name="save"
+                class="btn btn-success btn-sm"
+                type="button"
+            >Save</button>
+        {% else %}
+            <button
+                data-action="live#action"
+                data-action-name="edit"
+                class="btn btn-primary btn-sm"
+                type="button"
+            >Edit</button>
+        {% endif %}
+
+        <button
+            data-action="live#emitUp"
+            data-event="removeLineItem(key={{ key }})"
+            class="btn btn-link text-danger btn-sm ml-2"
+            type="button"
+        >
+        X</button> 
+    </td>
+</tr>

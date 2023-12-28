@@ -1,13 +1,19 @@
-{# <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
     <head>
-        <twig:Head title="Invox | Dashboard" />
+        <twig:Head title=" {{ title }} " />
     </head>
-    <body class="bg-[#EFF4FB]" >
-        <div class="flex w-full " >
+    <body>
+        {% block body %}
+        <main class="flex w-full bg-bg-button" >
             <twig:Sidebar />
-            <twig:MainContent />
-        </div>
+            <div class="w-full" >
+                <twig:Header />
+                <div class="mx-12 mt-6" >
+                {% block content %}{% endblock content %}
+                </div>
+            </div>
+        </main>
+        {% endblock body %}
     </body>
 </html>
- #}

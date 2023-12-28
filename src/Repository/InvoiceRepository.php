@@ -45,4 +45,16 @@ class InvoiceRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findBySearchQuery(string $query): array
+    {
+        return $this->createQueryBuilder('i')
+            ->leftJoin('i.customer', 'c')
+            ->where('c.firstName LIKE :searchTerm')
+            ->orWhere('c.lastName LIKE :searchTerm')
+            ->setParameter('searchTerm', '%'.$query.'%')
+            ->getQuery()
+            ->getResult();
+    }
+
 }

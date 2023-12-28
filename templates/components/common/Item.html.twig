@@ -12,7 +12,7 @@
         <span aria-hidden="true">
         <img class="w-[20px] h-[20px]" src="{{ icon }}" alt="icon">
         </span>
-        <p class="ml-2"> {{ul}} </p>
+        <p class="ml-2 text-white-font"> {{ul}} </p>
         <span aria-hidden="true" class="ml-auto">
 
         <!-- Fléche open item -->
@@ -30,9 +30,7 @@
         </span>
         {% endif %}
     </a>
-
-
-    {# Balise li #}
+    <!-- Balise LI -->
     {% if content.li is defined and content.li is not empty %}
     <div x-show="open" class="mt-1 space-y-1 px-7" role="menu" aria-label="li">
         <!-- active & hover classes 'text-gray-700 dark:text-light' -->
@@ -49,8 +47,3 @@
     </div>
     {% endif %}
 </div>
-
-
-
-  
-   

@@ -14,7 +14,12 @@ module.exports = {
         'color-button': 'var(--color-button)',
         'color-sidebar': 'var(--color-sidebar)',
         'bg-button': '#EFF4FB',
+        'bg-button-white': '#FCFCFC',
         'white-font': '#FCFCFC',
+        'black-font': '#1A222C',
+        'bg-black' : '#1A222C',
+        'link-color': '#2563EB',
+        'svg-color': '#6B7280',
       },
       fontFamily: {
         'Satoshi': ['Satoshi', 'sans-serif'],

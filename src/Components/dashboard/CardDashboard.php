@@ -4,7 +4,7 @@ namespace App\Components\dashboard;
 
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
-#[AsTwigComponent]
+#[AsTwigComponent(template: 'components/dashboard/card_dashboard.html.twig')]
 class CardDashboard
 {
     public string $src;

@@ -5,8 +5,7 @@ namespace App\Components\common;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent]
-class Content
+class Status
 {
-    public string $type = 'success';
-    public string $message;
+    public ?string $styles = null;
 }

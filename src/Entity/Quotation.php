@@ -53,12 +53,12 @@ class Quotation
     private Collection $users;
 
     #[ORM\OneToMany(mappedBy: 'quotation', targetEntity: Invoice::class)]
-    private Collection $Invocies;
+    private Collection $invoices;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->Invocies = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -228,27 +228,27 @@ class Quotation
     /**
      * @return Collection<int, Invoice>
      */
-    public function getInvocies(): Collection
+    public function getInvoices(): Collection
     {
-        return $this->Invocies;
+        return $this->invoices;
     }
 
-    public function addInvocy(Invoice $invocy): static
+    public function addInvoice(Invoice $invoice): static
     {
-        if (!$this->Invocies->contains($invocy)) {
-            $this->Invocies->add($invocy);
-            $invocy->setQuotation($this);
+        if (!$this->invoices->contains($invoice)) {
+            $this->invoices->add($invoice);
+            $invoice->setQuotation($this);
         }
 
         return $this;
     }
 
-    public function removeInvocy(Invoice $invocy): static
+    public function removeInvoice(Invoice $invoice): static
     {
-        if ($this->Invocies->removeElement($invocy)) {
+        if ($this->invoices->removeElement($invoice)) {
             // set the owning side to null (unless already changed)
-            if ($invocy->getQuotation() === $this) {
-                $invocy->setQuotation(null);
+            if ($invoice->getQuotation() === $this) {
+                $invoice->setQuotation(null);
             }
         }
 

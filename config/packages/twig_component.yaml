@@ -4,3 +4,10 @@ twig_component:
         # Namespace & directory for components
         App\Components\common\: 'components/common'
         App\Components\dashboard\: 'components/dashboard'
+
+live_component:
+      anonymous_template_directory: 'components/'
+      defaults:
+        # Namespace & directory for components
+        App\Components\common\: 'components/common'
+        App\Components\dashboard\: 'components/dashboard'

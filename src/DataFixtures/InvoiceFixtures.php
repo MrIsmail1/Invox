@@ -14,12 +14,11 @@ class InvoiceFixtures extends Fixture implements DependentFixtureInterface
     {
         $faker = Factory::create('fr_FR');
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 30; $i++) {
             $invoice = (new Invoice());
 
             // Utiliser un timestamp pour createdAt
             
-            $invoice->setCreatedAt(new \DateTimeImmutable());
             $invoice->setExpiresIn($faker->dateTimeBetween('now', '+1 year'));
             $invoice->setAmount($faker->randomFloat(2, 10, 1000));
             $invoice->setTitle($faker->sentence);

@@ -3,7 +3,7 @@
 
 
 <div x-data="setup()" :class="{ 'dark': isDark }">
-    <aside class="h-screen inset-y-0 z-10 flex-shrink-0 w-64 bg-pr-blue border-r lg:static  focus:outline-none">
+    <aside class="h-screen inset-y-0 z-10 flex-shrink-0 w-64 bg-pr-blue border-r focus:outline-none sticky">
         <div class="flex flex-col h-full pt-6">
             <div class="px-10" >
             <img class="w-full" src="{{ asset('build/images/logo.svg') }}" alt="Logo Invox">
@@ -13,7 +13,7 @@
             <span class="text-pr-grey text-[14px] ml-6" >MENU</span>
             <twig:Item icon="{{ asset('build/images/dashboard.svg') }}" ul="Dashboard" linkUl="/dashboard"/>
             <twig:Item icon="{{ asset('build/images/devis.svg') }}" ul="Devis" linkUl="/devis"/>
-            <twig:Item icon="{{ asset('build/images/factures.svg') }}" ul="Factures" li="rere" linkUl="/factures"/>
+            <twig:Item icon="{{ asset('build/images/factures.svg') }}" ul="Factures" li="rere" linkUl="/invoice"/>
             <twig:Item icon="{{ asset('build/images/clients.svg') }}" ul="Clients" li="rere" linkUl="/clients"/>
             <twig:Item icon="{{ asset('build/images/services.svg') }}" ul="Services" li="rere" linkUl="/services"/>
         </nav>

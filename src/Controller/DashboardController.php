@@ -49,7 +49,7 @@ class DashboardController extends AbstractController
         ->getForm();
 
         $form->handleRequest($request);
-
+        if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $mois = $data['mois'];
             $annee = $data['annee'];
@@ -75,21 +75,20 @@ class DashboardController extends AbstractController
             $validInvoices = array_filter($filteredInvoices, function($invoice) {
                 return $invoice->isIsValid() === true;
             });
-            $invoiceValid = count($validInvoices);
-            
-
+            $invoiceValid = count($validInvoices);         
+}
 /* -------------------------------------- Render -------------------------------------- */
             // Passez les données filtrées au modèle pour l'affichage
-              return $this->render('page_dashboard.html.twig', [
+              return $this->render('dashboard/page_dashboard.html.twig', [
                 'quotation' => [
-                    'count' => $quotationCount,
-                    'valid' => $quotationValid,
-                    'filtered' => $filteredQuotations,
+                    'count' => $quotationCount ?? 20,
+                    'valid' => $quotationValid ?? true,
+                    'filtered' => $filteredQuotations ?? [],
                 ],
                 'invoice' => [
-                    'count' => $invoiceCount,
-                    'valid' => $invoiceValid,
-                    'createdAt' => $filteredInvoices,
+                    'count' => $invoiceCount ?? 10,
+                    'valid' => $invoiceValid ?? true,
+                    'createdAt' => $filteredInvoices ?? [],
                 ],
                 'form' => $form->createView(),
             ]);
