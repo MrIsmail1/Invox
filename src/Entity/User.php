@@ -6,11 +6,14 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cet email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -19,6 +22,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\NotBlank(message: "L'email ne peut pas être vide")]
+    #[Assert\Length(max: 180, maxMessage: "L'email ne peut pas contenir plus de {{ limit }} caractères")]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -28,6 +33,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank(message: "Le mot de passe ne peut pas être vide")]
+    #[Assert\Length(min: 8, max: 255, minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères", maxMessage: "Le mot de passe ne peut pas contenir plus de {{ limit }} caractères")]
     private ?string $password = null;
 
 
@@ -51,6 +58,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'uploadedBy', targetEntity: Media::class, orphanRemoval: true)]
     private Collection $media;
+
+    #[ORM\Column]
+    private ?bool $agreeTerms = null;
+
+    #[ORM\Column]
+    private ?bool $isVerified = false;
 
     public function __construct()
     {
@@ -83,7 +96,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -251,6 +264,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $medium->setUploadedBy(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isAgreeTerms(): ?bool
+    {
+        return $this->agreeTerms;
+    }
+
+    public function setAgreeTerms(bool $agreeTerms): static
+    {
+        $this->agreeTerms = $agreeTerms;
+
+        return $this;
+    }
+
+    public function isIsVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
 
         return $this;
     }

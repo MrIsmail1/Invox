@@ -1,10 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
 module.exports = {
-  content: [
-    "./assets/**/*.js",
-    "./templates/**/*.html.twig",
-  ],
+  content: ["./assets/**/*.js", "./templates/**/*.html.twig"],
   theme: {
     extend: {
       colors: {
@@ -22,19 +19,21 @@ module.exports = {
         'svg-color': '#6B7280',
       },
       fontFamily: {
-        'Satoshi': ['Satoshi', 'sans-serif'],
+        Satoshi: ["Satoshi", "sans-serif"],
       },
       spacing: {
-        '84': '21rem',
-        '88': '22rem',
+        84: "21rem",
+        88: "22rem",
       },
       borderRadius: {
-        'md': '10px',
+        md: "10px",
       },
       backgroundColor: {
-        background: 'var(--background-color)',
+        background: "var(--background-color)",
+      },
+      screens: {
+        xs: "320px",
       },
     },
   },
-}
-
+};
