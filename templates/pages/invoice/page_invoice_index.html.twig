@@ -6,7 +6,7 @@
     <div class="flex justify-between" >
         <h1>Facture</h1>
     </div>
-
+    <twig:DivLive />
     {{ form_start(form) }}
         {{ form_widget(form) }}
     {{ form_end(form) }}
@@ -35,6 +35,6 @@
         <twig:Button content="Créer un devis" path="invoice/new"/>
     </div>
     <div>
-        <twig:Table thead1="Numéro" thead2="Client" thead3="Total TTC" thead4="Status" thead5="Crée le" thead6="Echeance" thead7="Action" pathEdit="invoice_edit" pathDelete="invoice_delete" data="{{invoices}}"/>
+        <twig:Table thead1="Numéro" thead2="Client" thead3="Total TTC" thead4="Status" thead5="Crée le" thead6="Echeance" thead7="Action" pathEdit="invoice_edit" pathDelete="invoice_delete" data="{{invoices}}" />
     </div>
 {% endblock %}

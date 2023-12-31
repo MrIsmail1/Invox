@@ -1,0 +1,14 @@
+<div {{ attributes }}>
+    {{ dump() }}
+    <h3>DIV COMPONENT</h3>
+    <strong>{{this.incrementProductCount}}</strong>
+    <button
+        data-action="live#$render"
+
+
+    >Ici c'est le div !</button>
+
+    {{ component('RandomNumber', {
+        
+    }) }}
+</div>
