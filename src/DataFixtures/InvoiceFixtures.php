@@ -14,7 +14,7 @@ class InvoiceFixtures extends Fixture implements DependentFixtureInterface
     {
         $faker = Factory::create('fr_FR');
 
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $invoice = (new Invoice());
 
             // Utiliser un timestamp pour createdAt

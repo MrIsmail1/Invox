@@ -25,21 +25,8 @@ class Table
     public ?string $thead7 = null;
     public $form = null;
     public $entity = null;
-    public ?array $data = null;
+    public $data = null;
     public ?string $pathDelete = null;
     public ?string $pathEdit = null;
-
-     // Déclarer le type de $data comme array
-    #[LiveProp]
-    public ?array $Hamza = null;
-
-
-    // Écouter l'événement 'invoicesFetched'
-    #[LiveListener('invoicesFetched')]
-    public function handleInvoicesFetched(#[LiveArg] array $invoices)
-    {
-        // Mettre à jour les données avec celles reçues dans l'événement
-        $this->Hamza = $invoices;
-    }
 
 }

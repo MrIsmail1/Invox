@@ -1,8 +1,6 @@
-<div {{ attributes }}>
+<div {{ attributes }} class="mb-4">
 <div class="mt-4 rounded-lg p-4 flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white-font {# dark:bg-gray-900 #}">
-    {{ dump('table') }}
-    {{ dump() }}
-     <div x-data="{ open: false }">
+     <div x-data="{ open: false }" x-cloak>
         <p class="ml-1">Status</p>
         <button  @click="open = ! open" class="mt-2 inline-flex items-center text-gray-500 bg-white-font border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 {# dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 #}" type="button">
             Tout
@@ -31,10 +29,10 @@
     {# {{ component('SearchLive', {
     dataModel: 'query',
     }) }} #}
-    <twig:SearchLive />
+    {# <twig:SearchLive /> #}
 </div>
 
-<div x-data="{ showModal: false }" class="mt-6 mb-20 overflow-x-auto rounded-lg">
+<div x-data="{ showModal: false }" x-cloak class="mt-6 mb-8 overflow-x-auto rounded-lg">
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 {# dark:text-gray-400 #}">
         <thead class="text-sm text-gray-700 uppercase bg-white-font {# dark:bg-gray-700 #} {# dark:text-gray-400 #}">
             <tr
@@ -45,26 +43,38 @@
             data-action="live#emit"
             data-event="Hamza"
             >
-                <th scope="col" class="p-4">
+                <th scope="col" class="">
                     
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    {{ thead1 }}
+                {% if thead1 is not empty %}
+                    {{ knp_pagination_sortable(data, thead1, 'a.id') }}
+                {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    {{ thead2 }}
+                {% if thead2 is not empty %}
+                    {{ knp_pagination_sortable(data, thead2, 'a.customer') }}
+                    {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    {{ thead3 }}
+                {% if thead3 is not empty %}
+                    {{ knp_pagination_sortable(data, thead3, 'a.totalWithTaxes') }}
+                    {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    {{ thead4 }}
+                {% if thead4 is not empty %}
+                    {{ knp_pagination_sortable(data, thead4, 'a.isValid') }}
+                    {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    {{ thead5 }}
+                {% if thead5 is not empty %}
+                    {{ knp_pagination_sortable(data, thead5, 'a.expiresIn') }}
+                    {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    {{ thead6 }}
+                {% if thead6 is not empty %}
+                    {{ knp_pagination_sortable(data, thead6, 'a.expiresIn') }}
+                    {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
                     {{ thead7 }}
@@ -73,23 +83,20 @@
         </thead>
         <tbody>
             {% for data in data %}
-            <tr 
-            x-data="{ open: false }" class="bg-white-font border-b {# dark:bg-gray-800 dark:border-gray-700 #} hover:bg-gray-50 {# dark:hover:bg-gray-600 #}">
+            <tr x-data="{ open: false }" x-cloak class="bg-white-font border-b {# dark:bg-gray-800 dark:border-gray-700 #} hover:bg-gray-50 {# dark:hover:bg-gray-600 #}">
                 <td class="w-4 p-4">
                     <div class="flex items-center">
                         <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-link-color bg-gray-100 border-gray-300 rounded focus:ring-blue-500 {# dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 #}">
                         <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
                     </div>
                 </td>
-                    <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap {# dark:text-white-font #}">
-                        <div class="ps-3">
-                            <div class="text-base font-semibold">{{ data.id }}</div>
-                        </div>  
-                    </th>
+                <td class="px-6 py-4 font-bold">
+                    {{ data.id }}
+                </td>
                 <td class="px-6 py-4">
                     {{ data.customer }}
                 </td>
-                {% if data.totalWithTaxes is not empty and data.totalWithTaxes is defined %}
+                {% if data.totalWithTaxes is defined %}
                 <td class="px-6 py-4">
                     {{ data.totalWithTaxes }} €
                 </td>
@@ -130,7 +137,7 @@
                 </td>
                 {% endif %}
                 <td class="px-6 py-4">
-                    <div x-data="{ open: false }">
+                    <div x-data="{ open: false }" x-cloak>
                         <twig:Button js="open = !open" content="Voir" />
 {# ------------------------------------------------------------------------------  La modal show ------------------------------------------------------------------------ #}
                        <twig:Modal data="{{data}}" pathEdit="{{pathEdit}}" pathDelete="{{pathDelete}}" />
@@ -141,4 +148,10 @@
         </tbody>
     </table>
 </div>
+
+{# ------------------------------------------------------------------------------  Pagination ------------------------------------------------------------------------ #}
+
+
+{{ knp_pagination_render(data, 'components/common/pagination.html.twig') }}
+
 </div>

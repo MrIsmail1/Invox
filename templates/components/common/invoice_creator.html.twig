@@ -44,7 +44,6 @@
                     </thead>
                     <tbody>
                         {% for key, line in lineItems %}
-                        {{ dump(line.isEditing) }}
                             <twig:InvoiceCreatorLineItem
                                 key="{{ key }}"
                                 serviceId="{{ line.serviceId }}"
