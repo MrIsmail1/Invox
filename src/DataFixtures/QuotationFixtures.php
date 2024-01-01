@@ -13,7 +13,7 @@ class QuotationFixtures extends Fixture
     {
         $faker = Factory::create();
 
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $quotation = new Quotation();
 
             // Utiliser un timestamp pour createdAt

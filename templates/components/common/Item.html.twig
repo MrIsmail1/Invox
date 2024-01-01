@@ -4,10 +4,9 @@
     <a
         href="{{linkUl}}"
         class="flex items-center p-2 text-gray-500 transition-colors rounded-md dark:text-light hover:bg-indigo-100 dark:hover:bg-pr-grey"
-        :class="{'bg-indigo-100 dark:bg-pr-grey': isActive || open}"
-        role="button"
+        class="{'bg-indigo-100 dark:bg-pr-grey': isActive || open}"
         aria-haspopup="true"
-        :aria-expanded="(open || isActive) ? 'true' : 'false'"
+        aria-expanded="(open || isActive) ? 'true' : 'false'"
     >
         <span aria-hidden="true">
         <img class="w-[20px] h-[20px]" src="{{ icon }}" alt="icon">
@@ -19,7 +18,7 @@
         {% if content.li is defined and content.li is not empty %}
         <svg
             class="w-4 h-4 transition-transform transform text-white-font"
-            :class="{ 'rotate-180': open }"
+            class="{ 'rotate-180': open }"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -37,7 +36,6 @@
         <!-- inActive classes 'text-gray-400 dark:text-gray-400' -->
         <a
         href="{{linkLi}}"
-        role="menuitem"
         class="block p-1 text-sm text-white-font transition-colors duration-200 rounded-md dark:text-light dark:hover:text-light hover:text-gray-700"
         >
         {% for li in content.li %}

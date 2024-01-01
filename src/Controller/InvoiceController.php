@@ -15,17 +15,26 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Form\SearchType;
 use App\Form\InvoiceType;
 use App\Form\SearchAutocomplete;
-
-use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+use Gedmo\Sortable\Sortable;
+use Knp\Component\Pager\PaginatorInterface;
 
 class InvoiceController extends AbstractController
 {
     #[Route('/invoice', name: 'invoice_index', methods: ['GET', 'POST'])]
-    public function index(Request $request,InvoiceRepository $invoiceRepository, EntityManagerInterface $entityManager): Response
+    public function index(Request $request, InvoiceRepository $invoiceRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response 
     {
 
-        $invoices = $invoiceRepository->findAll();
+    $query = $invoiceRepository->createQueryBuilder('a')
+    ->getQuery();
+
+    $pagination = $paginatorInterface->paginate(
+        $query,
+        $request->query->getInt('page', 1),
+        15
+    );
+
         $invoice = new Invoice();
+
         $form = $this->createForm(SearchAutocomplete::class, $invoice);
         $form->handleRequest($request);
 
@@ -37,10 +46,10 @@ class InvoiceController extends AbstractController
         }
 
         return $this->render('invoice/page_invoice_index.html.twig', [
-            'invoices' => $invoices,
             'form' => $form,
+            'pagination' => $pagination,
         ]);
-    }
+}
 
     #[Route('invoice/new', name: 'invoice_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager,ServiceRepository $serviceRepository): Response
