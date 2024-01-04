@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Invoice;
 use App\Entity\InvoiceItem;
 use App\Entity\Service;
+use App\Entity\User;
 use App\Repository\ServiceRepository;
 use App\Repository\InvoiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,10 +13,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Form\SearchType;
+use App\Form\UploadFile;
 use App\Form\InvoiceType;
 use App\Form\SearchAutocomplete;
-use Gedmo\Sortable\Sortable;
 use Knp\Component\Pager\PaginatorInterface;
 
 class InvoiceController extends AbstractController
@@ -32,14 +32,16 @@ class InvoiceController extends AbstractController
         $request->query->getInt('page', 1),
         15
     );
+/* --------------------------------------- FORM ------------------------------------------ */
 
-        $invoice = new Invoice();
+        $user = new User();
 
-        $form = $this->createForm(SearchAutocomplete::class, $invoice);
+        $form = $this->createForm(UploadFile::class, $user);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($invoice);
+
+            $user = $form->getData();
+            $entityManager->persist($user);
             $entityManager->flush();
 
             return $this->redirectToRoute('invoice_index', [], Response::HTTP_SEE_OTHER);
