@@ -3,6 +3,7 @@
 {% set title = "Invox | Invoice" %}
 
 {% block content %}
+
     <div class="flex justify-between" >
         <h1>Facture</h1>
     </div>
@@ -37,4 +38,25 @@
     <div>
         <twig:Table thead1="Numéro" thead2="Client" thead3="Total TTC" thead4="Status" thead5="Crée le" thead6="Echeance" thead7="Action" pathEdit="invoice_edit" pathDelete="invoice_delete" data="{{pagination}}" />
     </div>
+
+
+
+
+{# TEST ICI POUR LA NOTIFICATION FAUT JUSTE REUSSIR A IMPORT LA FONCTION #}
+
+ {% if app.flashes.success is defined %}
+    {{ encore_entry_link_tags('notyf') }}
+    {{ encore_entry_script_tags('notyf') }}
+{% endif %} 
+
+{# Inclure le fichier JavaScript #}
+<script src="{{ asset('build/notyf.js') }}"></script>
+
+{% if app.flashes.success is defined %}
+<script type="module">
+    successNotification('Message de réussite !');
+</script>
+{% endif %} #}
+
 {% endblock %}
+
