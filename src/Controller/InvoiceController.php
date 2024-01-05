@@ -24,6 +24,9 @@ class InvoiceController extends AbstractController
     public function index(Request $request, InvoiceRepository $invoiceRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response 
     {
 
+    // Pour créer une notification
+    $this->addFlash('success', 'Invoice updated successfully!');
+    
     $query = $invoiceRepository->createQueryBuilder('a')
     ->getQuery();
 

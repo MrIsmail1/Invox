@@ -7,15 +7,9 @@
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
+            
             <script>
-              document.addEventListener('DOMContentLoaded', function () {
-                const body = document.body;
-                const toggleButton = document.getElementById('toggleButton');
-
-                toggleButton.addEventListener('click', function () {
-                  body.classList.toggle('dark');
-                });
-              });
+              
           
   </script>
             <script src="https://cdn.jsdelivr.net/gh/alpine-collective/alpine-magic-helpers@0.6.x/dist/component.min.js"></script>

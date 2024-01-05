@@ -24,6 +24,12 @@
                     "@symfony/ux-live-component/dist/live.min.css": true
                 }
             }
+        },
+        "@symfony/ux-notify": {
+            "notify": {
+                "enabled": true,
+                "fetch": "eager"
+            }
         }
     },
     "entrypoints": []
