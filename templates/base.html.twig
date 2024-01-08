@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <twig:Head title=" {{ title }} " />
+        <twig:Head title="{{ title }}"/>
     </head>
-    <body x-cloak>
-        {% block body %}
-        <main class="flex w-full bg-bg-button" >
-            <twig:Sidebar />
-            <div class="w-full" >
+    {% block body %}
+    <body
+        x-cloak
+        class="antialiased default"
+        x-data="{'darkMode': false}"
+        x-init="
+         darkMode = JSON.parse(localStorage.getItem('darkMode'));
+         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))">
+        <main class="flex w-full bg-button" :class="{'dark': darkMode === true}" >
+            <twig:Sidebar/>
+            <div class="w-full bg-bg-button">
                 <twig:Header />
-                <div class="mx-12 mt-6" >
+                <div class="mx-12 mt-6">
                 {% block content %}{% endblock content %}
                 </div>
             </div>
