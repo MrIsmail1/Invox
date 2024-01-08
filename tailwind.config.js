@@ -1,22 +1,30 @@
 /** @type {import('tailwindcss').Config} */
 
+function withOpacity(variableName) {
+  return ({ opacityValue }) => {
+    if (opacityValue !== undefined) {
+      return `rgba(var(${variableName}), ${opacityValue})`;
+    }
+    return `rgb(var(${variableName}))`;
+  };
+}
+
 module.exports = {
   content: ["./assets/**/*.js", "./templates/**/*.html.twig"],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        'pr-blue': '#364959',
-        'pr-grey': '#A2AFBC',
-        'sd-blue': '#5A6B7A',
-        'color-button': 'var(--color-button)',
-        'color-sidebar': 'var(--color-sidebar)',
-        'bg-button': '#EFF4FB',
-        'bg-button-white': '#FCFCFC',
-        'white-font': '#FCFCFC',
-        'black-font': '#1A222C',
-        'bg-black' : '#1A222C',
-        'link-color': '#2563EB',
-        'svg-color': '#6B7280',
+        "pr-grey": withOpacity("--color-pr-grey"),
+        "pr-blue": withOpacity("--color-pr-blue"),
+        "sd-blue": withOpacity("--color-sd-blue"),
+        "bg-button": withOpacity("--color-bg-button"),
+        "bg-button-white": withOpacity("--color-bg-button-white"),
+        "white-font": withOpacity("--color-white-font"),
+        "black-font": withOpacity("--color-black-font"),
+        "bg-black": withOpacity("--color-bg-black"),
+        "link-color": withOpacity("--color-link-color"),
+        "svg-color": withOpacity("--color-svg-color"),
       },
       fontFamily: {
         Satoshi: ["Satoshi", "sans-serif"],
@@ -29,7 +37,12 @@ module.exports = {
         md: "10px",
       },
       backgroundColor: {
-        background: "var(--background-color)",
+        skin: {
+          fill: withOpacity("--color-fill"),
+          "button-accent": withOpacity("--color-button-accent"),
+          "button-accent-hover": withOpacity("--color-button-accent-hover"),
+          "button-muted": withOpacity("--color-button-muted"),
+        },
       },
       screens: {
         xs: "320px",

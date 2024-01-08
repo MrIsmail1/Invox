@@ -1,25 +1,74 @@
-
+{# TEST THEME  #}
 <div>
-    <aside class="h-screen inset-y-0 z-10 flex-shrink-0 w-64 bg-pr-blue border-r focus:outline-none sticky">
-        <div class="flex flex-col h-full pt-6">
-            <div class="px-10" >
-            <img class="w-full" src="{{ asset('build/images/logo.svg') }}" alt="Logo Invox">
-            </div>
-        <!-- Sidebar links -->
-        <nav aria-label="Main" class="flex-1 px-3 py-8 space-y-2 overflow-y-hidden hover:overflow-y-auto">
-            <span class="text-pr-grey text-[14px] ml-6" >MENU</span>
-            <twig:Item icon="{{ asset('build/images/dashboard.svg') }}" ul="Dashboard" linkUl="/dashboard"/>
-            <twig:Item icon="{{ asset('build/images/devis.svg') }}" ul="Devis" linkUl="/devis"/>
-            <twig:Item icon="{{ asset('build/images/factures.svg') }}" ul="Factures" li="rere" linkUl="/invoice"/>
-            <twig:Item icon="{{ asset('build/images/clients.svg') }}" ul="Clients" li="rere" linkUl="/clients"/>
-            <twig:Item icon="{{ asset('build/images/services.svg') }}" ul="Services" li="rere" linkUl="/services"/>
-        </nav>
+  <aside
+    class="text-white-font sticky inset-y-0 z-10 h-screen w-64 flex-shrink-0 border-r bg-pr-blue focus:outline-none dark:bg-red-500"
+  >
+    <div class="flex h-full flex-col pt-6">
+      <div class="px-10">
+        <a href="/dashboard">
+          <img
+            class="w-full"
+            src="{{ asset('build/images/logo.svg') }}"
+            alt="Logo Invox"
+          />
+        </a>
+      </div>
+      <!-- Sidebar links -->
+      <nav
+        aria-label="Main"
+        class="flex-1 space-y-2 overflow-y-hidden px-3 py-8 hover:overflow-y-auto"
+      >
+      {# TEST THEME #}
+        <span class="ml-6 text-[14px]"
+          >MENU</span
+        >
+        <twig:Item
+          icon="{{ asset('build/images/dashboard.svg') }}"
+          ul="Dashboard"
+          linkUl="/dashboard"
+        />
+        <twig:Item
+          icon="{{ asset('build/images/devis.svg') }}"
+          ul="Devis"
+          linkUl="/devis"
+        />
+        <twig:Item
+          icon="{{ asset('build/images/factures.svg') }}"
+          ul="Factures"
+          li="rere"
+          linkUl="/invoice"
+        />
+        <twig:Item
+          icon="{{ asset('build/images/clients.svg') }}"
+          ul="Clients"
+          li="rere"
+          linkUl="/clients"
+        />
+        <twig:Item
+          icon="{{ asset('build/images/services.svg') }}"
+          ul="Services"
+          li="rere"
+          linkUl="/services"
+        />
+      </nav>
 
-        <!-- Sidebar footer -->
-        <div class="relative items-center justify-center flex-shrink-0 px-2 py-4 space-y-2">
-            <twig:Item icon="{{ asset('build/images/parametres.svg') }}" ul="Paramètres" li="" linkUl="/parametres"/>
-            <twig:Item icon="{{ asset('build/images/deconnect.svg') }}" ul="Se déconnecter" li="" linkUl="/deconnect"/>
-        </div>
-        </div>
-    </aside>
+      <!-- Sidebar footer -->
+      <div
+        class="relative flex-shrink-0 items-center justify-center space-y-2 px-2 py-4"
+      >
+        <twig:Item
+          icon="{{ asset('build/images/parametres.svg') }}"
+          ul="Paramètres"
+          li=""
+          linkUl="/parametres"
+        />
+        <twig:Item
+          icon="{{ asset('build/images/deconnect.svg') }}"
+          ul="Se déconnecter"
+          li=""
+          linkUl="/deconnect"
+        />
+      </div>
+    </div>
+  </aside>
 </div>
