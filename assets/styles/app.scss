@@ -51,36 +51,76 @@
     --color-bg-black: 26, 34, 44;
     --color-link-color: 37, 99, 235;
     --color-svg-color: 107, 114, 128;
-    --border-radius-xl: 0.75rem;
-    --border-radius-lg: 0.5rem;
+    --border-radius-xxl: 2.5rem;
+    --border-radius-xl: 2rem;
+    --border-radius-lg: 0.75rem;
+    --border-radius-md: 0.6rem;
+    --font: "Satoshi", sans-serif;
+    --color-bg-white: 255, 255, 255;
+    --color-bg-succeed: 218, 253, 214;
+    --color-text-succeed: 13, 234, 12;
+    --border-width: 0rem;
+    --border-color: none;
+    --bg-hover-light: 249, 250, 251;
+    --bg-hover-sidebar: 162, 175, 188;
   }
 
-  .neon {
-    --color-pr-blue: green;
-    --color-pr-grey: red;
-    --color-sd-blue: 220, 38, 38;
-    --color-button: 185, 28, 28;
-    --color-sidebar: 255, 255, 255;
-    --color-bg-button: 254, 242, 242;
+  .pikachu {
+    --color-pr-blue: 255, 243, 72;
+    --color-pr-grey: 206, 115, 255;
+    --color-sd-blue: 0, 232, 255;
+    --color-button: 255, 101, 151;
+    --color-sidebar: 17, 26, 59;
+    --color-bg-button: 255, 243, 72;
     --color-bg-button-white: 239, 68, 68;
+    --color-white-font: 26, 34, 44;
+    --color-black-font: 26, 34, 44;
+    --color-bg-black: 26, 34, 44;
+    --color-link-color: 37, 99, 235;
+    --color-svg-color: 107, 114, 128;
+    --border-radius-xxl: 0rem;
+    --border-radius-xl: 0rem;
+    --border-radius-lg: 0rem;
+    --border-radius-md: 0rem;
+    --font: sans-serif;
+    --color-bg-white: 255, 243, 72;
+    --border-width: 0.1rem;
+    --border-color: 17, 26, 59;
+    --bg-hover-light: 232, 220, 64;
+    --bg-hover-sidebar: 232, 220, 64;
   }
 
-  .retro {
-    --color-pr-blue: 17, 24, 2;
-    --color-pr-grey: blue;
+  .girl {
+    --color-pr-blue: 249, 230, 243;
+    --color-pr-grey: 232, 109, 123;
     --color-sd-blue: 235, 250, 204;
     --color-button: 179, 255, 23;
     --color-sidebar: 36, 52, 3;
-    --color-bg-button: 55, 79, 5;
+    --color-bg-button: 249, 230, 243;
     --color-bg-button-white: 212, 255, 122;
+    --color-white-font: 26, 34, 44;
+    --color-black-font: 26, 34, 44;
+    --color-bg-black: 26, 34, 44;
+    --color-link-color: 37, 99, 235;
+    --color-svg-color: 107, 114, 128;
+    --border-radius-xxl: 1.5rem;
+    --border-radius-xl: 1rem;
+    --border-radius-lg: 0.75rem;
+    --border-radius-md: 0.5rem;
+    --font: serif;
+    --color-bg-white: 249, 230, 243;
+    --border-width: 0.1rem;
+    --border-color: 17, 26, 59;
+    --bg-hover-light: 235, 212, 225;
+    --bg-hover-sidebar: 235, 212, 225;
   }
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: "Satoshi", sans-serif;
   color: black;
+  font-family: var(--font);
 }
 
 h1 {

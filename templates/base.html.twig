@@ -13,7 +13,7 @@
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))">
         <main class="flex w-full bg-button" :class="{'dark': darkMode === true}" >
             <twig:Sidebar/>
-            <div class="w-full bg-bg-button">
+            <div class="w-full bg-bg-button dark:bg-dark-bg-button dark:text-white-font">
                 <twig:Header />
                 <div class="mx-12 mt-6">
                 {% block content %}{% endblock content %}
