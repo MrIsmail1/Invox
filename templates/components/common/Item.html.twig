@@ -3,14 +3,12 @@
     <!-- Balise UL -->
     <a
         href="{{linkUl}}"
-        class="flex items-center p-2 text-gray-500 transition-colors rounded-md dark:text-light hover:bg-indigo-100 dark:hover:bg-pr-grey"
+        class="flex items-center p-2 transition-colors rounded-md dark:text-light hover:bg-bg-hover-sidebar dark:hover:bg-pr-grey"
         class="{'bg-indigo-100 dark:bg-pr-grey': isActive || open}"
         aria-haspopup="true"
         aria-expanded="(open || isActive) ? 'true' : 'false'"
     >
-        <span aria-hidden="true">
-        <img class="w-[20px] h-[20px]" src="{{ icon }}" alt="icon">
-        </span>
+        {% block svg %}{% endblock %}
         <p class="ml-2 text-white-font"> {{ul}} </p>
         <span aria-hidden="true" class="ml-auto">
 

@@ -1,35 +1,52 @@
-<div class="w-[59%] h-full bg-white rounded-[2rem]" >
-    <div>
-        <h3 class="font-bold ml-12 mt-8 mb-4">Ventes 12 derniers mois : 560 $</h3>
-        <canvas id="myChart"></canvas>
-    </div>
+<div
+  class="bg-bg-white dark:bg-dark-pr-blue border-border-width border-border-color h-full w-[59%] rounded-xl"
+>
+  <div>
+    <h3 class="mb-4 ml-12 mt-8 font-bold">Ventes 12 derniers mois : 560 $</h3>
+    <canvas id="myChart"></canvas>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-  const ctx = document.getElementById('myChart');
+  const ctx = document.getElementById("myChart");
 
   new Chart(ctx, {
-    type: 'bar',
+    type: "bar",
     data: {
-      labels: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai','Juin', 'Juillet', 'Août', 'Septembre', 'Octobre','Novembre', 'Décembre'],
-      datasets: [{
-        data: [1200, 19, 3, 5, 2, 3],
-        borderWidth: 2
-      }]
+      labels: [
+        "Janvier",
+        "Février",
+        "Mars",
+        "Avril",
+        "Mai",
+        "Juin",
+        "Juillet",
+        "Août",
+        "Septembre",
+        "Octobre",
+        "Novembre",
+        "Décembre",
+      ],
+      datasets: [
+        {
+          data: [1200, 19, 3, 5, 2, 3],
+          borderWidth: 2,
+        },
+      ],
     },
     options: {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
+      scales: {
+        y: {
+          beginAtZero: true,
         },
-        plugins: {
-            legend: {
-                display: false
-            }
+      },
+      plugins: {
+        legend: {
+          display: false,
         },
-    }
+      },
+    },
   });
 </script>
