@@ -13,8 +13,8 @@ namespace App\Components\common;
 
 use App\Entity\Invoice;
 use App\Entity\InvoiceItem;
-use App\Entity\Service;
-use App\Repository\ServiceRepository;
+use App\Entity\Product;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Constraints\Valid;
@@ -32,9 +32,8 @@ class InvoiceCreator extends AbstractController
 {
     use DefaultActionTrait;
     use ValidatableComponentTrait;
-    /* A MODIFIER */
-    /* #[LiveProp(writable: ['customerName', 'customerEmail', 'taxes'])] */
-    #[LiveProp(writable: ['title', 'amount', 'taxes'])]
+
+    #[LiveProp(writable: ['taxes'])]
     #[Valid]
     public Invoice $invoice;
 
@@ -50,7 +49,7 @@ class InvoiceCreator extends AbstractController
     public bool $savedSuccessfully = false;
     public bool $saveFailed = false;
 
-    public function __construct(private ServiceRepository $serviceRepository)
+    public function __construct(private ProductRepository $productRepository)
     {
     }
 
@@ -61,11 +60,25 @@ class InvoiceCreator extends AbstractController
         $this->lineItems = $this->populateLineItems($invoice);
     }
 
+    private function populateLineItems(Invoice $invoice): array
+    {
+        $lineItems = [];
+        foreach ($invoice->getInvoiceItems() as $item) {
+            $lineItems[] = [
+                'productId' => $item->getProduct()->getId(),
+                'quantity' => $item->getQuantity(),
+                'isEditing' => false,
+            ];
+        }
+
+        return $lineItems;
+    }
+
     #[LiveAction]
     public function addLineItem(): void
     {
         $this->lineItems[] = [
-            'serviceId' => null,
+            'productId' => null,
             'quantity' => 1,
             'isEditing' => true,
         ];
@@ -84,15 +97,14 @@ class InvoiceCreator extends AbstractController
     }
 
     #[LiveListener('line_item:save')]
-    public function saveLineItem(#[LiveArg] int $key, #[LiveArg] Service $service, #[LiveArg] int $quantity): void
+    public function saveLineItem(#[LiveArg] int $key, #[LiveArg] Product $product, #[LiveArg] int $quantity): void
     {
         if (!isset($this->lineItems[$key])) {
             // shouldn't happen
             return;
         }
 
-        $this->lineItems[$key]['serviceId'] = $service->getId();
-        dd($this->lineItems[$key]['serviceId']);
+        $this->lineItems[$key]['productId'] = $product->getId();
         $this->lineItems[$key]['quantity'] = $quantity;
     }
 
@@ -122,8 +134,8 @@ class InvoiceCreator extends AbstractController
                 $this->invoice->addInvoiceItem($invoiceItem);
             }
 
-            $service = $this->findService($lineItem['serviceId']);
-            $invoiceItem->setService($service);
+            $product = $this->findProduct($lineItem['productId']);
+            $invoiceItem->setProduct($product);
             $invoiceItem->setQuantity($lineItem['quantity']);
         }
 
@@ -135,7 +147,7 @@ class InvoiceCreator extends AbstractController
             // it's new! Let's redirect to the edit page
             $this->addFlash('live_demo_success', 'Invoice saved!');
 
-            return $this->redirectToRoute('app_demo_live_component_invoice', [
+            return $this->redirectToRoute('app_invoice_index', [
                 'id' => $this->invoice->getId(),
             ]);
         }
@@ -149,21 +161,9 @@ class InvoiceCreator extends AbstractController
         $this->lineItems = $this->populateLineItems($this->invoice);
     }
 
-    public function getSubtotal(): float
+    private function findProduct(int $id): Product
     {
-        $subTotal = 0;
-
-        foreach ($this->lineItems as $lineItem) {
-            if (!$lineItem['serviceId']) {
-                continue;
-            }
-
-            $service = $this->findService($lineItem['serviceId']);
-
-            $subTotal += ($service->getPrice() * $lineItem['quantity']);
-        }
-
-        return $subTotal / 100;
+        return $this->productRepository->find($id);
     }
 
     public function getTotal(): float
@@ -171,6 +171,23 @@ class InvoiceCreator extends AbstractController
         $taxMultiplier = 1 + ($this->invoice->getTaxes() / 100);
 
         return $this->getSubtotal() * $taxMultiplier;
+    }
+
+    public function getSubtotal(): float
+    {
+        $subTotal = 0;
+
+        foreach ($this->lineItems as $lineItem) {
+            if (!$lineItem['productId']) {
+                continue;
+            }
+
+            $product = $this->findProduct($lineItem['productId']);
+
+            $subTotal += ($product->getPrice() * $lineItem['quantity']);
+        }
+
+        return $subTotal / 100;
     }
 
     #[ExposeInTemplate]
@@ -183,26 +200,5 @@ class InvoiceCreator extends AbstractController
         }
 
         return false;
-    }
-
-    /* A MODIFIER */
-    private function populateLineItems(Invoice $invoice): array
-    {
-        $lineItems = [];
-        
-        foreach ($invoice->getInvoiceItems() as $item) {
-            $lineItems[] = [
-                'serviceId' => $item->getService()->getId(),
-                'quantity' => $item->getQuantity(),
-                'isEditing' => false,
-            ];
-        }
-
-        return $lineItems;
-    }
-
-    private function findService(int $id): Service
-    {
-        return $this->serviceRepository->find($id);
     }
 }

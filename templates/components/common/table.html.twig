@@ -54,27 +54,27 @@
                 <th scope="col" class="px-6 py-3">
                 {% if thead2 is not empty %}
                     {{ knp_pagination_sortable(data, thead2, 'a.customer') }}
-                    {% endif %}
+                {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
                 {% if thead3 is not empty %}
                     {{ knp_pagination_sortable(data, thead3, 'a.totalWithTaxes') }}
-                    {% endif %}
+                {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
                 {% if thead4 is not empty %}
                     {{ knp_pagination_sortable(data, thead4, 'a.isValid') }}
-                    {% endif %}
+                {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
                 {% if thead5 is not empty %}
                     {{ knp_pagination_sortable(data, thead5, 'a.expiresIn') }}
-                    {% endif %}
+                {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
                 {% if thead6 is not empty %}
                     {{ knp_pagination_sortable(data, thead6, 'a.expiresIn') }}
-                    {% endif %}
+                {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
                     {{ thead7 }}
@@ -151,7 +151,5 @@
 
 {# ------------------------------------------------------------------------------  Pagination ------------------------------------------------------------------------ #}
 
-
 {{ knp_pagination_render(data, 'components/common/pagination.html.twig') }}
-
 </div>

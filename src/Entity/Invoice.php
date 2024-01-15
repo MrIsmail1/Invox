@@ -18,20 +18,8 @@ class Invoice
     #[ORM\Column]
     private ?int $id = null;
 
-    /* #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    private ?string $customerName = null;
-
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Email]
-    private ?string $customerEmail = null; */
-
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $expiresIn = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $title = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
     private ?string $amount = null;
@@ -89,18 +77,6 @@ class Invoice
     public function setExpiresIn(?\DateTimeInterface $expiresIn): static
     {
         $this->expiresIn = $expiresIn;
-
-        return $this;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): static
-    {
-        $this->title = $title;
 
         return $this;
     }

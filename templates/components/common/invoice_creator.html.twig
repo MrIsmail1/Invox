@@ -1,12 +1,12 @@
 <div {{ attributes }}>
-    <form data-action="live#action" data-action-name="prevent|saveInvoice" class="max-w-sm mx-auto">
-        <div class="mb-5">
-            <label for="customer-name" class="block mb-2 text-sm font-medium text-gray-900 ">Customer name:</label>
+    <form data-action="live#action" data-action-name="prevent|saveInvoice">
+        <div class="mb-3">
+            <label for="customer-name">Nom du client:</label>
             <input
-                type="text"
-                data-model="invoice.customerName"
-                class="form-control {{ _errors.has('invoice.customerName') ? 'is-invalid' }} bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                id="customer-name"
+                    type="text"
+                    data-model="invoice.customerName"
+                    class="form-control {{ _errors.has('invoice.customerName') ? 'is-invalid' }}"
+                    id="customer-name"
             >
             {% if _errors.has('invoice.customerName') %}
                 <div class="invalid-feedback">
@@ -16,12 +16,12 @@
         </div>
 
         <div class="mb-3">
-            <label for="customer-email">Billing Email:</label>
+            <label for="customer-email">E-mail de facturation:</label>
             <input
-                type="email"
-                data-model="invoice.customerEmail"
-                class="form-control {{ _errors.has('invoice.customerEmail') ? 'is-invalid' }}"
-                id="customer-email"
+                    type="email"
+                    data-model="invoice.customerEmail"
+                    class="form-control {{ _errors.has('invoice.customerEmail') ? 'is-invalid' }}"
+                    id="customer-email"
             >
             {% if _errors.has('invoice.customerEmail') %}
                 <div class="invalid-feedback">
@@ -29,96 +29,88 @@
                 </div>
             {% endif %}
         </div>
-
+    </form>
         <div class="card">
-            <div class="card-header">Invoice Items</div>
-            <div class="card-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Service</th>
-                            <th style="width: 100px;">Price</th>
-                            <th style="width: 100px;">Quantity</th>
-                            <th style="width: 100px;">&nbsp;</th>
-                        </tr>
+            <div class="mt-6 mb-8 overflow-x-auto rounded-lg border-border-color border-border-width">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:bg-dark-pr-blue">
+                    <thead class="text-sm uppercase bg-bg-white dark:bg-dark-pr-blue dark:text-white-font border-b-border-width border-border-color">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">Produit</th>
+                        <th scope="col" class="px-6 py-3">Prix</th>
+                        <th scope="col" class="px-6 py-3">Quantité</th>
+                        <th scope="col" class="px-6 py-3">Remise</th>
+                        
+                    </tr>
                     </thead>
                     <tbody>
-                        {% for key, line in lineItems %}
-                            <twig:InvoiceCreatorLineItem
+                    {% for key, line in lineItems %}
+                        <twig:InvoiceCreatorLineItem
                                 key="{{ key }}"
-                                serviceId="{{ line.serviceId }}"
+                                productId="{{ line.productId }}"
                                 quantity="{{ line.quantity }}"
                                 isEditing="{{ line.isEditing }}"
-                            />
-                        {% endfor %}
+                        />
+                    {% endfor %}
                     </tbody>
                 </table>
-
-                <button
-                    data-action="live#action"
-                    data-action-name="addLineItem"
-                    class="btn btn-sm btn-secondary"
-                    type="button"
-                >{# <twig:Icon name="plus" />#} Add Item</button> 
+                <twig:Button 
+                    action="live#action"
+                    actionName="addLineItem"
+                    >
+                    + Ajouter un produit
+                </twig:Button>
             </div>
         </div>
 
         <div class="col-4 offset-8 mt-4">
             <table class="table text-end">
                 <tbody>
-                    <tr>
-                        <th>Subtotal:</th>
-                        <td>{{ this.subtotal|format_currency('USD') }}</td>
-                    </tr>
-                    <tr>
-                        <th>Tax rate:</th>
-                        <td class="d-flex justify-content-end">
-                            <div style="width: 110px;" class="input-group {{ _errors.has('invoice.taxRate') ? 'is-invalid' }}">
-                                <input
+                <tr>
+                    <th>Sous total :</th>
+                    <td>{{ this.subtotal|format_currency('USD') }}</td>
+                </tr>
+                <tr>
+                    <th>TVA :</th>
+                    <td class="d-flex justify-content-end">
+                        <div style="width: 110px;"
+                             class="input-group {{ _errors.has('invoice.taxes') ? 'is-invalid' }}">
+                            <input
                                     type="number"
-                                    data-model="invoice.taxRate"
+                                    data-model="invoice.taxes"
                                     class="form-control"
-                                >
-                                <span class="input-group-text">%</span>
+                            >
+                            <span class="input-group-text">%</span>
+                        </div>
+                        {% if _errors.has('invoice.taxes') %}
+                            <div class="invalid-feedback">
+                                {{ _errors.get('invoice.taxes') }}
                             </div>
-                            {% if _errors.has('invoice.taxRate') %}
-                                <div class="invalid-feedback">
-                                    {{ _errors.get('invoice.taxRate') }}
-                                </div>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Total:</th>
-                        <td>{{ this.total|format_currency('EUR') }}</td>
-                    </tr>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Total:</th>
+                    <td>{{ this.total|format_currency('USD') }}</td>
+                </tr>
                 </tbody>
             </table>
         </div>
 
-        <button
-            class="btn btn-primary"
-            {{ areAnyLineItemsEditing ? 'disabled' : '' }}
-        >
-            <span data-loading="action(saveInvoice)|show">
-                {# <twig:Icon name="spinner" style="animation: spin 1s linear infinite;" /> #}
-                loading
-            </span>
-            {% if savedSuccessfully %}
-                {# <twig:Icon name="circle-check" class="text-success" /> #}
-                good saved
-            {% endif %}
-            {% if saveFailed %}
-                {# <twig:Icon name="circle-exclamation" /> #}
-                savec saveFailed
-            {% endif %}
-            Save Invoice
-        </button>
+        <twig:Button content="Enregistrer la facture" path="/invoice" styles="mt-6" />
+        {% if savedSuccessfully %}
+            <small class="text-success">Facture enregistrée avec succès</small>
+        {% endif %}
         {% if saveFailed %}
-            <small class="text-secondary">Check above for errors</small>
+            Facture non enregistrée
+        {% endif %}
+        
+        {% if saveFailed %}
+            <small class="text-secondary">Vérifiez ci-dessus les erreurs</small>
         {% endif %}
         {% if areAnyLineItemsEditing %}
-            <small class="text-secondary">Save all line items before continuing.</small>
+            <small class="text-secondary">Enregistrez toutes vos prestations avant de continuer.</small>
         {% endif %}
-    </form>
 </div>
+
+
+

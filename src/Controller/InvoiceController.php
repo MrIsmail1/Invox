@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Invoice;
 use App\Entity\InvoiceItem;
-use App\Entity\Service;
-use App\Repository\ServiceRepository;
+use App\Entity\Product;
+use App\Repository\ProductRepository;
 use App\Repository\InvoiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +20,7 @@ use Knp\Component\Pager\PaginatorInterface;
 
 class InvoiceController extends AbstractController
 {
-    #[Route('/invoice', name: 'invoice_index', methods: ['GET', 'POST'])]
+    #[Route('/invoice', name: 'app_invoice_index', methods: ['GET', 'POST'])]
     public function index(Request $request, InvoiceRepository $invoiceRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response 
     {
 
@@ -45,7 +45,7 @@ class InvoiceController extends AbstractController
             $entityManager->persist($invoice);
             $entityManager->flush();
 
-            return $this->redirectToRoute('invoice_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('invoice/page_invoice_index.html.twig', [
@@ -55,17 +55,17 @@ class InvoiceController extends AbstractController
 }
 
     #[Route('invoice/new', name: 'invoice_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager,ServiceRepository $serviceRepository): Response
+    public function new(ProductRepository $productRepository): Response
     {
         $invoice = new Invoice();
         $invoiceItem = new InvoiceItem();
 
-        $services = $serviceRepository->findAll();
+        $products = $productRepository->findAll();
 
         return $this->render('invoice/page_invoice_new.html.twig', [
             'invoice' => $invoice,
             'invoiceItem' => $invoiceItem,
-            'services' => $services,
+            'products' => $products,
         ]);
     }
 
@@ -77,7 +77,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('invoice/edit/{id}', name: 'invoice_edit', methods: ['GET', 'POST'])]
+    #[Route('invoice/edit/{id}', name: 'app_invoice_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(InvoiceType::class, $invoice);
@@ -86,7 +86,7 @@ class InvoiceController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('invoice_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('invoice/page_invoice_edit.html.twig', [
@@ -103,6 +103,6 @@ class InvoiceController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('invoice_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
     }
 }

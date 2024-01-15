@@ -11,8 +11,8 @@
 
 namespace App\Components\common;
 
-use App\Entity\Service;
-use App\Repository\ServiceRepository;
+use App\Entity\Product;
+use App\Repository\ProductRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -31,10 +31,9 @@ class InvoiceCreatorLineItem
     #[LiveProp]
     public int $key;
 
-    /* A MODIFIER */
-    #[LiveProp(writable: true, useSerializerForHydration: true)]
+    #[LiveProp(writable: true)]
     #[Assert\NotNull]
-    public ?Service $service = null;
+    public ?Product $product = null;
 
     #[LiveProp(writable: true)]
     #[Assert\Positive]
@@ -43,15 +42,14 @@ class InvoiceCreatorLineItem
     #[LiveProp]
     public bool $isEditing = false;
 
-    public function __construct(private ServiceRepository $serviceRepository)
+    public function __construct(private ProductRepository $productRepository)
     {
     }
 
-    /* PROBLEME ICI */
-    public function mount(?int $serviceId): void
+    public function mount(?int $productId): void
     {
-        if ($serviceId) {
-            $this->service = $this->serviceRepository->find($serviceId);
+        if ($productId) {
+            $this->product = $this->productRepository->find($productId);
         }
     }
 
@@ -59,37 +57,36 @@ class InvoiceCreatorLineItem
     public function save(LiveResponder $responder): void
     {
         $this->validate();
-        dd("test");
+
         $responder->emitUp('line_item:save', [
             'key' => $this->key,
-            'service' => $this->service->getId(),
+            'product' => $this->product->getId(),
             'quantity' => $this->quantity,
         ]);
 
         $this->changeEditMode(false, $responder);
-    } 
-
-     #[LiveAction]
-    public function edit(LiveResponder $responder): void
-    {
-        dd("test");
-        $this->changeEditMode(true, $responder);
-    }
- 
-    #[ExposeInTemplate]
-    public function getService(): array
-    {
-        return $this->serviceRepository->findAll();
     }
 
     private function changeEditMode(bool $isEditing, LiveResponder $responder): void
     {
         $this->isEditing = $isEditing;
-        dd("test");
+
         // emit to InvoiceCreator so it can track which items are being edited
         $responder->emitUp('line_item:change_edit_mode', [
             'key' => $this->key,
             'isEditing' => $this->isEditing,
         ]);
+    }
+
+    #[LiveAction]
+    public function edit(LiveResponder $responder): void
+    {
+        $this->changeEditMode(true, $responder);
+    }
+
+    #[ExposeInTemplate]
+    public function getProducts(): array
+    {
+        return $this->productRepository->findAll();
     }
 }

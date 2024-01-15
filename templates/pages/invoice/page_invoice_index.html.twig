@@ -33,10 +33,10 @@
             </div>
             {% endblock %}
         </twig:Button>
-        <twig:Button content="Créer un devis" path="invoice/new"/>
+        <twig:Button content="Créer une facture" path="invoice/new"/>
     </div>
     <div>
-        <twig:Table thead1="Numéro" thead2="Client" thead3="Total TTC" thead4="Status" thead5="Crée le" thead6="Echeance" thead7="Action" pathEdit="invoice_edit" pathDelete="invoice_delete" data="{{pagination}}" />
+        <twig:Table thead1="Numéro" thead2="Client" thead3="Total TTC" thead4="Status" thead5="Crée le" thead6="Echeance" thead7="Action" pathEdit="app_invoice_edit" pathDelete="invoice_delete" data="{{pagination}}"/>
     </div>
 
 
@@ -56,7 +56,7 @@
 <script type="module">
     successNotification('Message de réussite !');
 </script>
-{% endif %} #}
+{% endif %}
 
 {% endblock %}
 

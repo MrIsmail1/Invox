@@ -22,9 +22,6 @@ class Quotation
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $expiresIn = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $title = null;
-
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
     private ?string $amount = null;
 
@@ -86,18 +83,6 @@ class Quotation
     public function setExpiresIn(?\DateTimeInterface $expiresIn): static
     {
         $this->expiresIn = $expiresIn;
-
-        return $this;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): static
-    {
-        $this->title = $title;
 
         return $this;
     }

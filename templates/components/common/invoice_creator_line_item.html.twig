@@ -2,43 +2,44 @@
     <td>
         {% if isEditing %}
             <select
-                data-model="service"
-                aria-label="Choose a Service"
-                class="form-control {{ _errors.has('service') ? 'is-invalid' }}"
+                    data-model="product"
+                    aria-label="Choose a Product"
+                    class="form-control {{ _errors.has('product') ? 'is-invalid' }}"
             >
-                <option value="" {{ not service ? 'selected' }}>Choose a Service</option>
-                {% for serviceOption in service %}
+                <option value="" {{ not product ? 'selected' }}>Choisir un produit</option>
+                {% for productOption in products %}
                     <option
-                        value="{{ serviceOption.id }}"
-                        {% if serviceOption == service %}selected{% endif %}
+                            value="{{ productOption.id }}"
+                            {% if productOption == product %}selected{% endif %}
                     >
-                        {{ serviceOption.name }} ({{ serviceOption.priceInCents|format_currency('EUR') }})
+                        {{ productOption.name }} ({{ productOption.priceInCents|format_currency('USD') }})
                     </option>
                 {% endfor %}
             </select>
-            {% if _errors.has('service') %}
+            {% if _errors.has('product') %}
                 <div class="invalid-feedback">
-                    {{ _errors.get('service') }}
+                    {{ _errors.get('product') }}
                 </div>
             {% endif %}
+
         {% else %}
-            {{ service.name }}
+            {{ product.name }}
         {% endif %}
     </td>
 
     <td>
         {% if not isEditing %}
-            {{ service.pricePriceInCents|format_currency('EUR') }}
+            {{ product.priceInCents|format_currency('USD') }}
         {% endif %}
     </td>
 
     <td>
         {% if isEditing %}
             <input
-                type="number"
-                data-model="quantity"
-                aria-label="Quantity"
-                class="form-control {{ _errors.has('quantity') ? 'is-invalid' }}"
+                    type="number"
+                    data-model="quantity"
+                    aria-label="Quantity"
+                    class="form-control {{ _errors.has('quantity') ? 'is-invalid' }}"
             >
             {% if _errors.has('quantity') %}
                 <div class="invalid-feedback">
@@ -51,27 +52,22 @@
     </td>
     <td class="text-end">
         {% if isEditing %}
-            <button
-                data-action="live#action"
-                data-action-name="save"
-                class="btn btn-success btn-sm"
-                type="button"
-            >Save</button>
+            <twig:Button action="live#action" actionName="save" >
+                Sauvegarder
+            </twig:Button>
         {% else %}
-            <button
-                data-action="live#action"
-                data-action-name="edit"
-                class="btn btn-primary btn-sm"
-                type="button"
-            >Edit</button>
+            <twig:Button action="live#action" actionName="edit" >
+                Edit
+            </twig:Button>
         {% endif %}
 
         <button
-            data-action="live#emitUp"
-            data-event="removeLineItem(key={{ key }})"
-            class="btn btn-link text-danger btn-sm ml-2"
-            type="button"
+                data-action="live#emitUp"
+                data-event="removeLineItem(key={{ key }})"
+                class="btn btn-link text-danger btn-sm ml-2"
+                type="button"
         >
-        X</button> 
+            X
+        </button>
     </td>
 </tr>
