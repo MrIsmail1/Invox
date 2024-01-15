@@ -54,12 +54,12 @@ class Sidebar
         [
             'name' => 'Cordonnées de l\'entreprise',
             'icon' => '',
-            'route' => '',
+            'route' => '/settings/company_details',
         ],
         [
             'name' => 'Profil utilisateur',
             'icon' => '',
-            'route' => '',
+            'route' => '/settings/user_profile',
         ],
         [
             'name' => 'Moyens de paiement',

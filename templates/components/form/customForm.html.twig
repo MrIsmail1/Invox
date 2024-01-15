@@ -39,23 +39,47 @@
 {% endblock password_widget %}
 
 {# CUSTOM SELECT INPUT #}
-{% block choice_widget %}
+{% block select_widget %}
     <select {{ block('widget_attributes') }}
             class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 ">
         {% if placeholder is defined %}
             <option value="">{{ placeholder }}</option>
         {% endif %}
-        {% if preferred_choices|length > 0 %}
-            {% set options = preferred_choices %}
-            {{- block('choice_widget_options') -}}
-            {% if choices|length > 0 and separator is not none %}
-                <option disabled>{{ separator }}</option>
-            {% endif %}
-        {% endif %}
-        {% set options = choices %}
-        {{- block('choice_widget_options') -}}
     </select>
-{% endblock %}
+{% endblock select_widget %}
+
+{# CUSTOM NUMBER INPUT #}
+{% block number_widget %}
+    <input type="number" {{ block('widget_attributes') }}
+           class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 "
+            {% if value is not empty %} value="{{ value }}" {% endif %} />
+{% endblock number_widget %}
+
+{# CUSTOM DATE INPUT #}
+{% block date_widget %}
+    <input type="date" {{ block('widget_attributes') }}
+           class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 "
+            {% if value is not empty %} value="{{ value }}" {% endif %} />
+{% endblock date_widget %}
+
+{# CUSTOM TEXTAREA INPUT #}
+{% block textarea_widget %}
+    <textarea {{ block('widget_attributes') }}
+              class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 "
+              rows="4"
+                {% if value is not empty %} value="{{ value }}" {% endif %} ></textarea>
+{% endblock textarea_widget %}
+
+{# CUSTOM RADIO INPUT WITH CUSTOM LABEL #}
+{% block radio_row %}
+    <div class="flex items-center">
+        <input type="radio" id="{{- id -}}" name="{{- full_name -}}"
+               class="w-4 h-4 text-pr-blue bg-transparent border-pr-grey rounded"
+                {% if value is not empty %} value="{{ value }}" {% endif %} >
+        <label for="{{- id -}}" class="ms-2 text-sm font-medium text-bg-black">
+            {{- label -}}</label>
+    </div>
+{% endblock radio_row %}
 
 {# CUSTOM CHECKBOX INPUT WITH CUSTOM LABEL #}
 {% block checkbox_row %}

@@ -43,7 +43,7 @@ class CompanyDetails
     private ?float $default_vat = 20;
 
     #[ORM\Column(length: 30)]
-    private ?string $country = "France";
+    private ?string $country = "FR";
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;

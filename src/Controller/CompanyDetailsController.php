@@ -56,7 +56,7 @@ class CompanyDetailsController extends AbstractController
 
         $companyDetailsId = $this->getUser()->getCompanyDetails()->getId();
         $companyDetails = $companyDetailsRepository->findOneBy(['id' => $companyDetailsId]);
-        
+
         $form = $this->createForm(CompanyDetailsType::class, $companyDetails);
 
         $form->handleRequest($request);
@@ -67,7 +67,7 @@ class CompanyDetailsController extends AbstractController
             return $this->redirectToRoute('app_company_details_edit', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('pages/company_details/edit.html.twig', [
+        return $this->render('company_details/page_edit_company_details.html.twig', [
             'company_details' => $companyDetails,
             'companyDetailsForm' => $form,
         ]);
