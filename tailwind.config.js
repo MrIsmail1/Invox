@@ -34,6 +34,9 @@ module.exports = {
       screens: {
         xs: "320px",
       },
+      fontSize: {
+        md: "0.9rem",
+      },
     },
   },
 };

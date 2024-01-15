@@ -21,7 +21,8 @@
             <img src="{{ asset('build/images/emailIcon.svg') }}" alt="email-icon">
         </div>
         <input type="email" {{ block('widget_attributes') }}
-               class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 "/>
+               class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5"
+                {% if value is not empty %} value="{{ value }}" {% endif %} />
     </div>
 {% endblock email_widget %}
 
@@ -32,15 +33,36 @@
             <img src="{{ asset('build/images/passwordIcon.svg') }}" alt="password-icon">
         </div>
         <input type="password" {{ block('widget_attributes') }}
-               class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 "/>
+               class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 "
+                {% if value is not empty %} value="{{ value }}" {% endif %} />
     </div>
 {% endblock password_widget %}
+
+{# CUSTOM SELECT INPUT #}
+{% block choice_widget %}
+    <select {{ block('widget_attributes') }}
+            class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 ">
+        {% if placeholder is defined %}
+            <option value="">{{ placeholder }}</option>
+        {% endif %}
+        {% if preferred_choices|length > 0 %}
+            {% set options = preferred_choices %}
+            {{- block('choice_widget_options') -}}
+            {% if choices|length > 0 and separator is not none %}
+                <option disabled>{{ separator }}</option>
+            {% endif %}
+        {% endif %}
+        {% set options = choices %}
+        {{- block('choice_widget_options') -}}
+    </select>
+{% endblock %}
 
 {# CUSTOM CHECKBOX INPUT WITH CUSTOM LABEL #}
 {% block checkbox_row %}
     <div class="flex items-center">
         <input type="checkbox" id="{{- id -}}" name="{{- full_name -}}"
-               class="w-4 h-4 text-pr-blue bg-transparent border-pr-grey rounded">
+               class="w-4 h-4 text-pr-blue bg-transparent border-pr-grey rounded"
+                {% if value is not empty %} value="{{ value }}" {% endif %} >
         <label for="{{- id -}}" class="ms-2 text-sm font-medium text-bg-black">
             {{- label -}}</label>
     </div>

@@ -1,25 +1,40 @@
-
 <div x-data="setup()" :class="{ 'dark': isDark }">
     <aside class="h-screen inset-y-0 z-10 flex-shrink-0 w-64 bg-pr-blue border-r focus:outline-none sticky">
         <div class="flex flex-col h-full pt-6">
-            <div class="px-10" >
-            <img class="w-full" src="{{ asset('build/images/logo.svg') }}" alt="Logo Invox">
+            <div class="px-10">
+                <img class="w-full" src="{{ asset('build/images/logo.svg') }}" alt="Logo Invox">
             </div>
-        <!-- Sidebar links -->
-        <nav aria-label="Main" class="flex-1 px-3 py-8 space-y-2 overflow-y-hidden hover:overflow-y-auto">
-            <span class="text-pr-grey text-[14px] ml-6" >MENU</span>
-            <twig:Item icon="{{ asset('build/images/dashboard.svg') }}" ul="Dashboard" linkUl="/dashboard"/>
-            <twig:Item icon="{{ asset('build/images/devis.svg') }}" ul="Devis" linkUl="/devis"/>
-            <twig:Item icon="{{ asset('build/images/factures.svg') }}" ul="Factures" li="rere" linkUl="/invoice"/>
-            <twig:Item icon="{{ asset('build/images/clients.svg') }}" ul="Clients" li="rere" linkUl="/clients"/>
-            <twig:Item icon="{{ asset('build/images/services.svg') }}" ul="Services" li="rere" linkUl="/services"/>
-        </nav>
+            <!-- Sidebar links -->
+            <nav aria-label="Main" class="flex-1 px-3 py-8 space-y-2 overflow-y-hidden hover:overflow-y-auto">
+                {% if app.request.attributes.get('_route') == "app_company_details_edit" %}
+                    <span class="text-pr-grey text-md ml-6">Paramètres</span>
+                    {% for headerItem in this.settingsHeaderItems %}
+                        <twig:Item icon="{{ asset(headerItem['icon']) }}" ul="{{ headerItem['name'] }}"
+                                   linkUl="{{ headerItem['route'] }}"/>
+                    {% endfor %}
+                {% else %}
+                    <span class="text-pr-grey text-md ml-6">MENU</span>
+                    {% for headerItem in this.headerItems %}
+                        <twig:Item icon="{{ asset(headerItem['icon']) }}" ul="{{ headerItem['name'] }}"
+                                   linkUl="{{ headerItem['route'] }}"/>
+                    {% endfor %}
+                {% endif %}
+            </nav>
 
-        <!-- Sidebar footer -->
-        <div class="relative items-center justify-center flex-shrink-0 px-2 py-4 space-y-2">
-            <twig:Item icon="{{ asset('build/images/parametres.svg') }}" ul="Paramètres" li="" linkUl="/parametres"/>
-            <twig:Item icon="{{ asset('build/images/deconnect.svg') }}" ul="Se déconnecter" li="" linkUl="/deconnect"/>
-        </div>
+            <!-- Sidebar footer -->
+            <div class="relative items-center justify-center flex-shrink-0 px-2 py-4 space-y-2">
+                {% if app.request.attributes.get('_route') == "app_company_details_edit" %}
+                    {% for footerItem in this.settingsFooterItems %}
+                        <twig:Item icon="{{ asset(footerItem['icon']) }}" ul="{{ footerItem['name'] }}"
+                                   linkUl="{{ footerItem['route'] }}"/>
+                    {% endfor %}
+                {% else %}
+                    {% for footerItem in this.footerItems %}
+                        <twig:Item icon="{{ asset(footerItem['icon']) }}" ul="{{ footerItem['name'] }}"
+                                   linkUl="{{ footerItem['route'] }}"/>
+                    {% endfor %}
+                {% endif %}
+            </div>
         </div>
     </aside>
 </div>

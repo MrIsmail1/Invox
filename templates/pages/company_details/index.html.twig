@@ -1,0 +1,61 @@
+{% extends '../../base.html.twig' %}
+
+{% set title = "Coordonnées de l'entreprise" %}
+
+{% block content %}
+    <h1>CompanyDetails index</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Company_logo</th>
+            <th>Company_name</th>
+            <th>Company_email</th>
+            <th>Siret_number</th>
+            <th>Vat_number</th>
+            <th>Vat_exempt</th>
+            <th>Legal_status</th>
+            <th>Rcs</th>
+            <th>Default_vat</th>
+            <th>Country</th>
+            <th>Address</th>
+            <th>Postal_code</th>
+            <th>City</th>
+            <th>Website</th>
+            <th>actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for company_detail in company_details %}
+            <tr>
+                <td>{{ company_detail.id }}</td>
+                <td>{{ company_detail.companyLogo }}</td>
+                <td>{{ company_detail.companyName }}</td>
+                <td>{{ company_detail.companyEmail }}</td>
+                <td>{{ company_detail.siretNumber }}</td>
+                <td>{{ company_detail.vatNumber }}</td>
+                <td>{{ company_detail.vatExempt ? 'Yes' : 'No' }}</td>
+                <td>{{ company_detail.legalStatus }}</td>
+                <td>{{ company_detail.rcs }}</td>
+                <td>{{ company_detail.defaultVat }}</td>
+                <td>{{ company_detail.country }}</td>
+                <td>{{ company_detail.address }}</td>
+                <td>{{ company_detail.postalCode }}</td>
+                <td>{{ company_detail.city }}</td>
+                <td>{{ company_detail.website }}</td>
+                <td>
+                    <a href="{{ path('app_company_details_show', {'id': company_detail.id}) }}">show</a>
+                    <a href="{{ path('app_company_details_edit', {'id': company_detail.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="16">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_company_details_new') }}">Create new</a>
+{% endblock %}
