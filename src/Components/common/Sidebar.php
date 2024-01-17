@@ -53,12 +53,12 @@ class Sidebar
     public array $settingsHeaderItems = [
         [
             'name' => 'Cordonnées de l\'entreprise',
-            'icon' => '',
+            'icon' => 'build/images/companyIcon.svg',
             'route' => '/settings/company_details',
         ],
         [
             'name' => 'Profil utilisateur',
-            'icon' => '',
+            'icon' => 'build/images/profileIcon.svg',
             'route' => '/settings/user_profile',
         ],
         [
@@ -76,7 +76,7 @@ class Sidebar
     public array $settingsFooterItems = [
         [
             'name' => 'Accueil',
-            'icon' => '',
+            'icon' => 'build/images/homeIcon.svg',
             'route' => '/',
         ],
         [

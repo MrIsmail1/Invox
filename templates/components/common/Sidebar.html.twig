@@ -6,7 +6,7 @@
             </div>
             <!-- Sidebar links -->
             <nav aria-label="Main" class="flex-1 px-3 py-8 space-y-2 overflow-y-hidden hover:overflow-y-auto">
-                {% if app.request.attributes.get('_route') == "app_company_details_edit" %}
+                {% if app.request.attributes.get('_route') starts with "app_settings" %}
                     <span class="text-pr-grey text-md ml-6">Paramètres</span>
                     {% for headerItem in this.settingsHeaderItems %}
                         <twig:Item icon="{{ asset(headerItem['icon']) }}" ul="{{ headerItem['name'] }}"
@@ -23,7 +23,7 @@
 
             <!-- Sidebar footer -->
             <div class="relative items-center justify-center flex-shrink-0 px-2 py-4 space-y-2">
-                {% if app.request.attributes.get('_route') == "app_company_details_edit" %}
+                {% if app.request.attributes.get('_route') starts with "app_settings" %}
                     {% for footerItem in this.settingsFooterItems %}
                         <twig:Item icon="{{ asset(footerItem['icon']) }}" ul="{{ footerItem['name'] }}"
                                    linkUl="{{ footerItem['route'] }}"/>
