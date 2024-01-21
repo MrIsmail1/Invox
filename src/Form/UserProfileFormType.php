@@ -18,21 +18,25 @@ class UserProfileFormType extends AbstractType
                 'attr' => ['placeholder' => 'Adresse e-mail'],
                 'label' => 'E-mail',
                 'mapped' => true,
+                'required' => false,
             ])
             ->add('firstName', TextType::class, [
                 'attr' => ['placeholder' => 'Entrez votre prénom'],
                 'label' => 'Prénom',
                 'mapped' => true,
+                'required' => false,
             ])
             ->add('lastName', TextType::class, [
                 'attr' => ['placeholder' => 'Entrez votre nom de famille'],
                 'label' => 'Nom de famille',
                 'mapped' => true,
+                'required' => false,
             ])
             ->add('job', TextType::class, [
                 'attr' => ['placeholder' => 'Entrez votre profession'],
                 'label' => 'Profession',
                 'mapped' => true,
+                'required' => false,
             ]);
 
     }

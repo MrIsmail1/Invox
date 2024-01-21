@@ -1,0 +1,16 @@
+<div {{ attributes }}>
+    <div x-data="{src:'{{ asset('build/images/upload.png') }}'}" class="items-center w-full mb-4">
+        <label for="dropzone-file"
+               class="flex flex-col items-center justify-center w-20 h-20 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 {# dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 #}">
+            <img :src="src" alt="" class="w-full rounded-lg">
+            <input
+                    @change="src=URL.createObjectURL($event.target.files[0])"
+                    id="dropzone-file"
+                    type="file"
+                    name="file"
+                    class="hidden"/>
+        </label>
+    </div>
+
+    <button type="button" data-action="live#action" data-action-name="files(file)|uploadFiles">importer</button>
+</div>

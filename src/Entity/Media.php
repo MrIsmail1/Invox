@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\MediaRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
+#[Vich\Uploadable]
 class Media
 {
     #[ORM\Id]
@@ -14,27 +16,21 @@ class Media
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    #[Vich\UploadableField(mapping: 'uploads', fileNameProperty: 'fileName', size: 'fileSize')]
+    private ?File $uploadedFile = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $path = null;
+    #[ORM\Column(nullable: true)]
+    private ?string $fileName = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $type = null;
+    #[ORM\Column(nullable: true)]
+    private ?int $fileSize = null;
 
-    #[ORM\Column]
-    private ?int $size = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $uploadedBy = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
 
 
     public function getId(): ?int
@@ -42,64 +38,50 @@ class Media
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getUploadedFile(): ?File
     {
-        return $this->name;
+        return $this->uploadedFile;
     }
 
-    public function setName(string $name): static
+    public function setUploadedFile(?File $uploadedFile): void
     {
-        $this->name = $name;
+        $this->uploadedFile = $uploadedFile;
 
-        return $this;
+        if (null !== $uploadedFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
     }
 
-    public function getPath(): ?string
+    public function getFileName(): ?string
     {
-        return $this->path;
+        return $this->fileName;
     }
 
-    public function setPath(string $path): static
+    public function setFileName(?string $fileName): void
     {
-        $this->path = $path;
-
-        return $this;
+        $this->fileName = $fileName;
     }
 
-    public function getType(): ?string
+    public function getFileSize(): ?int
     {
-        return $this->type;
+        return $this->fileSize;
     }
 
-    public function setType(string $type): static
+    public function setFileSize(?int $fileSize): void
     {
-        $this->type = $type;
-
-        return $this;
+        $this->fileSize = $fileSize;
     }
 
-    public function getSize(): ?int
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->size;
+        return $this->updatedAt;
     }
 
-    public function setSize(int $size): static
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
     {
-        $this->size = $size;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
+        $this->updatedAt = $updatedAt;
     }
 
     public function getUploadedBy(): ?User
@@ -107,23 +89,10 @@ class Media
         return $this->uploadedBy;
     }
 
-    public function setUploadedBy(?User $uploadedBy): static
+    public function setUploadedBy(?User $uploadedBy): void
     {
         $this->uploadedBy = $uploadedBy;
-
-        return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
 
 }

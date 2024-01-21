@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cet email')]
@@ -37,6 +38,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min: 8, max: 255, minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères", maxMessage: "Le mot de passe ne peut pas contenir plus de {{ limit }} caractères")]
     private ?string $password = null;
 
+    #[ORM\OneToMany(mappedBy: 'uploadedBy', targetEntity: Media::class, orphanRemoval: true)]
+    private Collection $media;
 
     #[ORM\ManyToMany(targetEntity: Quotation::class, inversedBy: 'users')]
     private Collection $quotations;
@@ -55,9 +58,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $job = null;
-
-    #[ORM\OneToMany(mappedBy: 'uploadedBy', targetEntity: Media::class, orphanRemoval: true)]
-    private Collection $media;
 
     #[ORM\Column]
     private ?bool $agreeTerms = null;
@@ -241,36 +241,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Media>
-     */
-    public function getMedia(): Collection
-    {
-        return $this->media;
-    }
-
-    public function addMedium(Media $medium): static
-    {
-        if (!$this->media->contains($medium)) {
-            $this->media->add($medium);
-            $medium->setUploadedBy($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMedium(Media $medium): static
-    {
-        if ($this->media->removeElement($medium)) {
-            // set the owning side to null (unless already changed)
-            if ($medium->getUploadedBy() === $this) {
-                $medium->setUploadedBy(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function isAgreeTerms(): ?bool
     {
         return $this->agreeTerms;
@@ -306,4 +276,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Media>
+     */
+    public function getMedia(): Collection
+    {
+        return $this->media;
+    }
+
+    public function addMedium(Media $medium): static
+    {
+        if (!$this->media->contains($medium)) {
+            $this->media->add($medium);
+            $medium->setUploadedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedium(Media $medium): static
+    {
+        if ($this->media->removeElement($medium)) {
+            // set the owning side to null (unless already changed)
+            if ($medium->getUploadedBy() === $this) {
+                $medium->setUploadedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

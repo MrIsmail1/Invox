@@ -47,12 +47,7 @@ class SettingsController extends AbstractController
         $form = $this->createForm(UserProfileFormType::class, $user);
 
         $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_settings_user_profile', [], Response::HTTP_SEE_OTHER);
-        }
+        
 
         return $this->render('settings/page_edit_user_profile.html.twig', [
             'user' => $user,
