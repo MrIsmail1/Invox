@@ -12,6 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: InvoiceRepository::class)]
 class Invoice
 {
+
+    use Traits\Timestampable;
     
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,26 +24,14 @@ class Invoice
     private ?\DateTimeInterface $expiresIn = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
-    private ?string $amount = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $option = null;
+    private ?string $totalWithOutTaxe = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
-    private ?string $optionPrice = null;
+    private ?string $total = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $quantity = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
-    private ?string $totalWithOutTaxes = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2, nullable: true)]
+    #[ORM\Column]
     #[Assert\Range(min: 0, max: 100)]
-    private ?string $taxes = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
-    private ?string $totalWithTaxes = null;
+    private ?string $taxe = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $isValid = null;
@@ -57,6 +47,9 @@ class Invoice
 
     #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: InvoiceItem::class, orphanRemoval: true)]
     private Collection $invoiceItems;
+
+    #[ORM\Column(length: 255)]
+    private ?string $status = null;
 
     public function __construct()
     {
@@ -81,86 +74,38 @@ class Invoice
         return $this;
     }
 
-    public function getAmount(): ?string
+    public function getTaxe(): ?int
     {
-        return $this->amount;
+        return $this->taxe;
     }
 
-    public function setAmount(?string $amount): static
+    public function setTaxe(?int $taxe): self
     {
-        $this->amount = $amount;
+        $this->taxe = $taxe;
 
         return $this;
     }
 
-    public function getOption(): ?string
+    public function getTotalWithOutTaxe(): ?string
     {
-        return $this->option;
+        return $this->totalWithOutTaxe;
     }
 
-    public function setOption(?string $option): static
+    public function setTotalWithOutTaxe(?string $totalWithOutTaxe): static
     {
-        $this->option = $option;
+        $this->totalWithOutTaxe = $totalWithOutTaxe;
 
         return $this;
     }
 
-    public function getOptionPrice(): ?string
+    public function getTotal(): ?string
     {
-        return $this->optionPrice;
+        return $this->total;
     }
 
-    public function setOptionPrice(?string $optionPrice): static
+    public function setTotal(?string $total): static
     {
-        $this->optionPrice = $optionPrice;
-
-        return $this;
-    }
-
-    public function getQuantity(): ?int
-    {
-        return $this->quantity;
-    }
-
-    public function setQuantity(?int $quantity): static
-    {
-        $this->quantity = $quantity;
-
-        return $this;
-    }
-
-    public function getTotalWithOutTaxes(): ?string
-    {
-        return $this->totalWithOutTaxes;
-    }
-
-    public function setTotalWithOutTaxes(?string $totalWithOutTaxes): static
-    {
-        $this->totalWithOutTaxes = $totalWithOutTaxes;
-
-        return $this;
-    }
-
-    public function getTaxes(): ?string
-    {
-        return $this->taxes;
-    }
-
-    public function setTaxes(?string $taxes): static
-    {
-        $this->taxes = $taxes;
-
-        return $this;
-    }
-
-    public function getTotalWithTaxes(): ?string
-    {
-        return $this->totalWithTaxes;
-    }
-
-    public function setTotalWithTaxes(?string $totalWithTaxes): static
-    {
-        $this->totalWithTaxes = $totalWithTaxes;
+        $this->total = $total;
 
         return $this;
     }
@@ -254,6 +199,18 @@ class Invoice
     public function setCustomer(?Customer $customer): static
     {
         $this->customer = $customer;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

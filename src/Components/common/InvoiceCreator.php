@@ -13,8 +13,10 @@ namespace App\Components\common;
 
 use App\Entity\Invoice;
 use App\Entity\InvoiceItem;
+use App\Entity\Category;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Constraints\Valid;
@@ -33,23 +35,17 @@ class InvoiceCreator extends AbstractController
     use DefaultActionTrait;
     use ValidatableComponentTrait;
 
-    #[LiveProp(writable: ['taxes'])]
+    #[LiveProp(writable: ['taxe'])]
     #[Valid]
     public Invoice $invoice;
 
     #[LiveProp]
     public array $lineItems = [];
 
-    /**
-     * A temporary flag that we just saved.
-     *
-     * This doesn't need to be a LiveProp because it's set in a LiveAction,
-     * rendered immediately, then we want it to be forgotten.
-     */
     public bool $savedSuccessfully = false;
     public bool $saveFailed = false;
 
-    public function __construct(private ProductRepository $productRepository)
+    public function __construct(private ProductRepository $productRepository, private CategoryRepository $categoryRepository)
     {
     }
 
@@ -66,11 +62,12 @@ class InvoiceCreator extends AbstractController
         foreach ($invoice->getInvoiceItems() as $item) {
             $lineItems[] = [
                 'productId' => $item->getProduct()->getId(),
+                'categoryId' => $item->getCategory()->getId(),
                 'quantity' => $item->getQuantity(),
                 'isEditing' => false,
             ];
         }
-
+        
         return $lineItems;
     }
 
@@ -79,6 +76,7 @@ class InvoiceCreator extends AbstractController
     {
         $this->lineItems[] = [
             'productId' => null,
+            'categoryId' => null,
             'quantity' => 1,
             'isEditing' => true,
         ];
@@ -97,7 +95,7 @@ class InvoiceCreator extends AbstractController
     }
 
     #[LiveListener('line_item:save')]
-    public function saveLineItem(#[LiveArg] int $key, #[LiveArg] Product $product, #[LiveArg] int $quantity): void
+    public function saveLineItem(#[LiveArg] int $key, #[LiveArg] Product $product,#[LiveArg] Category $category, #[LiveArg] int $quantity ): void
     {
         if (!isset($this->lineItems[$key])) {
             // shouldn't happen
@@ -105,6 +103,7 @@ class InvoiceCreator extends AbstractController
         }
 
         $this->lineItems[$key]['productId'] = $product->getId();
+        $this->lineItems[$key]['categoryId'] = $category->getId();
         $this->lineItems[$key]['quantity'] = $quantity;
     }
 
@@ -117,7 +116,6 @@ class InvoiceCreator extends AbstractController
 
         // TODO: do we check for `isSaved` here... and throw an error?
 
-        // remove any items that no longer exist
         foreach ($this->invoice->getInvoiceItems() as $key => $item) {
             if (!isset($this->lineItems[$key])) {
                 // orphanRemoval will cause these to be deleted
@@ -125,6 +123,7 @@ class InvoiceCreator extends AbstractController
             }
         }
 
+        /* Enregistrement des éléments dans la table invoice_item */
         foreach ($this->lineItems as $key => $lineItem) {
             $invoiceItem = $this->invoice->getInvoiceItems()->get($key);
             if (null === $invoiceItem) {
@@ -135,20 +134,33 @@ class InvoiceCreator extends AbstractController
             }
 
             $product = $this->findProduct($lineItem['productId']);
+            $category = $this->findCategory($lineItem['categoryId']);
             $invoiceItem->setProduct($product);
+            $invoiceItem->setCategory($category);
             $invoiceItem->setQuantity($lineItem['quantity']);
         }
+
+        /* Enregistrer les éléments dans la table invoice */
+        $invoice = new Invoice();
+        $subTotal= $this->getSubtotal();
+        $total= $this->getTotal();
+        $taxe= $this->invoice->getTaxe();
+        $this->invoice->setTaxe($taxe);
+        $this->invoice->setTotalWithOutTaxe($subTotal);
+        $this->invoice->setTotal($total);
+        $this->invoice->setStatus("Non payé");
 
         $isNew = null === $this->invoice->getId();
         $entityManager->persist($this->invoice);
         $entityManager->flush();
 
+
+        
         if ($isNew) {
-            // it's new! Let's redirect to the edit page
             $this->addFlash('live_demo_success', 'Invoice saved!');
 
             return $this->redirectToRoute('app_invoice_index', [
-                'id' => $this->invoice->getId(),
+                
             ]);
         }
 
@@ -159,16 +171,22 @@ class InvoiceCreator extends AbstractController
         // Keep the lineItems in sync with the invoice: new InvoiceItems may
         //      not have been given the same key as the original lineItems
         $this->lineItems = $this->populateLineItems($this->invoice);
+        
     }
 
     private function findProduct(int $id): Product
     {
         return $this->productRepository->find($id);
     }
+    
+    private function findCategory(int $id): Category
+    {
+        return $this->categoryRepository->find($id);
+    }
 
     public function getTotal(): float
     {
-        $taxMultiplier = 1 + ($this->invoice->getTaxes() / 100);
+        $taxMultiplier = 1 + ($this->invoice->getTaxe() / 100);
 
         return $this->getSubtotal() * $taxMultiplier;
     }

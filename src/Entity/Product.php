@@ -28,9 +28,7 @@ class Product
     #[ORM\Column]
     private ?int $price = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Category $category = null;
+    
 
     public function getId(): ?int
     {
@@ -66,15 +64,4 @@ class Product
         return $this->price / 100;
     }
 
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?Category $category): self
-    {
-        $this->category = $category;
-
-        return $this;
-    }
 }

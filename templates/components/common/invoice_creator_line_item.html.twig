@@ -1,9 +1,8 @@
 <tr {{ attributes }}>
-    <td>
+    <td class="pl-4">
         {% if isEditing %}
             <select
                     data-model="product"
-                    aria-label="Choose a Product"
                     class="form-control {{ _errors.has('product') ? 'is-invalid' }}"
             >
                 <option value="" {{ not product ? 'selected' }}>Choisir un produit</option>
@@ -26,11 +25,25 @@
             {{ product.name }}
         {% endif %}
     </td>
-
     <td>
-        {% if not isEditing %}
-            {{ product.priceInCents|format_currency('USD') }}
-        {% endif %}
+    {% if isEditing %}
+        <select 
+            data-model="category"
+            class="form-control {{ _errors.has('category') ? 'is-invalid' }}"
+            >
+            <option value="" {{ not category ? 'selected' }}>Choisir une catégorie</option>
+                {% for categoryOption in categorys %}
+                    <option
+                            value="{{ categoryOption.id }}"
+                            {% if categoryOption == category %}selected{% endif %}
+                    >
+                        {{ categoryOption.name }}
+                    </option>
+                {% endfor %}
+        </select>
+    {% else %}
+        {{ category.name }}
+    {% endif %}
     </td>
 
     <td>
@@ -50,13 +63,18 @@
             {{ quantity }}
         {% endif %}
     </td>
-    <td class="text-end">
+    <td>
+        {% if not isEditing %}
+            {{ product.priceInCents|format_currency('USD') }}
+        {% endif %}
+    </td>
+    <td class="text-end pr-4">
         {% if isEditing %}
-            <twig:Button action="live#action" actionName="save" >
-                Sauvegarder
+            <twig:Button action="live#action" actionName="save" styles="mt-3">
+                V
             </twig:Button>
         {% else %}
-            <twig:Button action="live#action" actionName="edit" >
+            <twig:Button action="live#action" actionName="edit" styles="mt-3" >
                 Edit
             </twig:Button>
         {% endif %}
@@ -64,7 +82,7 @@
         <button
                 data-action="live#emitUp"
                 data-event="removeLineItem(key={{ key }})"
-                class="btn btn-link text-danger btn-sm ml-2"
+                class="ml-2"
                 type="button"
         >
             X

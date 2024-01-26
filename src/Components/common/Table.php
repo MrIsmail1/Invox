@@ -26,7 +26,9 @@ class Table
     public $form = null;
     public $entity = null;
     public $data = null;
+    public $invoiceItem = null;
     public ?string $pathDelete = null;
     public ?string $pathEdit = null;
+    public ?string $modal = null;
 
 }

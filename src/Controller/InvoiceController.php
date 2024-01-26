@@ -30,27 +30,32 @@ class InvoiceController extends AbstractController
     $query = $invoiceRepository->createQueryBuilder('a')
     ->getQuery();
 
-    $pagination = $paginatorInterface->paginate(
+    $data = $paginatorInterface->paginate(
         $query,
         $request->query->getInt('page', 1),
         15
     );
 
-        $invoice = new Invoice();
+    // Collecte des invoiceItems pour chaque invoice
+    // Créer un tableau pour stocker les invoice items par ID d'invoice
+$invoiceItem = [];
 
-        $form = $this->createForm(SearchAutocomplete::class, $invoice);
-        $form->handleRequest($request);
+// Parcourir chaque invoice dans $data
+foreach ($data as $invoice) {
+    // Récupérer l'ID de l'invoice
+    $invoiceId = $invoice->getId();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($invoice);
-            $entityManager->flush();
+    // Récupérer les invoice items de l'invoice actuel
+    $invoiceItems = $invoice->getInvoiceItems();
 
-            return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
-        }
+    // Stocker les invoice items dans le tableau $invoiceItemsByInvoiceId avec l'ID de l'invoice comme clé
+    $invoiceItem[$invoiceId] = $invoiceItems;
+}
 
         return $this->render('invoice/page_invoice_index.html.twig', [
-            'form' => $form,
-            'pagination' => $pagination,
+            'data' => $data,
+            'invoiceItem' => $invoiceItem,
+            'modal' => "invoiceModal",
         ]);
 }
 
