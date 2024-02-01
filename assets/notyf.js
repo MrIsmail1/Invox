@@ -23,5 +23,3 @@ const notyf = new Notyf({
     },
   ],
 });
-
-notyf.success("Facture ajoutée avec succès");

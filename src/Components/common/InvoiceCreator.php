@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Components\common;
 
 use App\Entity\Invoice;
@@ -47,7 +38,6 @@ class InvoiceCreator extends AbstractController
     {
     }
 
-    // add mount method
     public function mount(Invoice $invoice): void
     {
         $this->invoice = $invoice;
@@ -60,7 +50,6 @@ class InvoiceCreator extends AbstractController
         foreach ($invoice->getInvoiceItems() as $item) {
             $lineItems[] = [
                 'productId' => $item->getProduct()->getId(),
-                /* 'categoryId' => $item->getCategory()->getId(), */
                 'quantity' => $item->getQuantity(),
                 'isEditing' => false,
             ];
@@ -74,7 +63,6 @@ class InvoiceCreator extends AbstractController
     {
         $this->lineItems[] = [
             'productId' => null,
-            /* 'categoryId' => null, */
             'quantity' => 1,
             'isEditing' => true,
         ];
@@ -101,11 +89,10 @@ class InvoiceCreator extends AbstractController
         }
 
         $this->lineItems[$key]['productId'] = $product->getId();
-        /* $this->lineItems[$key]['categoryId'] = $category->getId(); */
         $this->lineItems[$key]['quantity'] = $quantity;
     }
 
-    #[LiveAction]
+#[LiveAction]
     public function saveInvoice(EntityManagerInterface $entityManager)
     {
         $this->saveFailed = true;
@@ -151,35 +138,29 @@ class InvoiceCreator extends AbstractController
         $entityManager->persist($this->invoice);
         $entityManager->flush();
 
-
-        
         if ($isNew) {
-            $this->addFlash('live_demo_success', 'Invoice saved!');
-
-            return $this->redirectToRoute('app_invoice_index', [
-                
-            ]);
+            $this->addFlash('success', 'Facture créée avec succès.');
+            return $this->redirectToRoute('app_invoice_index', []);
+        }else {
+            $this->addFlash('success', 'Facture éditée avec succès.');
+            return $this->redirectToRoute('app_invoice_index', []);
         }
 
-        // it's not new! We should already be on the edit page, so let's
-        // just let the component stay rendered.
         $this->savedSuccessfully = true;
 
-        // Keep the lineItems in sync with the invoice: new InvoiceItems may
-        //      not have been given the same key as the original lineItems
         $this->lineItems = $this->populateLineItems($this->invoice);
         
     }
+
+private function isNewInvoice(): bool
+{
+    return null === $this->invoice->getId();
+}
 
     private function findProduct(int $id): Product
     {
         return $this->productRepository->find($id);
     }
-    
-    /* private function findCategory(int $id): Category
-    {
-        return $this->categoryRepository->find($id);
-    } */
 
     public function getTotal(): float
     {

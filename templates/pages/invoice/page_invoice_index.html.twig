@@ -19,14 +19,15 @@
     </div>
 
     {% if app.session.flashbag.has('success') %}
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Consomme le message flash et affiche la notification
-                const message = "{{ app.session.flashbag.get('success')[0] }}";
-                notyf.success("hfjezklfezj");
-            });
-        </script>
-        {{ encore_entry_script_tags('notyf') }}
-    {% endif %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cette ligne récupère le message flash
+            const message = "{{ app.session.flashbag.get('success')[0] }}";
+            // Cette ligne utilise Notyf pour afficher le message flash
+            notyf.success("Success message");
+        });
+    </script>
+{% endif %}
+
 
 {% endblock %}

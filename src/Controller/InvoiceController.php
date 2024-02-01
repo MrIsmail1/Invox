@@ -20,12 +20,11 @@ use Knp\Component\Pager\PaginatorInterface;
 
 class InvoiceController extends AbstractController
 {
-    #[Route('/invoice', name: 'app_invoice_index', methods: ['GET', 'POST'])]
-    public function index(Request $request, InvoiceRepository $invoiceRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response 
-    {
-    
-    $query = $invoiceRepository->createQueryBuilder('a')
-    ->getQuery();
+#[Route('/invoice', name: 'app_invoice_index', methods: ['GET', 'POST'])]
+public function index(Request $request, InvoiceRepository $invoiceRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response 
+{
+    $invoiceItem = new InvoiceItem();
+    $query = $invoiceRepository->createQueryBuilder('a')->getQuery();
 
     $data = $paginatorInterface->paginate(
         $query,
@@ -33,50 +32,39 @@ class InvoiceController extends AbstractController
         15
     );
 
-    // Collecte des invoiceItems pour chaque invoice
-    // Créer un tableau pour stocker les invoice items par ID d'invoice
-    $invoiceItem = [];
+    // Initialiser $productDataByInvoiceId avant de l'utiliser
+    $productDataByInvoiceId = [];
 
-    // Parcourir chaque invoice dans $data
-    // Parcourir chaque invoice dans $data
     foreach ($data as $invoice) {
-    // Récupérer l'ID de l'invoice
-    $invoiceId = $invoice->getId();
+        $invoiceId = $invoice->getId();
+        $invoiceItems = $invoice->getInvoiceItems();
+        $productData = [];
 
-    // Récupérer les invoice items de l'invoice actuel
-    $invoiceItems = $invoice->getInvoiceItems();
-    
-    // Créer un tableau pour stocker les données des produits pour chaque invoice
-    $productData = [];
+        foreach ($invoiceItems as $invoiceItem) {
+            $product = $invoiceItem->getProduct();
+            $quantity = $invoiceItem->getQuantity();
 
-    // Parcourir chaque invoice item de l'invoice actuel
-    foreach ($invoiceItems as $invoiceItem) {
-        // Accéder aux propriétés de l'objet Product associé à l'InvoiceItem
-        $product = $invoiceItem->getProduct();
-        $quantity = $invoiceItem->getQuantity();
-
-        // Vérifier si le produit est bien initialisé
-        if ($product !== null) {
-            // Stocker les données du produit dans un tableau associatif
-            $productData[] = [
-                'name' => $product->getName(),
-                'price' => $product->getPrice(),
-                'category' => $product->getCategory(),
-                'quantity' => $quantity,
-            ];
+            if ($product !== null) {
+                $productData[] = [
+                    'name' => $product->getName(),
+                    'price' => $product->getPrice(),
+                    'category' => $product->getCategory(),
+                    'quantity' => $quantity,
+                ];
+            }
         }
-    }
-    // Stocker les données des produits associées à l'invoice dans un tableau avec l'ID de l'invoice comme clé
-    $productDataByInvoiceId[$invoiceId] = $productData;
 
+        $productDataByInvoiceId[$invoiceId] = $productData;
     }
-        return $this->render('invoice/page_invoice_index.html.twig', [
-            'data' => $data,
-            'invoiceItem' => $invoiceItem,
-            'modal' => "invoiceModal",
-            'products' => $productDataByInvoiceId,
-        ]);
+
+    return $this->render('invoice/page_invoice_index.html.twig', [
+        'data' => $data,
+        'invoiceItem' => $invoiceItem,
+        'modal' => "invoiceModal",
+        'products' => $productDataByInvoiceId,
+    ]);
 }
+
 
     #[Route('invoice/new', name: 'invoice_new', methods: ['GET', 'POST'])]
     public function new(ProductRepository $productRepository): Response
@@ -99,9 +87,9 @@ class InvoiceController extends AbstractController
     #[Route('invoice/edit/{id}', name: 'app_invoice_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
-
         return $this->render('invoice/page_invoice_new.html.twig', [
             'invoice' => $invoice,
+            'edit' => "edit",
         ]);
     }
 
