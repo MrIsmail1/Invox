@@ -13,10 +13,8 @@ namespace App\Components\common;
 
 use App\Entity\Invoice;
 use App\Entity\InvoiceItem;
-use App\Entity\Category;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
-use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Constraints\Valid;
@@ -45,7 +43,7 @@ class InvoiceCreator extends AbstractController
     public bool $savedSuccessfully = false;
     public bool $saveFailed = false;
 
-    public function __construct(private ProductRepository $productRepository, private CategoryRepository $categoryRepository)
+    public function __construct(private ProductRepository $productRepository)
     {
     }
 
@@ -62,7 +60,7 @@ class InvoiceCreator extends AbstractController
         foreach ($invoice->getInvoiceItems() as $item) {
             $lineItems[] = [
                 'productId' => $item->getProduct()->getId(),
-                'categoryId' => $item->getCategory()->getId(),
+                /* 'categoryId' => $item->getCategory()->getId(), */
                 'quantity' => $item->getQuantity(),
                 'isEditing' => false,
             ];
@@ -76,7 +74,7 @@ class InvoiceCreator extends AbstractController
     {
         $this->lineItems[] = [
             'productId' => null,
-            'categoryId' => null,
+            /* 'categoryId' => null, */
             'quantity' => 1,
             'isEditing' => true,
         ];
@@ -95,7 +93,7 @@ class InvoiceCreator extends AbstractController
     }
 
     #[LiveListener('line_item:save')]
-    public function saveLineItem(#[LiveArg] int $key, #[LiveArg] Product $product,#[LiveArg] Category $category, #[LiveArg] int $quantity ): void
+    public function saveLineItem(#[LiveArg] int $key, #[LiveArg] Product $product, #[LiveArg] int $quantity ): void
     {
         if (!isset($this->lineItems[$key])) {
             // shouldn't happen
@@ -103,7 +101,7 @@ class InvoiceCreator extends AbstractController
         }
 
         $this->lineItems[$key]['productId'] = $product->getId();
-        $this->lineItems[$key]['categoryId'] = $category->getId();
+        /* $this->lineItems[$key]['categoryId'] = $category->getId(); */
         $this->lineItems[$key]['quantity'] = $quantity;
     }
 
@@ -134,14 +132,13 @@ class InvoiceCreator extends AbstractController
             }
 
             $product = $this->findProduct($lineItem['productId']);
-            $category = $this->findCategory($lineItem['categoryId']);
+            /* $category = $this->findCategory($lineItem['categoryId']); */
             $invoiceItem->setProduct($product);
-            $invoiceItem->setCategory($category);
+            /* $invoiceItem->setCategory($category); */
             $invoiceItem->setQuantity($lineItem['quantity']);
         }
 
         /* Enregistrer les éléments dans la table invoice */
-        $invoice = new Invoice();
         $subTotal= $this->getSubtotal();
         $total= $this->getTotal();
         $taxe= $this->invoice->getTaxe();
@@ -179,10 +176,10 @@ class InvoiceCreator extends AbstractController
         return $this->productRepository->find($id);
     }
     
-    private function findCategory(int $id): Category
+    /* private function findCategory(int $id): Category
     {
         return $this->categoryRepository->find($id);
-    }
+    } */
 
     public function getTotal(): float
     {

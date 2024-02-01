@@ -25,28 +25,13 @@
             {{ product.name }}
         {% endif %}
     </td>
-    <td>
-    {% if isEditing %}
-        <select 
-            data-model="category"
-            class="form-control {{ _errors.has('category') ? 'is-invalid' }}"
-            >
-            <option value="" {{ not category ? 'selected' }}>Choisir une catégorie</option>
-                {% for categoryOption in categorys %}
-                    <option
-                            value="{{ categoryOption.id }}"
-                            {% if categoryOption == category %}selected{% endif %}
-                    >
-                        {{ categoryOption.name }}
-                    </option>
-                {% endfor %}
-        </select>
-    {% else %}
-        {{ category.name }}
+    <td class="pl-4">
+    {% if not isEditing %}
+        {{ product.category }}
     {% endif %}
     </td>
 
-    <td>
+    <td class="pl-4">
         {% if isEditing %}
             <input
                     type="number"

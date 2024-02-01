@@ -24,9 +24,6 @@ class InvoiceItem
     #[ORM\Column]
     private int $quantity = 1;
 
-    #[ORM\Column(length: 255)]
-    private ?string $category = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -77,15 +74,4 @@ class InvoiceItem
         return $this->product->getPrice() * $this->quantity;
     }
 
-    public function getCategory(): ?string
-    {
-        return $this->category;
-    }
-
-    public function setCategory(string $category): static
-    {
-        $this->category = $category;
-
-        return $this;
-    }
 }

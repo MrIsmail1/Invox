@@ -1,11 +1,11 @@
 {% if modal == "invoiceModal" %}
-    <div x-show="" @click.outside="open = false" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div x-show="open" @click.outside="open = false" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div class="w-1/2 flex items-center justify-center h-[90%] bg-gray-100 dark:bg-dark-pr-blue rounded">
             <div class="w-full h-full bg-bg-white dark:bg-dark-pr-blue p-8 rounded shadow-2xl">
                     <twig:Status styles="w-24" status="{{data.status}}"/>
                 <div class="mt-4 flex items-center justify-between">
                     <h2 class="text-2xl font-bold">Facture {{ data.id }}</h2>
-                    <div class="flex">
+                    <div class="flex gap-x-2">
                     <twig:Button styles="flex items-center">
                         {% block content %}
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -52,27 +52,26 @@
                         </tr>
                         </thead>
                         <tbody>
-                            {{ dump() }}
-                        {% for test in invoiceItem %}
-                            {% for product in test %}
-                                {% if product.invoice.id == data.id %}
-                                    <tr>
-                                        <td class="pl-4 pt-2">
-                                            {{ product.quantity }}
-                                        </td>
-                                        <td class="pt-2">
-                                            {{ product.quantity }}
-                                        </td>
-                                        <td class="pt-2">
-                                            {{ product.quantity }}
-                                        </td>
-                                        <td class="pt-2">
-                                            {{ product.quantity }}
-                                        </td>
-                                    </tr>
+                            {% for productKey, productData in products %}
+                                {% if data.id == productKey %}
+                                    {% for product in productData %}
+                                        <tr>
+                                            <td class="pl-4 pt-2">
+                                                {{ product.name }}
+                                            </td>
+                                            <td class="pt-2">
+                                                {{ product.category }}
+                                            </td>
+                                            <td class="pt-2">
+                                                {{ product.quantity }}
+                                            </td>
+                                            <td class="pt-2">
+                                                {{ product.price }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
                                 {% endif %}
                             {% endfor %}
-                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -90,7 +89,7 @@
                 </div>
                 {% endif %}
 
-                {% if data.totalWithOutTaxe is not empty and data.totalWithOutTaxe is defined %}
+                {# {% if data.totalWithOutTaxe is not empty and data.totalWithOutTaxe is defined %}
                 <div>
                     <div class="flex justify-between">
                         <span class="font-semibold">Remise:</span>
@@ -115,7 +114,31 @@
                         <span class="text-xl font-bold">{{data.total}}</span>
                     </div>
                 </div>
-                {% endif %}
+                {% endif %} #}
+                <div class="border-t border-gray-300 flex justify-end">
+                    <div class="text-end w-60 mt-4">
+                        <div class="flex justify-between">
+                            <p class="text-[18px] text-gray-500">Remise :</p>
+                            <h6 class="text-[18px]">10%</h6>
+                        </div>
+                        <div class="flex justify-between">
+                            <p class="text-[18px] text-gray-500">Sous total :</p>
+                            <h6 class="text-[18px]">{{ data.totalWithOutTaxe|format_currency('EUR') }}</h6>
+                        </div>
+                        <div class="flex justify-between">
+                            <p class="text-[18px] text-gray-500">TVA :</th>
+                            <h6 class="flex justify-content-end text-[18px]">
+                                <div class="w-20 flex">
+                                    <span class="text-xl font-bold">{{data.taxe}}%</span>
+                                </div>
+                            </h6>
+                        </div>
+                        <div class="flex justify-between">
+                            <p class="text-[18px] text-gray-500">Total:</p>
+                            <h6 class="text-[18px]">{{ data.total|format_currency('EUR') }}</h6>
+                        </div>
+                    </div>
+                 </div>
             </div>
         </div>
     </div>

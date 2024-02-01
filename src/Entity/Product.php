@@ -28,6 +28,9 @@ class Product
     #[ORM\Column]
     private ?int $price = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $category = null;
+
     
 
     public function getId(): ?int
@@ -62,6 +65,18 @@ class Product
     public function getPriceInCents(): float
     {
         return $this->price / 100;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): static
+    {
+        $this->category = $category;
+
+        return $this;
     }
 
 }

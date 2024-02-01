@@ -1,33 +1,27 @@
-import { Notyf } from 'notyf';
-import 'notyf/notyf.min.css';
+import { Notyf } from "notyf";
+import "notyf/notyf.min.css";
 
 const notyf = new Notyf({
   types: [
     {
-      type: 'success',
+      type: "success",
       duration: 3000,
       position: {
-        x: 'right',
-        y: 'top',
+        x: "right",
+        y: "top",
       },
-      background: 'green',
+      background: "green",
     },
     {
-      type: 'error',
+      type: "error",
       duration: 3000,
       position: {
-        x: 'right',
-        y: 'top',
+        x: "right",
+        y: "top",
       },
-      background: 'red',
+      background: "red",
     },
-  ]
+  ],
 });
 
-export function successNotification() {
-  notyf.success(message);
-}
-
-export function errorNotification() {
-  notyf.error(message);
-}
+notyf.success("Facture ajoutée avec succès");

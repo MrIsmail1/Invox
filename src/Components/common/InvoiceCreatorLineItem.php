@@ -11,10 +11,8 @@
 
 namespace App\Components\common;
 
-use App\Entity\Category;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
-use App\Repository\CategoryRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -38,17 +36,13 @@ class InvoiceCreatorLineItem
     public ?Product $product = null;
 
     #[LiveProp(writable: true)]
-    #[Assert\NotNull]
-    public ?Category $category = null;
-
-    #[LiveProp(writable: true)]
     #[Assert\Positive]
     public int $quantity = 1;
 
     #[LiveProp]
     public bool $isEditing = false;
 
-    public function __construct(private ProductRepository $productRepository, private CategoryRepository $categoryRepository)
+    public function __construct(private ProductRepository $productRepository)
     {
     }
 
@@ -67,7 +61,7 @@ class InvoiceCreatorLineItem
         $responder->emitUp('line_item:save', [
             'key' => $this->key,
             'product' => $this->product->getId(),
-            'category' => $this->category->getId(),
+            /* 'category' => $this->category->getId(), */
             'quantity' => $this->quantity,
         ]);
 
@@ -96,9 +90,9 @@ class InvoiceCreatorLineItem
         return $this->productRepository->findAll();
     }
 
-    #[ExposeInTemplate]
+    /* #[ExposeInTemplate]
     public function getCategorys(): array
     {
         return $this->categoryRepository->findAll();
-    }
+    } */
 }
