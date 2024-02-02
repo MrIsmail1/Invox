@@ -11,7 +11,7 @@ use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveListener;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
 #[AsLiveComponent]
-class Table
+class Table2
 {
     use ComponentToolsTrait;
     use DefaultActionTrait;
@@ -21,15 +21,9 @@ class Table
     public ?string $thead3 = null;
     public ?string $thead4 = null;
     public ?string $thead5 = null;
-    public ?string $thead6 = null;
-    public ?string $thead7 = null;
     public $form = null;
     public $entity = null;
     public $data = null;
-    public $invoiceItem = null;
-    public $products = null;
-    public ?string $pathDelete = null;
-    public ?string $pathEdit = null;
-    public ?string $modal = null;
+    public $items = null;
 
 }

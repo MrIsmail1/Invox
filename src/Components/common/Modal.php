@@ -8,6 +8,9 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 class Modal
 {
     public $data = [];
+    public $invoiceItem = [];
+    public $products = [];
     public ?string $pathDelete = null;
     public ?string $pathEdit = null;
+    public ?string $modal = null;
 }

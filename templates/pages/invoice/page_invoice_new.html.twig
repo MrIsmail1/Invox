@@ -3,18 +3,23 @@
 {% set title = "Invoice" %}
 
 {% block content %}
-
-<div class="flex w-full " >
-    <div class="w-full" >
-        <main class="mx-20 mt-11" >
-            <div class="flex justify-between" >
-                <h1>Devis</h1>
+<div class="flex w-full bg-bg-white dark:bg-dark-pr-blue rounded-lg mt-12" >
+        <div class="mx-20 mt-11 w-full">
+            <div class="flex justify-between">
+                <div>
+                    <h2>Facture: 67</h2>
+                </div>
+                <div>
+                    <h2>Logo</h2>
+                    <h5>Client :</h5>
+                    <h6>Adresse :</h6>
+                    <h6>Mail :</h6>
+                    <twig:Button content="Modifier" styles="mt-4 "/>
+                </div>
             </div>
             <div class="flex mt-16 justify-between" >
                     <twig:InvoiceCreator invoice="{{ invoice }}"/>
             </div>
-        </div>
-    </main>
+    </div>
 </div>
-
 {% endblock %}

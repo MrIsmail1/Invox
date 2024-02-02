@@ -11,4 +11,6 @@ class Button
     public ?string $content=null;
     public ?string $styles = null;
     public ?string $js = null;
+    public ?string $action = null;
+    public ?string $actionName = null;
 }

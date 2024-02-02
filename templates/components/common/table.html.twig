@@ -54,27 +54,27 @@
                 <th scope="col" class="px-6 py-3">
                 {% if thead2 is not empty %}
                     {{ knp_pagination_sortable(data, thead2, 'a.customer') }}
-                    {% endif %}
+                {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
                 {% if thead3 is not empty %}
                     {{ knp_pagination_sortable(data, thead3, 'a.totalWithTaxes') }}
-                    {% endif %}
+                {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
                 {% if thead4 is not empty %}
                     {{ knp_pagination_sortable(data, thead4, 'a.isValid') }}
-                    {% endif %}
+                {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
                 {% if thead5 is not empty %}
                     {{ knp_pagination_sortable(data, thead5, 'a.expiresIn') }}
-                    {% endif %}
+                {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
                 {% if thead6 is not empty %}
                     {{ knp_pagination_sortable(data, thead6, 'a.expiresIn') }}
-                    {% endif %}
+                {% endif %}
                 </th>
                 <th scope="col" class="px-6 py-3">
                     {{ thead7 }}
@@ -96,24 +96,22 @@
                 <td class="px-6 py-4">
                     {{ data.customer }}
                 </td>
-                {% if data.totalWithTaxes is defined %}
+                {% if data.total is defined %}
                 <td class="px-6 py-4">
-                    {{ data.totalWithTaxes }} €
+                    {{ data.total }} €
                 </td>
                 {% endif %}
                 {% if data.isValid is defined %}
                 <td class="px-6 py-4">
                     <div class="flex items-center">
-                        {% if data.isValid %}
-                            <twig:Status>
-                                {% block content %}
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M9.54961 18L3.84961 12.3L5.27461 10.875L9.54961 15.15L18.7246 5.97498L20.1496 7.39998L9.54961 18Z"/>
-                                    </svg>
-                                    Payée
-                                {% endblock %}
-                            </twig:Status>
-                        {% else %}
+                        {% if data.status %}
+                            <twig:Status status="{{data.status}}"/>
+                            {# {% block content %}
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.54961 18L3.84961 12.3L5.27461 10.875L9.54961 15.15L18.7246 5.97498L20.1496 7.39998L9.54961 18Z"/>
+                                </svg>
+                                Payée #}
+                            {# {% else %}
                             <twig:Status>
                                 {% block content %}
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -121,26 +119,26 @@
                                     </svg>
                                     Non Payée
                                 {% endblock %}
-                            </twig:Status>
+                            </twig:Status> #}
                         {% endif %}
                     </div>
                 </td>
                 {% endif %}
-                {% if data.expiresIn is not empty and data.expiresIn is defined %}
+                {% if data.createdAt is not empty and data.createdAt is defined %}
                 <td class="px-6 py-4">
-                    {{ data.expiresIn|date('d-m-y') }}
+                    {{ data.createdAt.format('d-m-Y') }}
                 </td>
                 {% endif %}
-                {% if data.expiresIn is not empty and data.expiresIn is defined %}
+                {% if data.updatedAt is not empty and data.updatedAt is defined %}
                 <td class="px-6 py-4">
-                    {{ data.expiresIn|date('d-m-y') }}
+                    {{ data.updatedAt.format('d-m-Y') }}
                 </td>
                 {% endif %}
                 <td class="px-6 py-4">
                     <div x-data="{ open: false }">
                         <twig:Button js="open = !open" content="Voir" />
 {# ------------------------------------------------------------------------------  La modal show ------------------------------------------------------------------------ #}
-                       <twig:Modal data="{{data}}" pathEdit="{{pathEdit}}" pathDelete="{{pathDelete}}" />
+                       <twig:Modal data="{{data}}" pathEdit="{{pathEdit}}" pathDelete="{{pathDelete}}" modal="{{modal}}" invoiceItem="{{invoiceItem}}" products="{{products}}"/>
                     </div>
                 </td>
             </tr>
@@ -151,7 +149,5 @@
 
 {# ------------------------------------------------------------------------------  Pagination ------------------------------------------------------------------------ #}
 
-
 {{ knp_pagination_render(data, 'components/common/pagination.html.twig') }}
-
 </div>

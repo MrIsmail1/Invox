@@ -20,7 +20,6 @@ class QuotationFixtures extends Fixture
             $quotation
                 ->setCreatedAt(new \DateTimeImmutable())
                 ->setExpiresIn($faker->dateTimeInInterval('now', '+1 month'))
-                ->setTitle($faker->sentence)
                 ->setAmount($faker->randomFloat(2, 100, 1000))
                 ->setOption($faker->word)
                 ->setOptionPrice($faker->randomFloat(2, 10, 100))

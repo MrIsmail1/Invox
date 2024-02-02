@@ -11,11 +11,11 @@
 
 namespace App\Entity;
 
-use App\Repository\ServiceRepository;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ServiceRepository::class)]
-class Service
+#[ORM\Entity(repositoryClass: ProductRepository::class)]
+class Product
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -28,9 +28,10 @@ class Service
     #[ORM\Column]
     private ?int $price = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Category $category = null;
+    #[ORM\Column(length: 255)]
+    private ?string $category = null;
+
+    
 
     public function getId(): ?int
     {
@@ -66,15 +67,16 @@ class Service
         return $this->price / 100;
     }
 
-    public function getCategory(): ?Category
+    public function getCategory(): ?string
     {
         return $this->category;
     }
 
-    public function setCategory(?Category $category): self
+    public function setCategory(string $category): static
     {
         $this->category = $category;
 
         return $this;
     }
+
 }

@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Invoice;
 use App\Entity\InvoiceItem;
-use App\Entity\Service;
-use App\Repository\ServiceRepository;
+use App\Entity\Product;
+use App\Repository\ProductRepository;
 use App\Repository\InvoiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,80 +20,79 @@ use Knp\Component\Pager\PaginatorInterface;
 
 class InvoiceController extends AbstractController
 {
-    #[Route('/invoice', name: 'invoice_index', methods: ['GET', 'POST'])]
-    public function index(Request $request, InvoiceRepository $invoiceRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response 
-    {
+#[Route('/invoice', name: 'app_invoice_index', methods: ['GET', 'POST'])]
+public function index(Request $request, InvoiceRepository $invoiceRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response 
+{
+    $invoiceItem = new InvoiceItem();
+    $query = $invoiceRepository->createQueryBuilder('a')->getQuery();
 
-    // Pour créer une notification
-    $this->addFlash('success', 'Invoice updated successfully!');
-    
-    $query = $invoiceRepository->createQueryBuilder('a')
-    ->getQuery();
-
-    $pagination = $paginatorInterface->paginate(
+    $data = $paginatorInterface->paginate(
         $query,
         $request->query->getInt('page', 1),
         15
     );
 
-        $invoice = new Invoice();
+    // Initialiser $productDataByInvoiceId avant de l'utiliser
+    $productDataByInvoiceId = [];
 
-        $form = $this->createForm(SearchAutocomplete::class, $invoice);
-        $form->handleRequest($request);
+    foreach ($data as $invoice) {
+        $invoiceId = $invoice->getId();
+        $invoiceItems = $invoice->getInvoiceItems();
+        $productData = [];
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($invoice);
-            $entityManager->flush();
+        foreach ($invoiceItems as $invoiceItem) {
+            $product = $invoiceItem->getProduct();
+            $quantity = $invoiceItem->getQuantity();
 
-            return $this->redirectToRoute('invoice_index', [], Response::HTTP_SEE_OTHER);
+            if ($product !== null) {
+                $productData[] = [
+                    'name' => $product->getName(),
+                    'price' => $product->getPrice(),
+                    'category' => $product->getCategory(),
+                    'quantity' => $quantity,
+                ];
+            }
         }
 
-        return $this->render('invoice/page_invoice_index.html.twig', [
-            'form' => $form,
-            'pagination' => $pagination,
-        ]);
+        $productDataByInvoiceId[$invoiceId] = $productData;
+    }
+
+    return $this->render('invoice/page_invoice_index.html.twig', [
+        'data' => $data,
+        'invoiceItem' => $invoiceItem,
+        'modal' => "invoiceModal",
+        'products' => $productDataByInvoiceId,
+    ]);
 }
 
+
     #[Route('invoice/new', name: 'invoice_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager,ServiceRepository $serviceRepository): Response
+    public function new(ProductRepository $productRepository): Response
     {
         $invoice = new Invoice();
         $invoiceItem = new InvoiceItem();
 
-        $services = $serviceRepository->findAll();
+        $products = $productRepository->findAll();
 
+        // Pour créer une notification de succès
+        $this->addFlash('success', 'La facture a été créée avec succès');
+        
         return $this->render('invoice/page_invoice_new.html.twig', [
             'invoice' => $invoice,
             'invoiceItem' => $invoiceItem,
-            'services' => $services,
+            'products' => $products,
         ]);
     }
 
-    #[Route('invoice/{id}', name: 'invoice_show', methods: ['GET'])]
-    public function show(Invoice $invoice): Response
-    {
-        return $this->render('invoice/show.html.twig', [
-            'invoice' => $invoice,
-        ]);
-    }
-
-    #[Route('invoice/edit/{id}', name: 'invoice_edit', methods: ['GET', 'POST'])]
+    #[Route('invoice/edit/{id}', name: 'app_invoice_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(InvoiceType::class, $invoice);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('invoice_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('invoice/page_invoice_edit.html.twig', [
+        return $this->render('invoice/page_invoice_new.html.twig', [
             'invoice' => $invoice,
-            'form' => $form,
+            'edit' => "edit",
         ]);
     }
+
 
     #[Route('invoice/delete/{id}/{token}', name: 'invoice_delete', methods: ['GET'])]
     public function delete(Invoice $invoice, string $token, EntityManagerInterface $entityManager): Response
@@ -103,6 +102,6 @@ class InvoiceController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('invoice_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
     }
 }

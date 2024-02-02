@@ -13,7 +13,6 @@ class InvoiceType extends AbstractType
     {
         $builder
             ->add('expiresIn')
-            ->add('title')
             ->add('amount')
             ->add('option')
             ->add('optionPrice')

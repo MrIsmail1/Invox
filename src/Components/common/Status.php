@@ -8,4 +8,5 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 class Status
 {
     public ?string $styles = null;
+    public ?string $status = null;
 }

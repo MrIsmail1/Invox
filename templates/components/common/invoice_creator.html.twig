@@ -1,12 +1,17 @@
 <div {{ attributes }}>
-    <form data-action="live#action" data-action-name="prevent|saveInvoice" class="max-w-sm mx-auto">
-        <div class="mb-5">
-            <label for="customer-name" class="block mb-2 text-sm font-medium text-gray-900 ">Customer name:</label>
+    <form data-action="live#action" data-action-name="prevent|saveInvoice">
+        {# {% if invoice.taxe != 0 %}
+            {% set total = this.subTotal + this.subTotal * (invoice.taxe / 100)  %}    
+            {% else %}
+            {% set total = this.subTotal %}
+        {% endif %} #}
+{#         <div class="mb-3">
+            <label for="customer-name">Nom du client:</label>
             <input
-                type="text"
-                data-model="invoice.customerName"
-                class="form-control {{ _errors.has('invoice.customerName') ? 'is-invalid' }} bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                id="customer-name"
+                    type="text"
+                    data-model="invoice.customerName"
+                    class="form-control {{ _errors.has('invoice.customerName') ? 'is-invalid' }}"
+                    id="customer-name"
             >
             {% if _errors.has('invoice.customerName') %}
                 <div class="invalid-feedback">
@@ -16,103 +21,102 @@
         </div>
 
         <div class="mb-3">
-            <label for="customer-email">Billing Email:</label>
+            <label for="customer-email">E-mail de facturation:</label>
             <input
-                type="email"
-                data-model="invoice.customerEmail"
-                class="form-control {{ _errors.has('invoice.customerEmail') ? 'is-invalid' }}"
-                id="customer-email"
+                    type="email"
+                    data-model="invoice.customerEmail"
+                    class="form-control {{ _errors.has('invoice.customerEmail') ? 'is-invalid' }}"
+                    id="customer-email"
             >
             {% if _errors.has('invoice.customerEmail') %}
                 <div class="invalid-feedback">
                     {{ _errors.get('invoice.customerEmail') }}
                 </div>
             {% endif %}
-        </div>
-
+        </div> #}
+{# _____________________________________________________________ Tableau debut _____________________________________________________________ #}
         <div class="card">
-            <div class="card-header">Invoice Items</div>
-            <div class="card-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Service</th>
-                            <th style="width: 100px;">Price</th>
-                            <th style="width: 100px;">Quantity</th>
-                            <th style="width: 100px;">&nbsp;</th>
-                        </tr>
+            <div class="mt-6 mb-8 overflow-x-auto rounded-lg border-border-color border-border-width">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:bg-dark-pr-blue">
+                    <thead class="rounded-bl-lg rounded-br-lg dark:bg-bg-hover-sidebar text-sm uppercase dark:text-white-font border-b-border-width border-border-color">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 w-96 rounded-bl-lg">Description</th>
+                        <th scope="col" class="px-6 py-3 w-40">Catégorie</th>
+                        <th scope="col" class="px-6 py-3 w-40">Quantité</th>
+                        <th scope="col" class="px-6 py-3 w-40">Prix</th>
+                        <th scope="col" class="px-6 py-3 w-40 rounded-br-lg">Action</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {% for key, line in lineItems %}
-                            <twig:InvoiceCreatorLineItem
+                    {% for key, line in lineItems %}
+                        <twig:InvoiceCreatorLineItem
                                 key="{{ key }}"
-                                serviceId="{{ line.serviceId }}"
+                                productId="{{ line.productId }}"
                                 quantity="{{ line.quantity }}"
                                 isEditing="{{ line.isEditing }}"
-                            />
-                        {% endfor %}
+                        />
+                    {% endfor %}
                     </tbody>
                 </table>
-
-                <button
-                    data-action="live#action"
-                    data-action-name="addLineItem"
-                    class="btn btn-sm btn-secondary"
-                    type="button"
-                >{# <twig:Icon name="plus" />#} Add Item</button> 
+                <twig:Button 
+                    action="live#action"
+                    actionName="addLineItem"
+                    styles="mt-3"
+                    >
+                    + Ajouter un produit
+                </twig:Button>
             </div>
         </div>
 
-        <div class="col-4 offset-8 mt-4">
-            <table class="table text-end">
-                <tbody>
-                    <tr>
-                        <th>Subtotal:</th>
-                        <td>{{ this.subtotal|format_currency('USD') }}</td>
-                    </tr>
-                    <tr>
-                        <th>Tax rate:</th>
-                        <td class="d-flex justify-content-end">
-                            <div style="width: 110px;" class="input-group {{ _errors.has('invoice.taxRate') ? 'is-invalid' }}">
-                                <input
+        <div class="flex justify-end">
+            <div class="text-end w-60">
+                <div class="flex justify-between">
+                    <p class="text-[18px] text-gray-500">Remise :</p>
+                    <h6 class="text-[18px]">10%</h6>
+                </div>
+                <div class="flex justify-between">
+                    <p class="text-[18px] text-gray-500">Sous total :</p>
+                    <h6 class="text-[18px]">{{ this.subtotal|format_currency('EUR') }}</h6>
+                </div>
+                <div class="flex justify-between">
+                    <p class="text-[18px] text-gray-500">TVA :</th>
+                    <h6 class="flex justify-content-end text-[18px]">
+                        <div class="w-20 flex {{ _errors.has('invoice.taxe') ? 'is-invalid' }}">
+                            <input
                                     type="number"
-                                    data-model="invoice.taxRate"
-                                    class="form-control"
-                                >
-                                <span class="input-group-text">%</span>
+                                    data-model="invoice.taxe"
+                                    class="form-control w-12"
+                            >
+                            <span class="input-group-text">%</span>
+                        </div>
+                        {% if _errors.has('invoice.taxe') %}
+                            <div class="invalid-feedback">
+                                {{ _errors.get('invoice.taxe') }}
                             </div>
-                            {% if _errors.has('invoice.taxRate') %}
-                                <div class="invalid-feedback">
-                                    {{ _errors.get('invoice.taxRate') }}
-                                </div>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Total:</th>
-                        <td>{{ this.total|format_currency('EUR') }}</td>
-                    </tr>
-                </tbody>
-            </table>
+                        {% endif %}
+                    </h6>
+                </div>
+                <div class="flex justify-between">
+                    <p class="text-[18px] text-gray-500">Total:</p>
+                    <h6 class="text-[18px]">{{ this.total|format_currency('EUR') }}</h6>
+                </div>
+            </div>
         </div>
 
-        <button
+         <button
             class="btn btn-primary"
             {{ areAnyLineItemsEditing ? 'disabled' : '' }}
         >
             <span data-loading="action(saveInvoice)|show">
-                {# <twig:Icon name="spinner" style="animation: spin 1s linear infinite;" /> #}
-                loading
+                {# Faire un spinner #}
             </span>
             {% if savedSuccessfully %}
-                {# <twig:Icon name="circle-check" class="text-success" /> #}
-                good saved
+                {# Faire un save success #}
             {% endif %}
             {% if saveFailed %}
-                {# <twig:Icon name="circle-exclamation" /> #}
-                savec saveFailed
+                {# Faire un save failed #}
             {% endif %}
-            Save Invoice
+            <h3>Enregistrer</h3>
         </button>
         {% if saveFailed %}
             <small class="text-secondary">Check above for errors</small>
@@ -120,5 +124,8 @@
         {% if areAnyLineItemsEditing %}
             <small class="text-secondary">Save all line items before continuing.</small>
         {% endif %}
-    </form>
+        </form> 
 </div>
+
+
+

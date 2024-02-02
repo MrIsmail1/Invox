@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
 use App\Repository\InvoiceItemRepository;
@@ -28,7 +19,7 @@ class InvoiceItem
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Service $service = null;
+    private ?Product $product = null;
 
     #[ORM\Column]
     private int $quantity = 1;
@@ -50,14 +41,14 @@ class InvoiceItem
         return $this;
     }
 
-    public function getService(): ?Service
+    public function getProduct(): ?Product
     {
-        return $this->service;
+        return $this->product;
     }
 
-    public function setService(?Service $service): self
+    public function setProduct(?Product $product): self
     {
-        $this->service = $service;
+        $this->product = $product;
 
         return $this;
     }
@@ -76,10 +67,11 @@ class InvoiceItem
 
     public function getSubtotal(): int
     {
-        if (!$this->service) {
+        if (!$this->product) {
             return 0;
         }
 
-        return $this->service->getPrice() * $this->quantity;
+        return $this->product->getPrice() * $this->quantity;
     }
+
 }
