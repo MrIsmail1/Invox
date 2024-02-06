@@ -66,7 +66,7 @@ public function index(Request $request, InvoiceRepository $invoiceRepository, En
 }
 
 
-    #[Route('invoice/new', name: 'invoice_new', methods: ['GET', 'POST'])]
+    #[Route('invoice/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
     public function new(ProductRepository $productRepository): Response
     {
         $invoice = new Invoice();
@@ -94,7 +94,7 @@ public function index(Request $request, InvoiceRepository $invoiceRepository, En
     }
 
 
-    #[Route('invoice/delete/{id}/{token}', name: 'invoice_delete', methods: ['GET'])]
+    #[Route('invoice/delete/{id}/{token}', name: 'app_invoice_delete', methods: ['GET'])]
     public function delete(Invoice $invoice, string $token, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$invoice->getId(), $token)) {

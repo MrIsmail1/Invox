@@ -1,8 +1,16 @@
+{% set totalVentes = 0 %}
+
+{% for montant in totals %}
+    {% set totalVentes = totalVentes + montant %}
+{% endfor %}
+
 <div
-  class="bg-bg-white dark:bg-dark-pr-blue border-border-width border-border-color h-full w-[59%] rounded-xl"
+  class="h-full w-[59%] rounded-xl border-border-width border-border-color bg-bg-white dark:bg-dark-pr-blue"
 >
   <div>
-    <h3 class="mb-4 ml-12 mt-8 font-bold">Ventes 12 derniers mois : 560 $</h3>
+    <h3 class="mb-4 ml-12 mt-8 font-bold">
+      Ventes 12 derniers mois : {{ totalVentes }} €
+    </h3>
     <canvas id="myChart"></canvas>
   </div>
 </div>
@@ -10,43 +18,40 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-  const ctx = document.getElementById("myChart");
+  document.addEventListener('DOMContentLoaded', function () {
+    const ctx = document.getElementById("myChart");
+    const month = {{ months|json_encode|raw }};
+    const dataTotals = {{ totals|json_encode|raw }};
 
-  new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: [
-        "Janvier",
-        "Février",
-        "Mars",
-        "Avril",
-        "Mai",
-        "Juin",
-        "Juillet",
-        "Août",
-        "Septembre",
-        "Octobre",
-        "Novembre",
-        "Décembre",
-      ],
-      datasets: [
-        {
-          data: [1200, 19, 3, 5, 2, 3],
-          borderWidth: 2,
-        },
-      ],
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true,
-        },
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: month,
+        datasets: [{
+          label: 'Ventes par mois',
+          data: dataTotals,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            // Ajoutez plus de couleurs au besoin
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            // Ajoutez plus de bordures de couleurs au besoin
+          ],
+          borderWidth: 1
+        }]
       },
-      plugins: {
-        legend: {
-          display: false,
-        },
-      },
-    },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
   });
 </script>

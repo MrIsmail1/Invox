@@ -15,19 +15,18 @@
         <twig:Button content="Créer une facture" path="invoice/new"/>
     </div>
     <div>
-        <twig:Table modal="{{modal}}" thead1="Numéro" thead2="Client" thead3="Total TTC" thead4="Status" thead5="Crée le" thead6="Echeance" thead7="Action" pathEdit="app_invoice_edit" pathDelete="invoice_delete" data="{{data}}" invoiceItem="{{invoiceItem}}" products="{{products}}"/>
+        <twig:Table modal="{{modal}}" thead1="Numéro" thead2="Client" thead3="Total TTC" thead4="Status" thead5="Crée le" thead6="Echeance" thead7="Action" pathEdit="app_invoice_edit" pathDelete="app_invoice_delete" data="{{data}}" invoiceItem="{{invoiceItem}}" products="{{products}}"/>
     </div>
 
     {% if app.session.flashbag.has('success') %}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Cette ligne récupère le message flash
-            const message = "{{ app.session.flashbag.get('success')[0] }}";
+            const message = "{{ app.session.flashbag.get('success')[0]|escape('js') }}";
             // Cette ligne utilise Notyf pour afficher le message flash
             notyf.success("Success message");
         });
     </script>
 {% endif %}
-
 
 {% endblock %}

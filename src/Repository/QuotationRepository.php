@@ -45,4 +45,27 @@ class QuotationRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+public function findByCreatedAtRange($startDate, $endDate): array
+{
+    $qb = $this->createQueryBuilder('i')
+        ->where('i.createdAt >= :startDate') 
+        ->andWhere('i.createdAt <= :endDate')
+        ->setParameter('startDate', $startDate ? $startDate->format('Y-m-d 00:00:00') : null)
+        ->setParameter('endDate', $endDate ? $endDate->format('Y-m-d 23:59:59') : null)
+        ->getQuery();
+
+    return $qb->getResult();
+}
+
+public function countValidQuotations(): int
+{
+    $qb = $this->createQueryBuilder('q')
+        ->select('COUNT(q.id)')
+        ->where('q.isValid = :isValid')
+        ->setParameter('isValid', true);
+
+    return (int) $qb->getQuery()->getSingleScalarResult();
+} 
+
 }
