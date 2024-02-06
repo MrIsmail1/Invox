@@ -93,6 +93,17 @@
 {% endblock checkbox_row %}
 
 {# CUSTOM AGREE_TERMS CHECKBOX INPUT WITH CUSTOM LABEL #}
+{% block _user_profile_form_media_row %}
+    <div x-data="{src:'{{ asset('build/images/upload.png') }}'}" class="items-center w-full mb-4">
+        <input
+                type="file"
+                {{ block('widget_attributes') }}
+                @change="src=URL.createObjectURL($event.target.files[0])"
+                class="hidden"/>
+        <img :src="src" alt="" class="w-full rounded-lg"/>
+    </div>
+{% endblock _user_profile_form_media_row %}
+{# CUSTOM AGREE_TERMS CHECKBOX INPUT WITH CUSTOM LABEL #}
 {% block _registration_form_agreeTerms_row %}
     <div class="flex items-center">
         <input type="checkbox" id="{{- id -}}" name="{{- full_name -}}"

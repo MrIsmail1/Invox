@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -35,6 +36,12 @@ class UserProfileFormType extends AbstractType
             ->add('job', TextType::class, [
                 'attr' => ['placeholder' => 'Entrez votre profession'],
                 'label' => 'Profession',
+                'mapped' => true,
+                'required' => false,
+            ])
+            ->add('media', CollectionType::class, [
+                'entry_type' => MediaFormType::class,
+                'label' => false,
                 'mapped' => true,
                 'required' => false,
             ]);

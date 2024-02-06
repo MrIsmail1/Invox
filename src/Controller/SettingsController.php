@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Media;
 use App\Form\CompanyDetailsFormType;
 use App\Form\UserProfileFormType;
 use App\Repository\CompanyDetailsRepository;
@@ -45,9 +46,17 @@ class SettingsController extends AbstractController
 
 
         $form = $this->createForm(UserProfileFormType::class, $user);
+        $media = new Media();
+        $user->addMedium($media);
 
         $form->handleRequest($request);
-        
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            /*return $this->redirectToRoute('app_settings_user_profile', [], Response::HTTP_SEE_OTHER);*/
+        }
+
 
         return $this->render('settings/page_edit_user_profile.html.twig', [
             'user' => $user,

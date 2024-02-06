@@ -7,6 +7,7 @@ use App\Entity\User;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
@@ -26,8 +27,9 @@ class FileUpload
 
     private ?User $user = null;
 
-    public function __construct(private ValidatorInterface $validator)
+    public function __construct(private ValidatorInterface $validator, private TokenStorageInterface $tokenStorage)
     {
+        $this->user = $this->tokenStorage->getToken()->getUser();
     }
 
     #[LiveAction]
@@ -68,17 +70,11 @@ class FileUpload
         throw new UnprocessableEntityHttpException('Validation failed');
     }
 
-    private function processFileUpload(UploadedFile $file): void
+    private function processFileUpload(UploadedFile $file): array
     {
-
         $media = new Media();
         $media->setUploadedFile($file);
         $media->setUploadedBy($this->user);
-        dump($media);
-        /*// in a real app, move this file somewhere
-        // $file->move(...);
-
-        $file = new UploadedFile('chemin_du_fichier', 'nom_du_fichier');
-        $uploadResult = $this->processFileUpload($file);*/
+        return [$media->getFileName(), $media->getFileSize()];
     }
 }
