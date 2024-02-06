@@ -9,89 +9,71 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use App\Form\DashboardFormType;
 
 class DashboardController extends AbstractController
 {
-
     #[Route('/', name: 'dashboard',methods: ['GET','POST'])]
     public function dashboard(InvoiceRepository $invoiceRepository, QuotationRepository $quotationRepository, CustomerRepository $customerRepository,Request $request): Response
-    {
 
-/* -------------------------------------- SelectForm -------------------------------------- */      
-        $form = $this->createFormBuilder()
-        ->add('mois', ChoiceType::class, [
-            'choices' => [
-                'Janvier' => 1,
-                'Février' => 2,
-                'Mars' => 3,
-                'Avril' => 4,
-                'Mai' => 5,
-                'Juin' => 6,
-                'Juillet' => 7,
-                'Août' => 8,
-                'Septembre' => 9,
-                'Octobre' => 10,
-                'Novembre' => 11,
-                'Décembre' => 12,
-            ],
-            'label' => 'Mois',
-        ])
-        ->add('annee', ChoiceType::class, [
-            'choices' => [
-                '2024' => 2024,
-                '2023' => 2023,
-            ],
-            'label' => 'Année',
-        ])
-        ->add('filtrer', SubmitType::class, ['label' => 'Filtrer'])
-        ->getForm();
+    {
+         $form = $this->createForm(DashboardFormType::class, null, [
+            'method' => 'POST'
+        ]);
 
         $form->handleRequest($request);
+
+        // Variables initiales
+        $invoice = [];
+        $quotation = [];
+        $customer = [];
+
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $mois = $data['mois'];
-            $annee = $data['annee'];
-            $dateString = $annee . '-' . $mois . '-05 18:13:42';
-            
-/* -------------------------------------- Recup Data -------------------------------------- */  
+            $startDate = $data['start_date'];
+            $endDate = $data['end_date'];
 
-            /* $realInvoiceCount = array_filter($invoiceRepository, function($invoice) {
-                return $invoice->isIsValid() === true;
-            });
-            dd($realInvoiceCount); */
+            // Assurez-vous que les dates sont au format approprié pour votre DB
+            $invoice = $invoiceRepository->findByCreatedAtRange($startDate, $endDate);
+            $quotation = $quotationRepository->findByCreatedAtRange($startDate, $endDate);
+            $customer = $customerRepository->findByCreatedAtRange($startDate, $endDate);
+        } else {
+            $invoice = $invoiceRepository->findAll();
+            $quotation = $quotationRepository->findAll();
+            $customer = $customerRepository->findAll();
+        }
 
-            $filteredQuotations = $quotationRepository->findByCreatedAt(new \DateTimeImmutable($dateString));
-            $quotationCount = count($filteredQuotations);
-            $quotationValid = $quotationRepository->countByIsValid(true);
-             $validQuotation = array_filter($filteredQuotations, function($quotation) {
-                return $quotation->isIsValid() === true;
-            });
-            $quotationValid = count($validQuotation);
+        // Comptages et récupération des totaux mensuels
+        $numberOfValidQuotations = $quotationRepository->countValidQuotations();
+        $numberOfPaidInvoices = $invoiceRepository->countInvoicesByStatus("Payé");
+        $numberOfLateInvoices = $invoiceRepository->countInvoicesByStatus("Retard");
 
-            $filteredInvoices = $invoiceRepository->findByCreatedAt(new \DateTimeImmutable($dateString));
-            $invoiceCount = count($filteredInvoices);
-            $validInvoices = array_filter($filteredInvoices, function($invoice) {
-                return $invoice->isIsValid() === true;
-            });
-            $invoiceValid = count($validInvoices);         
-}
-/* -------------------------------------- Render -------------------------------------- */
-            // Passez les données filtrées au modèle pour l'affichage
-              return $this->render('dashboard/page_dashboard.html.twig', [
-                'quotation' => [
-                    'count' => $quotationCount ?? 20,
-                    'valid' => $quotationValid ?? true,
-                    'filtered' => $filteredQuotations ?? [],
-                ],
-                'invoice' => [
-                    'count' => $invoiceCount ?? 10,
-                    'valid' => $invoiceValid ?? true,
-                    'createdAt' => $filteredInvoices ?? [],
-                ],
-                'form' => $form->createView(),
-            ]);
-        
+        // Extraction des totaux par mois pour les 12 derniers mois
+        $totalsByMonth = $invoiceRepository->getTotalByMonthForLastYear();
+
+        // Préparation des données pour le graphique
+        $months = [];
+        $totals = [];
+        foreach ($totalsByMonth as $monthlyTotal) {
+            $monthName = date("F", mktime(0, 0, 0, $monthlyTotal['month'], 10)); // Convertit le numéro du mois en nom
+            $months[] = $monthName;
+            $totals[] = $monthlyTotal['total'];
+        }
+
+        return $this->render('dashboard/page_dashboard.html.twig', [
+            'DashboardForm' => $form->createView(),
+            'invoice' => $invoice,
+            'quotation' => $quotation,
+            'customer' => $customer,
+            'numberOfInvoices' => count($invoice),
+            'numberOfCustomers' => count($customer),
+            'numberOfQuotations' => count($quotation),
+            'numberOfValidQuotations' => $numberOfValidQuotations,
+            'numberOfPaidInvoices' => $numberOfPaidInvoices,
+            'numberOfLateInvoices' => $numberOfLateInvoices,
+            'months' => $months,
+            'totals' => $totals,
+        ]);
     }
 }

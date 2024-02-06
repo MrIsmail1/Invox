@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240127102730 extends AbstractMigration
+final class Version20240203151202 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -30,7 +30,9 @@ final class Version20240127102730 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE reset_password_request_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE accounting (id INT NOT NULL, total_quotations INT DEFAULT NULL, total_invoices INT DEFAULT NULL, total_income NUMERIC(10, 2) DEFAULT NULL, total_paid_invoices INT DEFAULT NULL, total_valid_quotations INT DEFAULT NULL, total_late_invoices INT DEFAULT NULL, total_new_customers INT DEFAULT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE customer (id INT NOT NULL, first_name VARCHAR(255) DEFAULT NULL, last_name VARCHAR(255) DEFAULT NULL, email VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE customer (id INT NOT NULL, first_name VARCHAR(255) DEFAULT NULL, last_name VARCHAR(255) DEFAULT NULL, email VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('COMMENT ON COLUMN customer.created_at IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('COMMENT ON COLUMN customer.updated_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE invoice (id INT NOT NULL, quotation_id INT DEFAULT NULL, customer_id INT DEFAULT NULL, expires_in DATE DEFAULT NULL, total_with_out_taxe NUMERIC(8, 2) DEFAULT NULL, total NUMERIC(8, 2) DEFAULT NULL, taxe VARCHAR(255) NOT NULL, is_valid BOOLEAN DEFAULT NULL, status VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_90651744B4EA4E60 ON invoice (quotation_id)');
         $this->addSql('CREATE INDEX IDX_906517449395C3F3 ON invoice (customer_id)');
@@ -43,8 +45,9 @@ final class Version20240127102730 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_6A2CA10CA2B28FE8 ON media (uploaded_by_id)');
         $this->addSql('COMMENT ON COLUMN media.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE product (id INT NOT NULL, name VARCHAR(255) NOT NULL, price INT NOT NULL, category VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE quotation (id INT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, expires_in DATE DEFAULT NULL, amount NUMERIC(8, 2) DEFAULT NULL, option VARCHAR(255) DEFAULT NULL, option_price NUMERIC(8, 2) DEFAULT NULL, quantity INT DEFAULT NULL, total_with_out_taxes NUMERIC(8, 2) DEFAULT NULL, taxes NUMERIC(4, 2) DEFAULT NULL, total_with_taxes NUMERIC(8, 2) DEFAULT NULL, is_valid BOOLEAN DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE quotation (id INT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, expires_in DATE DEFAULT NULL, amount NUMERIC(8, 2) DEFAULT NULL, option VARCHAR(255) DEFAULT NULL, option_price NUMERIC(8, 2) DEFAULT NULL, quantity INT DEFAULT NULL, total_with_out_taxes NUMERIC(8, 2) DEFAULT NULL, taxes NUMERIC(4, 2) DEFAULT NULL, total_with_taxes NUMERIC(8, 2) DEFAULT NULL, is_valid BOOLEAN DEFAULT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN quotation.created_at IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('COMMENT ON COLUMN quotation.updated_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE reset_password_request (id INT NOT NULL, user_id INT NOT NULL, selector VARCHAR(20) NOT NULL, hashed_token VARCHAR(100) NOT NULL, requested_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, expires_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_7CE748AA76ED395 ON reset_password_request (user_id)');
         $this->addSql('COMMENT ON COLUMN reset_password_request.requested_at IS \'(DC2Type:datetime_immutable)\'');
