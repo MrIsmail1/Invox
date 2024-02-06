@@ -15,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 class DashboardController extends AbstractController
 {
 
-    #[Route('/dashboard', name: 'dashboard',methods: ['GET','POST'])]
+    #[Route('/', name: 'dashboard',methods: ['GET','POST'])]
     public function dashboard(InvoiceRepository $invoiceRepository, QuotationRepository $quotationRepository, CustomerRepository $customerRepository,Request $request): Response
     {
 

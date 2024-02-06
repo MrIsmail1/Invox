@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% set title = "Invox | 'Profil utilisateur' " %}
+
+{% block content %}
+    <div class="flex flex-col gap-3">
+        <h1>Profil utilisateur</h1>
+        <div class="flex bg-white-font rounded-lg p-5">
+            {{ form_start(UserProfileForm, {'attr': {'class': 'w-full h-full'}}) }}
+            <div class="flex w-full justify-around p-5">
+                <div class="grid grid-cols-2 gap-5 w-full">
+                    <div class="flex flex-col gap-y-8">
+                        {{ form_row(UserProfileForm.firstName) }}
+                        {{ form_row(UserProfileForm.lastName) }}
+                        {{ form_row(UserProfileForm.job) }}
+                        <div class="mt-6">
+                            <twig:ButtonDarkDefault type="submit" text="Enregistrer"/>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-y-8">
+                        {{ form_row(UserProfileForm.email) }}
+                        {{ form_row(UserProfileForm.media) }}
+                        {{ form_end(UserProfileForm) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

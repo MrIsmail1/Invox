@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% set title = "Invox | 'Cordonnées de l\'entreprise' " %}
+
+{% block content %}
+    <div class="flex flex-col gap-3">
+        <h1>Cordonnées de l'entreprise</h1>
+        <div class="flex bg-white-font rounded-lg p-5">
+            {{ form_start(companyDetailsForm, {'attr': {'class': 'w-full h-full'}}) }}
+            <div class="flex w-full justify-around p-5">
+                <div class="grid grid-cols-3 gap-5 w-full">
+                    <div class="flex flex-col gap-y-8">
+                        {{ form_row(companyDetailsForm.company_logo) }}
+                        {{ form_row(companyDetailsForm.company_name) }}
+                        {{ form_row(companyDetailsForm.company_email) }}
+                        {{ form_row(companyDetailsForm.siret_number) }}
+                        {{ form_row(companyDetailsForm.website) }}
+                    </div>
+                    <div class="flex flex-col gap-y-8">
+                        {{ form_row(companyDetailsForm.vat_number) }}
+                        {{ form_row(companyDetailsForm.legal_status) }}
+                        {{ form_row(companyDetailsForm.rcs) }}
+                        <div class="flex flex-col gap-y-2">
+                            {{ form_row(companyDetailsForm.default_vat) }}
+                            {{ form_row(companyDetailsForm.vat_exempt) }}
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-y-8">
+                        {{ form_row(companyDetailsForm.country) }}
+                        {{ form_row(companyDetailsForm.address) }}
+                        {{ form_row(companyDetailsForm.postal_code) }}
+                        {{ form_row(companyDetailsForm.city) }}
+                        <div class="mt-6">
+                            <twig:ButtonDarkDefault type="submit" text="Enregistrer"/>
+                        </div>
+                        {{ form_end(companyDetailsForm) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
