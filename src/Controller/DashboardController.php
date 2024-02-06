@@ -14,8 +14,9 @@ use App\Form\DashboardFormType;
 
 class DashboardController extends AbstractController
 {
-    #[Route('/dashboard', name: 'dashboard', methods: ['GET','POST'])]
-    public function dashboard(InvoiceRepository $invoiceRepository, QuotationRepository $quotationRepository, CustomerRepository $customerRepository, Request $request): Response
+    #[Route('/', name: 'dashboard',methods: ['GET','POST'])]
+    public function dashboard(InvoiceRepository $invoiceRepository, QuotationRepository $quotationRepository, CustomerRepository $customerRepository,Request $request): Response
+
     {
          $form = $this->createForm(DashboardFormType::class, null, [
             'method' => 'POST'
