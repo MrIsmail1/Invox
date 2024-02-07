@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% set title = "Invox | Produits " %}
+
+{% block content %}
+    <div class="flex justify-between">
+        <h1>Produits</h1>
+    </div>
+    <div class="flex justify-end mt-6 gap-2">
+        <twig:Button content="Ajouter un produit" path=""/>
+    </div>
+    <div>
+        <twig:Table thead1="Nom" thead2="Prix" thead3="Total TTC" pathEdit="app_product_edit"
+                    pathDelete="app_product_delete" data="{{ products }}"/>
+    </div>
+{% endblock content %}
