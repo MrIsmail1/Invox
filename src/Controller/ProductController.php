@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Form\ProductFormType;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,10 +16,22 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends AbstractController
 {
     #[Route('/', name: 'app_product_index', methods: ['GET'])]
-    public function index(ProductRepository $productRepository): Response
+    public function index(Request $request, ProductRepository $productRepository, PaginatorInterface $paginatorInterface): Response
     {
-        return $this->render('pages/product/index.html.twig', [
-            'products' => $productRepository->findAll(),
+        $query = $productRepository->createQueryBuilder('a')->getQuery();
+        $data = $paginatorInterface->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            15
+        );
+        $product = new Product();
+        $form = $this->createForm(ProductFormType::class, $product);
+        $form->handleRequest($request);
+
+        return $this->render('pages/product/page_product_index.html.twig', [
+            'productForm' => $form,
+            'data' => $data,
+            'modal' => "productModal",
         ]);
     }
 
@@ -62,7 +75,7 @@ class ProductController extends AbstractController
             return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('pages/product/edit.html.twig', [
+        return $this->render(null, [
             'product' => $product,
             'form' => $form,
         ]);

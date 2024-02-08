@@ -58,44 +58,17 @@
                 <th scope="col" class="">
 
                 </th>
-                <th scope="col" class="px-6 py-3">
-                    {% if thead1 is not empty %}
-                        {{ knp_pagination_sortable(data, thead1, 'a.id') }}
-                    {% endif %}
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    {% if thead2 is not empty %}
-                        {{ knp_pagination_sortable(data, thead2, 'a.customer') }}
-                    {% endif %}
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    {% if thead3 is not empty %}
-                        {{ knp_pagination_sortable(data, thead3, 'a.totalWithTaxes') }}
-                    {% endif %}
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    {% if thead4 is not empty %}
-                        {{ knp_pagination_sortable(data, thead4, 'a.isValid') }}
-                    {% endif %}
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    {% if thead5 is not empty %}
-                        {{ knp_pagination_sortable(data, thead5, 'a.expiresIn') }}
-                    {% endif %}
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    {% if thead6 is not empty %}
-                        {{ knp_pagination_sortable(data, thead6, 'a.expiresIn') }}
-                    {% endif %}
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    {{ thead7 }}
-                </th>
+                {% for theadKey, theadLabel in theads %}
+                    <th scope="col" class="px-6 py-3">
+                        {{ knp_pagination_sortable(data, theadLabel, 'a.' ~ theadKey) }}
+                    </th>
+                {% endfor %}
             </tr>
             </thead>
             <tbody>
-            {% for data in data %}
+            {% for dataItem in data %}
                 <tr x-data="{ open: false }"
+                    x-on:click="open = !open;"
                     class="bg-bg-white border-b border-b-border-color dark:bg-dark-pr-blue dark:border-gray-700 hover:bg-bg-hover-light dark:hover:bg-gray-600">
                     <td class="w-4 p-4">
                         <div class="flex items-center">
@@ -104,58 +77,29 @@
                             <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
                         </div>
                     </td>
-                    <td class="px-6 py-4 font-bold">
-                        {{ data.id }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ data.customer }}
-                    </td>
-                    {% if data.total is defined %}
-                        <td class="px-6 py-4">
-                            {{ data.total }} €
+                    {% for key, label in theads %}
+                        <td class="px-6 py-4 ">
+                            {% if key == 'id' %}
+                                <span class="font-bold">{{ attribute(dataItem, key) }}</span>
+                            {% elseif key == 'total' and attribute(dataItem, key) is defined %}
+                                {{ attribute(dataItem, key) }} €
+                            {% elseif key == 'price' and attribute(dataItem, key) is defined %}
+                                {{ attribute(dataItem, key) }} €
+                            {% elseif key == 'status' %}
+                                <div class="flex items-center">
+                                    <twig:Status status="{{ attribute(dataItem, key) }}"/>
+                                </div>
+                            {% elseif (key == 'createdAt' or key == 'updatedAt') and attribute(dataItem, key) is not empty and attribute(dataItem, key) is defined %}
+                                {{ attribute(dataItem, key)|date('d-m-Y') }}
+                            {% else %}
+                                {{ attribute(dataItem, key) }}
+                                <twig:Modal data="{{ dataItem }}" pathEdit="{{ pathEdit }}"
+                                            pathDelete="{{ pathDelete }}"
+                                            modal="{{ modal }}" invoiceItem="{{ invoiceItem }}"
+                                            products="{{ products }}"/>
+                            {% endif %}
                         </td>
-                    {% endif %}
-                    {% if data.isValid is defined %}
-                        <td class="px-6 py-4">
-                            <div class="flex items-center">
-                                {% if data.status %}
-                                    <twig:Status status="{{ data.status }}"/>
-                                    {# {% block content %}
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M9.54961 18L3.84961 12.3L5.27461 10.875L9.54961 15.15L18.7246 5.97498L20.1496 7.39998L9.54961 18Z"/>
-                                </svg>
-                                Payée #}
-                                    {# {% else %}
-                            <twig:Status>
-                                {% block content %}
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M6.75781 17.243L12.0008 12L17.2438 17.243M17.2438 6.75696L11.9998 12L6.75781 6.75696" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    Non Payée
-                                {% endblock %}
-                            </twig:Status> #}
-                                {% endif %}
-                            </div>
-                        </td>
-                    {% endif %}
-                    {% if data.createdAt is not empty and data.createdAt is defined %}
-                        <td class="px-6 py-4">
-                            {{ data.createdAt.format('d-m-Y') }}
-                        </td>
-                    {% endif %}
-                    {% if data.updatedAt is not empty and data.updatedAt is defined %}
-                        <td class="px-6 py-4">
-                            {{ data.updatedAt.format('d-m-Y') }}
-                        </td>
-                    {% endif %}
-                    <td class="px-6 py-4">
-                        <div x-data="{ open: false }">
-                            <twig:Button js="open = !open" content="Voir"/>
-                            {# ------------------------------------------------------------------------------  La modal show ------------------------------------------------------------------------ #}
-                            <twig:Modal data="{{ data }}" pathEdit="{{ pathEdit }}" pathDelete="{{ pathDelete }}"
-                                        modal="{{ modal }}" invoiceItem="{{ invoiceItem }}" products="{{ products }}"/>
-                        </div>
-                    </td>
+                    {% endfor %}
                 </tr>
             {% endfor %}
             </tbody>
