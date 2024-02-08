@@ -41,7 +41,7 @@
 {# CUSTOM SELECT INPUT #}
 {% block select_widget %}
     <select {{ block('widget_attributes') }}
-            class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 ">
+            class="bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 ">
         {% if placeholder is defined %}
             <option value="">{{ placeholder }}</option>
         {% endif %}

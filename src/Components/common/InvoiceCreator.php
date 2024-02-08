@@ -24,12 +24,16 @@ class InvoiceCreator extends AbstractController
     use DefaultActionTrait;
     use ValidatableComponentTrait;
 
-    #[LiveProp(writable: ['taxe'])]
+    #[LiveProp(writable: ['taxe', 'status'])]
     #[Valid]
     public Invoice $invoice;
 
     #[LiveProp]
     public array $lineItems = [];
+
+    #[LiveProp(writable: true)]
+    public ?string $status = null;
+
 
     public bool $savedSuccessfully = false;
     public bool $saveFailed = false;
@@ -41,6 +45,7 @@ class InvoiceCreator extends AbstractController
     public function mount(Invoice $invoice): void
     {
         $this->invoice = $invoice;
+        $this->status = $invoice->getStatus();
         $this->lineItems = $this->populateLineItems($invoice);
     }
 
@@ -92,7 +97,7 @@ class InvoiceCreator extends AbstractController
         $this->lineItems[$key]['quantity'] = $quantity;
     }
 
-#[LiveAction]
+    #[LiveAction]
     public function saveInvoice(EntityManagerInterface $entityManager)
     {
         $this->saveFailed = true;
@@ -126,13 +131,10 @@ class InvoiceCreator extends AbstractController
         }
 
         /* Enregistrer les éléments dans la table invoice */
-        $subTotal= $this->getSubtotal();
-        $total= $this->getTotal();
-        $taxe= $this->invoice->getTaxe();
-        $this->invoice->setTaxe($taxe);
-        $this->invoice->setTotalWithOutTaxe($subTotal);
-        $this->invoice->setTotal($total);
-        $this->invoice->setStatus("Non payé");
+        $this->invoice->setStatus($this->invoice->getStatus());
+        $this->invoice->setTaxe($this->invoice->getTaxe());
+        $this->invoice->setTotalWithOutTaxe($this->getSubtotal());
+        $this->invoice->setTotal($this->getTotal());
 
         $isNew = null === $this->invoice->getId();
         $entityManager->persist($this->invoice);
