@@ -13,6 +13,9 @@ class Quotation
 {
     use Traits\Timestampable;
 
+    public const STATUS_ACCEPTED = 'Accepté';
+    public const STATUS_DENIED = 'Refusé';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -53,6 +56,9 @@ class Quotation
 
     #[ORM\OneToMany(mappedBy: 'quotation', targetEntity: Invoice::class)]
     private Collection $invoices;
+
+    #[ORM\Column(length: 255)]
+    private ?string $status = null;
 
     public function __construct()
     {

@@ -16,6 +16,7 @@ use App\Form\SearchType;
 use App\Form\InvoiceType;
 use App\Form\SearchAutocomplete;
 use Gedmo\Sortable\Sortable;
+use InvoiceFormType;
 use Knp\Component\Pager\PaginatorInterface;
 
 class InvoiceController extends AbstractController
@@ -67,9 +68,13 @@ public function index(Request $request, InvoiceRepository $invoiceRepository, En
 
 
     #[Route('invoice/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
-    public function new(ProductRepository $productRepository): Response
+    public function new(ProductRepository $productRepository, Request $request): Response
     {
         $invoice = new Invoice();
+        /* $form = $this->createForm(InvoiceFormType::class, $invoice);
+
+        $form->handleRequest($request); */
+        
         $invoiceItem = new InvoiceItem();
 
         $products = $productRepository->findAll();

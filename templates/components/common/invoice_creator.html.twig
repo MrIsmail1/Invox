@@ -34,6 +34,15 @@
                 </div>
             {% endif %}
         </div> #}
+
+        <div>
+            <label for="invoice_status">Statut:</label>
+            <select id="invoice_status" x-model="invoice.status" data-model="invoice.status">
+                {% for key, value in invoice.getStatusChoices() %}
+                    <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}
+            </select>
+        </div>
 {# _____________________________________________________________ Tableau debut _____________________________________________________________ #}
         <div class="card">
             <div class="mt-6 mb-8 overflow-x-auto rounded-lg border-border-color border-border-width">

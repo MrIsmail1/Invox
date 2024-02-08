@@ -14,6 +14,10 @@ class Invoice
 {
 
     use Traits\Timestampable;
+
+    public const STATUS_UNPAID = 'Non payé';
+    public const STATUS_PAID = 'Payé';
+    public const STATUS_OVERDUE = 'En retard';
     
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -215,5 +219,13 @@ class Invoice
         return $this;
     }
 
+    public static function getStatusChoices()
+    {
+        return [
+            'Non payé' => self::STATUS_UNPAID,
+            'Payé' => self::STATUS_PAID,
+            'En retard' => self::STATUS_OVERDUE,
+        ];
+    }
     
 }

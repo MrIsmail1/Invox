@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240203151202 extends AbstractMigration
+final class Version20240207140257 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,6 +21,7 @@ final class Version20240203151202 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SEQUENCE accounting_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE company_details_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE customer_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE invoice_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE invoice_item_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
@@ -30,6 +31,7 @@ final class Version20240203151202 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE reset_password_request_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE accounting (id INT NOT NULL, total_quotations INT DEFAULT NULL, total_invoices INT DEFAULT NULL, total_income NUMERIC(10, 2) DEFAULT NULL, total_paid_invoices INT DEFAULT NULL, total_valid_quotations INT DEFAULT NULL, total_late_invoices INT DEFAULT NULL, total_new_customers INT DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE company_details (id INT NOT NULL, company_logo VARCHAR(255) DEFAULT NULL, company_name VARCHAR(80) DEFAULT NULL, company_email VARCHAR(100) NOT NULL, siret_number VARCHAR(255) DEFAULT NULL, vat_number VARCHAR(255) DEFAULT NULL, vat_exempt BOOLEAN NOT NULL, legal_status VARCHAR(255) DEFAULT NULL, rcs VARCHAR(255) DEFAULT NULL, default_vat DOUBLE PRECISION NOT NULL, country VARCHAR(30) NOT NULL, address VARCHAR(255) DEFAULT NULL, city VARCHAR(30) DEFAULT NULL, website VARCHAR(100) DEFAULT NULL, postal_code VARCHAR(10) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE customer (id INT NOT NULL, first_name VARCHAR(255) DEFAULT NULL, last_name VARCHAR(255) DEFAULT NULL, email VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN customer.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN customer.updated_at IS \'(DC2Type:datetime_immutable)\'');
@@ -41,20 +43,21 @@ final class Version20240203151202 extends AbstractMigration
         $this->addSql('CREATE TABLE invoice_item (id INT NOT NULL, invoice_id INT NOT NULL, product_id INT NOT NULL, quantity INT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_1DDE477B2989F1FD ON invoice_item (invoice_id)');
         $this->addSql('CREATE INDEX IDX_1DDE477B4584665A ON invoice_item (product_id)');
-        $this->addSql('CREATE TABLE media (id INT NOT NULL, uploaded_by_id INT NOT NULL, name VARCHAR(255) NOT NULL, path TEXT NOT NULL, type VARCHAR(50) NOT NULL, size INT NOT NULL, description TEXT DEFAULT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE media (id INT NOT NULL, uploaded_by_id INT NOT NULL, file_name VARCHAR(255) DEFAULT NULL, file_size INT DEFAULT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_6A2CA10CA2B28FE8 ON media (uploaded_by_id)');
-        $this->addSql('COMMENT ON COLUMN media.created_at IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('COMMENT ON COLUMN media.updated_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE product (id INT NOT NULL, name VARCHAR(255) NOT NULL, price INT NOT NULL, category VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE quotation (id INT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, expires_in DATE DEFAULT NULL, amount NUMERIC(8, 2) DEFAULT NULL, option VARCHAR(255) DEFAULT NULL, option_price NUMERIC(8, 2) DEFAULT NULL, quantity INT DEFAULT NULL, total_with_out_taxes NUMERIC(8, 2) DEFAULT NULL, taxes NUMERIC(4, 2) DEFAULT NULL, total_with_taxes NUMERIC(8, 2) DEFAULT NULL, is_valid BOOLEAN DEFAULT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE quotation (id INT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, expires_in DATE DEFAULT NULL, amount NUMERIC(8, 2) DEFAULT NULL, option VARCHAR(255) DEFAULT NULL, option_price NUMERIC(8, 2) DEFAULT NULL, quantity INT DEFAULT NULL, total_with_out_taxes NUMERIC(8, 2) DEFAULT NULL, taxes NUMERIC(4, 2) DEFAULT NULL, total_with_taxes NUMERIC(8, 2) DEFAULT NULL, is_valid BOOLEAN DEFAULT NULL, status VARCHAR(255) NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN quotation.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN quotation.updated_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE reset_password_request (id INT NOT NULL, user_id INT NOT NULL, selector VARCHAR(20) NOT NULL, hashed_token VARCHAR(100) NOT NULL, requested_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, expires_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_7CE748AA76ED395 ON reset_password_request (user_id)');
         $this->addSql('COMMENT ON COLUMN reset_password_request.requested_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN reset_password_request.expires_at IS \'(DC2Type:datetime_immutable)\'');
-        $this->addSql('CREATE TABLE "user" (id INT NOT NULL, accountings_id INT DEFAULT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, first_name VARCHAR(255) DEFAULT NULL, last_name VARCHAR(255) DEFAULT NULL, job VARCHAR(255) DEFAULT NULL, agree_terms BOOLEAN NOT NULL, is_verified BOOLEAN NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE "user" (id INT NOT NULL, accountings_id INT DEFAULT NULL, company_details_id INT DEFAULT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, first_name VARCHAR(255) DEFAULT NULL, last_name VARCHAR(255) DEFAULT NULL, job VARCHAR(255) DEFAULT NULL, agree_terms BOOLEAN NOT NULL, is_verified BOOLEAN NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON "user" (email)');
         $this->addSql('CREATE INDEX IDX_8D93D649A423299F ON "user" (accountings_id)');
+        $this->addSql('CREATE INDEX IDX_8D93D649694EEB4 ON "user" (company_details_id)');
         $this->addSql('CREATE TABLE user_quotation (user_id INT NOT NULL, quotation_id INT NOT NULL, PRIMARY KEY(user_id, quotation_id))');
         $this->addSql('CREATE INDEX IDX_47AA005DA76ED395 ON user_quotation (user_id)');
         $this->addSql('CREATE INDEX IDX_47AA005DB4EA4E60 ON user_quotation (quotation_id)');
@@ -83,6 +86,7 @@ final class Version20240203151202 extends AbstractMigration
         $this->addSql('ALTER TABLE media ADD CONSTRAINT FK_6A2CA10CA2B28FE8 FOREIGN KEY (uploaded_by_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE reset_password_request ADD CONSTRAINT FK_7CE748AA76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE "user" ADD CONSTRAINT FK_8D93D649A423299F FOREIGN KEY (accountings_id) REFERENCES accounting (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE "user" ADD CONSTRAINT FK_8D93D649694EEB4 FOREIGN KEY (company_details_id) REFERENCES company_details (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE user_quotation ADD CONSTRAINT FK_47AA005DA76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE user_quotation ADD CONSTRAINT FK_47AA005DB4EA4E60 FOREIGN KEY (quotation_id) REFERENCES quotation (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE user_invoice ADD CONSTRAINT FK_C868094EA76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
@@ -94,6 +98,7 @@ final class Version20240203151202 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SCHEMA public');
         $this->addSql('DROP SEQUENCE accounting_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE company_details_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE customer_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE invoice_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE invoice_item_id_seq CASCADE');
@@ -109,11 +114,13 @@ final class Version20240203151202 extends AbstractMigration
         $this->addSql('ALTER TABLE media DROP CONSTRAINT FK_6A2CA10CA2B28FE8');
         $this->addSql('ALTER TABLE reset_password_request DROP CONSTRAINT FK_7CE748AA76ED395');
         $this->addSql('ALTER TABLE "user" DROP CONSTRAINT FK_8D93D649A423299F');
+        $this->addSql('ALTER TABLE "user" DROP CONSTRAINT FK_8D93D649694EEB4');
         $this->addSql('ALTER TABLE user_quotation DROP CONSTRAINT FK_47AA005DA76ED395');
         $this->addSql('ALTER TABLE user_quotation DROP CONSTRAINT FK_47AA005DB4EA4E60');
         $this->addSql('ALTER TABLE user_invoice DROP CONSTRAINT FK_C868094EA76ED395');
         $this->addSql('ALTER TABLE user_invoice DROP CONSTRAINT FK_C868094E2989F1FD');
         $this->addSql('DROP TABLE accounting');
+        $this->addSql('DROP TABLE company_details');
         $this->addSql('DROP TABLE customer');
         $this->addSql('DROP TABLE invoice');
         $this->addSql('DROP TABLE invoice_item');

@@ -15,19 +15,16 @@ class DashboardFormType extends AbstractType
             ->add('start_date', DateType::class, [
                 'widget' => 'single_text', 
                 'label' => 'Date de début',
-                // Ajoutez ici d'autres options si nécessaire
             ])
             ->add('end_date', DateType::class, [
                 'widget' => 'single_text', 
                 'label' => 'Date de fin',
-                // Ajoutez ici d'autres options si nécessaire
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            // Configure your form options here
         ]);
     }
 }
