@@ -1,11 +1,24 @@
 {# templates/bundles/TwigBundle/Exception/error404.html.twig #}
 {% extends 'base.html.twig' %}
+{% set title = "Page introuvable | Invox" %}
 
-{% block body %}
-    <h1>Page not found test</h1>
-
-    <p>
-        The requested page couldn't be located. Checkout for any URL
-        misspelling or <a href="">return to the homepage</a>.
+{% block content %}
+    <section class="bg-bg-white dark:bg-dark-pr-blue rounded-lg">
+    <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+        <div class="mx-auto text-center">
+            <div class="w-full flex justify-end">
+                <img
+                    class="w-52"
+                    src="{{ asset('build/images/logo.svg') }}"
+                    alt="Logo Invox"
+                />
+            </div>
+            <h1 class="mt-4 mb-4 text-7xl tracking-tight font-extrabold lg:text-7xl">Erreur 404</h1>
+            <p class="mb-4 text-3xl tracking-tight font-bold md:text-3xl dark:text-white-font">Cette page n’existe pas</p>
+            <p class="mb-4 text-lg font-light dark:text-white-font">Désolé, nous ne trouvons pas cette page. Vous trouverez beaucoup de choses à explorer sur la page d'accueil.</p>
+            <twig:Button content="Retour à la page d'accueil" styles="mt-4" path="{{path("default_index")}}" />
+        </div>   
+    </div>
+</section>
     </p>
 {% endblock %}
