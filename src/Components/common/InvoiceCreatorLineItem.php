@@ -39,6 +39,11 @@ class InvoiceCreatorLineItem
     #[Assert\Positive]
     public int $quantity = 1;
 
+    #[LiveProp(writable: true)]
+    #[Assert\PositiveOrZero]
+    public ?float $discount = 0;
+
+
     #[LiveProp]
     public bool $isEditing = false;
 
@@ -61,8 +66,8 @@ class InvoiceCreatorLineItem
         $responder->emitUp('line_item:save', [
             'key' => $this->key,
             'product' => $this->product->getId(),
-            /* 'category' => $this->category->getId(), */
             'quantity' => $this->quantity,
+            'discount' => $this->discount,
         ]);
 
         $this->changeEditMode(false, $responder);

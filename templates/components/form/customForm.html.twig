@@ -38,16 +38,6 @@
     </div>
 {% endblock password_widget %}
 
-{# CUSTOM SELECT INPUT #}
-{% block select_widget %}
-    <select {{ block('widget_attributes') }}
-            class="bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 ">
-        {% if placeholder is defined %}
-            <option value="">{{ placeholder }}</option>
-        {% endif %}
-    </select>
-{% endblock select_widget %}
-
 {# CUSTOM NUMBER INPUT #}
 {% block number_widget %}
     <input type="number" {{ block('widget_attributes') }}
@@ -113,12 +103,21 @@
     </div>
 {% endblock _registration_form_agreeTerms_row %}
 
+{# CUSTOM SELECT INPUT #}
+{% block select_widget %}
+    <select {{ block('widget_attributes') }}
+            class="bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-lg rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5">
+        {% if placeholder is defined %}
+            <option value="">{{ placeholder }}</option>
+        {% endif %}
+    </select>
+{% endblock select_widget %}
 
 {# CUSTOM DEFAULT FROM ROW #}
 {%- block form_row -%}
     <div class="w-full mx-auto">
         {{- form_label(form) -}}
-        {{- form_widget(form, {'attr' : { 'class' : 'border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5'}}) -}}
+        {{- form_widget(form, {'attr' : { 'class' : 'bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-lg rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5'}}) -}}
         <p class="text-red-500 font-weight-light">
             {{- form_errors(form) -}}
         </p>

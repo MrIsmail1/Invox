@@ -15,8 +15,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Form\SearchType;
 use App\Form\InvoiceType;
 use App\Form\SearchAutocomplete;
+use App\Repository\CustomerRepository;
+use Doctrine\ORM\Query\Expr\Select;
 use Gedmo\Sortable\Sortable;
-use InvoiceFormType;
+use App\Form\SelectFormType;
 use Knp\Component\Pager\PaginatorInterface;
 
 class InvoiceController extends AbstractController
@@ -44,6 +46,7 @@ public function index(Request $request, InvoiceRepository $invoiceRepository, En
         foreach ($invoiceItems as $invoiceItem) {
             $product = $invoiceItem->getProduct();
             $quantity = $invoiceItem->getQuantity();
+            $discount = $invoiceItem->getDiscount();
 
             if ($product !== null) {
                 $productData[] = [
@@ -51,6 +54,7 @@ public function index(Request $request, InvoiceRepository $invoiceRepository, En
                     'price' => $product->getPrice(),
                     'category' => $product->getCategory(),
                     'quantity' => $quantity,
+                    'discount' => $discount,
                 ];
             }
         }
@@ -61,7 +65,6 @@ public function index(Request $request, InvoiceRepository $invoiceRepository, En
     return $this->render('invoice/page_invoice_index.html.twig', [
         'data' => $data,
         'invoiceItem' => $invoiceItem,
-        'modal' => "invoiceModal",
         'products' => $productDataByInvoiceId,
     ]);
 }
@@ -71,12 +74,14 @@ public function index(Request $request, InvoiceRepository $invoiceRepository, En
     public function new(ProductRepository $productRepository, Request $request): Response
     {
         $invoice = new Invoice();
-        /* $form = $this->createForm(InvoiceFormType::class, $invoice);
-
-        $form->handleRequest($request); */
+        $form = $this->createForm(SelectFormType::class, $invoice);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Traitez l'enregistrement de l'entité $invoice comme d'habitude
+        }
         
         $invoiceItem = new InvoiceItem();
-
         $products = $productRepository->findAll();
 
         // Pour créer une notification de succès
@@ -86,6 +91,7 @@ public function index(Request $request, InvoiceRepository $invoiceRepository, En
             'invoice' => $invoice,
             'invoiceItem' => $invoiceItem,
             'products' => $products,
+            'selectFormType' => $form->createView(),
         ]);
     }
 

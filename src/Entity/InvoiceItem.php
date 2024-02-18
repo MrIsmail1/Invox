@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\InvoiceItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: InvoiceItemRepository::class)]
 class InvoiceItem
@@ -20,6 +21,9 @@ class InvoiceItem
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
+
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    private ?float $discount = null;
 
     #[ORM\Column]
     private int $quantity = 1;
@@ -50,6 +54,17 @@ class InvoiceItem
     {
         $this->product = $product;
 
+        return $this;
+    }
+
+    public function getDiscount(): ?float
+    {
+        return $this->discount;
+    }
+
+    public function setDiscount(?float $discount): self
+    {
+        $this->discount = $discount;
         return $this;
     }
 

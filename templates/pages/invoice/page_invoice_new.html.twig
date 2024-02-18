@@ -5,20 +5,13 @@
 {% block content %}
 <div class="flex w-full bg-bg-white dark:bg-dark-pr-blue rounded-lg mt-12" >
         <div class="mx-20 mt-11 w-full">
-            <div class="flex justify-between">
+            <div>
                 <div>
-                    <h2>Facture: 67</h2>
-                </div>
-                <div>
-                    <h2>Logo</h2>
-                    <h5>Client :</h5>
-                    <h6>Adresse :</h6>
-                    <h6>Mail :</h6>
-                    <twig:Button content="Modifier" styles="mt-4 "/>
+                    <h2>Facture {{invoice.id}}</h2>
                 </div>
             </div>
-            <div class="flex mt-16 justify-between" >
-                    <twig:InvoiceCreator invoice="{{ invoice }}"/>
+            <div class="flex mt-2 justify-between" >
+                    <twig:InvoiceCreator invoice="{{ invoice }}" />
             </div>
     </div>
 </div>

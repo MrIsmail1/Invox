@@ -1,43 +1,42 @@
 <div {{ attributes }}>
+    {# {% set customerEmail = "" %} #}
     <form data-action="live#action" data-action-name="prevent|saveInvoice">
-        {# {% if invoice.taxe != 0 %}
-            {% set total = this.subTotal + this.subTotal * (invoice.taxe / 100)  %}    
-            {% else %}
-            {% set total = this.subTotal %}
-        {% endif %} #}
-{#         <div class="mb-3">
-            <label for="customer-name">Nom du client:</label>
-            <input
-                    type="text"
-                    data-model="invoice.customerName"
-                    class="form-control {{ _errors.has('invoice.customerName') ? 'is-invalid' }}"
-                    id="customer-name"
-            >
-            {% if _errors.has('invoice.customerName') %}
-                <div class="invalid-feedback">
-                    {{ _errors.get('invoice.customerName') }}
-                </div>
-            {% endif %}
+        <div class="flex items-end flex-col mb-8">
+            <h2>Logo</h2>
+            <div class="items-center">
+        <select class="bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5" x-model="selectedCustomerId" data-model="selectedCustomerId">
+            <option value="">Sélectionnez un client</option>
+            {% for customerId, customerDetails in customers %}
+                <option value="{{ customerId }}">{{ customerDetails.name }}</option>
+            {% endfor %}
+        </select>
         </div>
+        {% if selectedCustomerId is not null %}
+            <div>
+            <h6>Adresse : <span>{{ customers[selectedCustomerId]['address'] }}</span></h6>
+            <h6>Email : <span>{{ customers[selectedCustomerId]['email'] }}</span></h6>
+        </div>    
+        {% endif %}
+{#         {{ form_widget(selectFormType.status, {
+        'attr': {
+            'x-model': 'invoice.status',
+            'data-model': 'invoice.status',
+            'class': 'bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-2.5'
+        }
+        }) }}
 
-        <div class="mb-3">
-            <label for="customer-email">E-mail de facturation:</label>
-            <input
-                    type="email"
-                    data-model="invoice.customerEmail"
-                    class="form-control {{ _errors.has('invoice.customerEmail') ? 'is-invalid' }}"
-                    id="customer-email"
-            >
-            {% if _errors.has('invoice.customerEmail') %}
-                <div class="invalid-feedback">
-                    {{ _errors.get('invoice.customerEmail') }}
-                </div>
-            {% endif %}
-        </div> #}
+        {{ form_widget(selectFormType.customer, {
+    'attr': {
+        'x-model': 'selectedCustomerId',
+        'data-model': 'selectedCustomerId',
+        'class': 'bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-2.5'
+    }
+}) }} #}
 
-        <div>
-            <label for="invoice_status">Statut:</label>
-            <select id="invoice_status" x-model="invoice.status" data-model="invoice.status">
+        </div>
+        <div class="flex items-center">
+            <label for="invoice_status">Statut :</label>
+            <select class="ml-2 bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5 " id="invoice_status" x-model="invoice.status" data-model="invoice.status">
                 {% for key, value in invoice.getStatusChoices() %}
                     <option value="{{ key }}">{{ value }}</option>
                 {% endfor %}
@@ -47,22 +46,24 @@
         <div class="card">
             <div class="mt-6 mb-8 overflow-x-auto rounded-lg border-border-color border-border-width">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:bg-dark-pr-blue">
-                    <thead class="rounded-bl-lg rounded-br-lg dark:bg-bg-hover-sidebar text-sm uppercase dark:text-white-font border-b-border-width border-border-color">
+                    <thead class="rounded-bl-lg rounded-br-lg bg-bg-hover-sidebar dark:bg-bg-hover-sidebar text-sm uppercase dark:text-white-font border-b-border-width border-border-color">
                     <tr>
                         <th scope="col" class="px-6 py-3 w-96 rounded-bl-lg">Description</th>
                         <th scope="col" class="px-6 py-3 w-40">Catégorie</th>
                         <th scope="col" class="px-6 py-3 w-40">Quantité</th>
                         <th scope="col" class="px-6 py-3 w-40">Prix</th>
+                        <th scope="col" class="px-6 py-3 w-40">Remise</th>
                         <th scope="col" class="px-6 py-3 w-40 rounded-br-lg">Action</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for key, line in lineItems %}
                         <twig:InvoiceCreatorLineItem
-                                key="{{ key }}"
-                                productId="{{ line.productId }}"
-                                quantity="{{ line.quantity }}"
-                                isEditing="{{ line.isEditing }}"
+                            key="{{ key }}"
+                            productId="{{ line.productId }}"
+                            quantity="{{ line.quantity }}"
+                            discount="{{ line.discount }}"
+                            isEditing="{{ line.isEditing }}"
                         />
                     {% endfor %}
                     </tbody>
@@ -70,31 +71,34 @@
                 <twig:Button 
                     action="live#action"
                     actionName="addLineItem"
-                    styles="mt-3"
+                    styles="mt-3 flex items-center"
                     >
-                    + Ajouter un produit
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.5 12.5H6V11.5H11.5V6H12.5V11.5H18V12.5H12.5V18H11.5V12.5Z" fill="currentColor"/>
+                    </svg>
+                    Ajouter un produit
                 </twig:Button>
             </div>
         </div>
-
         <div class="flex justify-end">
             <div class="text-end w-60">
                 <div class="flex justify-between">
-                    <p class="text-[18px] text-gray-500">Remise :</p>
-                    <h6 class="text-[18px]">10%</h6>
+                    <p class="text-[18px] text-gray-500">Remise total :</p>
+                    <h6 class="text-[18px]">{{this.allDiscount|format_currency('EUR')}}</h6>
                 </div>
                 <div class="flex justify-between">
                     <p class="text-[18px] text-gray-500">Sous total :</p>
                     <h6 class="text-[18px]">{{ this.subtotal|format_currency('EUR') }}</h6>
                 </div>
                 <div class="flex justify-between">
-                    <p class="text-[18px] text-gray-500">TVA :</th>
+                    <p class="text-[18px] text-gray-500">TVA :</p>
                     <h6 class="flex justify-content-end text-[18px]">
-                        <div class="w-20 flex {{ _errors.has('invoice.taxe') ? 'is-invalid' }}">
+                        <div class="flex {{ _errors.has('invoice.taxe') ? 'is-invalid' : '' }}">
                             <input
-                                    type="number"
-                                    data-model="invoice.taxe"
-                                    class="form-control w-12"
+                                type="number"
+                                data-model="invoice.taxe"
+                                class="bg-bg-white dark:bg-dark-pr-blue w-12 text-end"
+                                value="{{ invoice.taxe }}"
                             >
                             <span class="input-group-text">%</span>
                         </div>
@@ -105,6 +109,7 @@
                         {% endif %}
                     </h6>
                 </div>
+
                 <div class="flex justify-between">
                     <p class="text-[18px] text-gray-500">Total:</p>
                     <h6 class="text-[18px]">{{ this.total|format_currency('EUR') }}</h6>
@@ -112,29 +117,14 @@
             </div>
         </div>
 
-         <button
-            class="btn btn-primary"
-            {{ areAnyLineItemsEditing ? 'disabled' : '' }}
-        >
-            <span data-loading="action(saveInvoice)|show">
-                {# Faire un spinner #}
-            </span>
-            {% if savedSuccessfully %}
-                {# Faire un save success #}
-            {% endif %}
-            {% if saveFailed %}
-                {# Faire un save failed #}
-            {% endif %}
-            <h3>Enregistrer</h3>
+         <button class="text-gray-900 bg-bg-white border border-gray-300 focus:outline-none hover:bg-pr-blue hover:text-white focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 p-2.5 mb-2 dark:bg-dark-pr-blue dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+            Enregistrer
         </button>
         {% if saveFailed %}
-            <small class="text-secondary">Check above for errors</small>
+            <small class="text-red-500 ml-2">Veuillez remplir tous les champs</small>
         {% endif %}
         {% if areAnyLineItemsEditing %}
-            <small class="text-secondary">Save all line items before continuing.</small>
+            <small class="text-red-500 ml-2">Enregistrez tous les éléments avant de continuer.</small>
         {% endif %}
         </form> 
 </div>
-
-
-

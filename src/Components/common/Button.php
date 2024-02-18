@@ -13,4 +13,5 @@ class Button
     public ?string $js = null;
     public ?string $action = null;
     public ?string $actionName = null;
+    public ?string $event = null;
 }

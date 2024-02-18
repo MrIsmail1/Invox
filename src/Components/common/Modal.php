@@ -12,5 +12,4 @@ class Modal
     public $products = [];
     public ?string $pathDelete = null;
     public ?string $pathEdit = null;
-    public ?string $modal = null;
 }
