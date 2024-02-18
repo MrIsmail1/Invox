@@ -6,6 +6,7 @@ use App\Entity\Invoice;
 use App\Entity\InvoiceItem;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
+use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Constraints\Valid;
@@ -34,20 +35,46 @@ class InvoiceCreator extends AbstractController
     #[LiveProp(writable: true)]
     public ?string $status = null;
 
+    #[LiveProp(writable: true)]
+    public array $customers = [];
+
+    #[LiveProp(writable: true)]
+    public ?int $selectedCustomerId = null;
 
     public bool $savedSuccessfully = false;
     public bool $saveFailed = false;
+    /* public ?object $selectFormType = null; */
 
-    public function __construct(private ProductRepository $productRepository)
+    private CustomerRepository $customerRepository;
+    private ProductRepository $productRepository;
+
+    // Injectez CustomerRepository via le constructeur
+    public function __construct(ProductRepository $productRepository, CustomerRepository $customerRepository)
     {
+        $this->customerRepository = $customerRepository;
+        $this->productRepository = $productRepository;
     }
 
     public function mount(Invoice $invoice): void
-    {
-        $this->invoice = $invoice;
-        $this->status = $invoice->getStatus();
-        $this->lineItems = $this->populateLineItems($invoice);
+{
+    $this->invoice = $invoice;
+    $this->status = $invoice->getStatus();
+    $this->selectedCustomerId = $invoice->getCustomer() ? $invoice->getCustomer()->getId() : null;
+    $this->lineItems = $this->populateLineItems($invoice);
+
+    $customersCollection = $this->customerRepository->findAll();
+    $customersArray = [];
+    foreach ($customersCollection as $customer) {
+        // Here, you store an array with all the details you need
+        $customersArray[$customer->getId()] = [
+            'name' => (string) $customer,
+            'email' => $customer->getEmail(),
+            'address' => $customer->getAddress(),
+        ];
     }
+
+    $this->customers = $customersArray;
+}
 
     private function populateLineItems(Invoice $invoice): array
     {
@@ -56,6 +83,7 @@ class InvoiceCreator extends AbstractController
             $lineItems[] = [
                 'productId' => $item->getProduct()->getId(),
                 'quantity' => $item->getQuantity(),
+                'discount' => $item->getDiscount(),
                 'isEditing' => false,
             ];
         }
@@ -69,6 +97,7 @@ class InvoiceCreator extends AbstractController
         $this->lineItems[] = [
             'productId' => null,
             'quantity' => 1,
+            'discount' => 0,
             'isEditing' => true,
         ];
     }
@@ -86,25 +115,43 @@ class InvoiceCreator extends AbstractController
     }
 
     #[LiveListener('line_item:save')]
-    public function saveLineItem(#[LiveArg] int $key, #[LiveArg] Product $product, #[LiveArg] int $quantity ): void
+    public function saveLineItem(#[LiveArg] int $key, #[LiveArg] Product $product, #[LiveArg] int $quantity,#[LiveArg] float $discount ): void
     {
         if (!isset($this->lineItems[$key])) {
             // shouldn't happen
             return;
         }
 
-        $this->lineItems[$key]['productId'] = $product->getId();
-        $this->lineItems[$key]['quantity'] = $quantity;
+         $this->lineItems[$key] = [
+        'productId' => $product->getId(),
+        'quantity' => $quantity,
+        'discount' => $discount,
+    ];
     }
 
     #[LiveAction]
     public function saveInvoice(EntityManagerInterface $entityManager)
     {
+
+        if (empty($this->lineItems)) {
+            $this->saveFailed = true;
+            $this->addFlash('error', 'La facture doit contenir au moins un élément.');
+            return;
+        }
+
+        if ($this->selectedCustomerId) {
+            $customer = $this->customerRepository->find($this->selectedCustomerId);
+            $this->invoice->setCustomer($customer);
+        }
         $this->saveFailed = true;
         $this->validate();
         $this->saveFailed = false;
 
-        // TODO: do we check for `isSaved` here... and throw an error?
+         if (!$this->selectedCustomerId) {
+        $this->saveFailed = true;
+        $this->addFlash('error', 'Un client doit être sélectionné.');
+        return; // Arrêtez l'exécution de la méthode ici
+    }
 
         foreach ($this->invoice->getInvoiceItems() as $key => $item) {
             if (!isset($this->lineItems[$key])) {
@@ -117,17 +164,15 @@ class InvoiceCreator extends AbstractController
         foreach ($this->lineItems as $key => $lineItem) {
             $invoiceItem = $this->invoice->getInvoiceItems()->get($key);
             if (null === $invoiceItem) {
-                // this is a new item! Welcome!
                 $invoiceItem = new InvoiceItem();
                 $entityManager->persist($invoiceItem);
                 $this->invoice->addInvoiceItem($invoiceItem);
             }
 
             $product = $this->findProduct($lineItem['productId']);
-            /* $category = $this->findCategory($lineItem['categoryId']); */
             $invoiceItem->setProduct($product);
-            /* $invoiceItem->setCategory($category); */
             $invoiceItem->setQuantity($lineItem['quantity']);
+            $invoiceItem->setDiscount($lineItem['discount']);
         }
 
         /* Enregistrer les éléments dans la table invoice */
@@ -182,10 +227,21 @@ private function isNewInvoice(): bool
 
             $product = $this->findProduct($lineItem['productId']);
 
-            $subTotal += ($product->getPrice() * $lineItem['quantity']);
+            $subTotal += ($product->getPrice() * $lineItem['quantity'] - $lineItem['discount']);
         }
 
-        return $subTotal / 100;
+        return $subTotal;
+    }
+
+    public function getAllDiscount(): float
+    {
+        $discount = 0;
+
+        foreach ($this->lineItems as $lineItem) {
+            $discount += $lineItem['discount'];
+        }
+
+        return $discount;
     }
 
     #[ExposeInTemplate]
@@ -199,4 +255,5 @@ private function isNewInvoice(): bool
 
         return false;
     }
+
 }

@@ -33,9 +33,9 @@ class Invoice
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
     private ?string $total = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     #[Assert\Range(min: 0, max: 100)]
-    private ?string $taxe = null;
+    private ?float $taxe = 0;
 
     #[ORM\Column(nullable: true)]
     private ?bool $isValid = null;
@@ -78,15 +78,14 @@ class Invoice
         return $this;
     }
 
-    public function getTaxe(): ?int
+    public function getTaxe(): ?float
     {
         return $this->taxe;
     }
 
-    public function setTaxe(?int $taxe): self
+    public function setTaxe(?float $taxe): self
     {
         $this->taxe = $taxe;
-
         return $this;
     }
 
