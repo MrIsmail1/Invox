@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Invoice;
+use App\Entity\Quotation;
 use App\Entity\InvoiceItem;
 use App\Repository\ProductRepository;
-use App\Repository\InvoiceRepository;
+use App\Repository\QuotationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,13 +13,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
 
-class InvoiceController extends AbstractController
+class QuotationController extends AbstractController
 {
-#[Route('/invoice', name: 'app_invoice_index', methods: ['GET', 'POST'])]
-public function index(Request $request, InvoiceRepository $invoiceRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response 
+#[Route('/quotation', name: 'app_quotation_index', methods: ['GET', 'POST'])]
+public function index(Request $request, QuotationRepository $quotationRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response 
 {
     $invoiceItem = new InvoiceItem();
-    $query = $invoiceRepository->createQueryBuilder('a')->getQuery();
+    $query = $quotationRepository->createQueryBuilder('a')->getQuery();
 
     $data = $paginatorInterface->paginate(
         $query,
@@ -28,11 +28,11 @@ public function index(Request $request, InvoiceRepository $invoiceRepository, En
     );
 
     // Initialiser $productDataByInvoiceId avant de l'utiliser
-    $productDataByInvoiceId = [];
+    $productDataByQuotationId = [];
 
-    foreach ($data as $invoice) {
-        $invoiceId = $invoice->getId();
-        $invoiceItems = $invoice->getInvoiceItems();
+    foreach ($data as $quotation) {
+        $quotationId = $quotation->getId();
+        $invoiceItems = $quotation->getInvoiceItems();
         $productData = [];
 
         foreach ($invoiceItems as $invoiceItem) {
@@ -51,27 +51,29 @@ public function index(Request $request, InvoiceRepository $invoiceRepository, En
             }
         }
 
-        $productDataByInvoiceId[$invoiceId] = $productData;
+        $productDataByQuotationId[$quotationId] = $productData;
     }
 
     return $this->render('invoice/page_invoice_index.html.twig', [
         'data' => $data,
         'invoiceItem' => $invoiceItem,
-        'products' => $productDataByInvoiceId,
-        'type' => 'invoice',
+        'products' => $productDataByQuotationId,
+        'pathEdit' => 'app_quotation_edit',
+        'pathDelete' => 'app_quotation_delete',
+        'type' => 'quotation',
     ]);
 }
 
 
-    #[Route('invoice/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
+    #[Route('quotation/new', name: 'app_quotation_new', methods: ['GET', 'POST'])]
     public function new(ProductRepository $productRepository, Request $request): Response
     {
-        $invoice = new Invoice();
-        /* $form = $this->createForm(SelectFormType::class, $invoice);
+        $quotation = new Quotation();
+        /* $form = $this->createForm(SelectFormType::class, $quotation);
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
-            // Traitez l'enregistrement de l'entité $invoice comme d'habitude
+            // Traitez l'enregistrement de l'entité $quotation comme d'habitude
         } */
         
         $invoiceItem = new InvoiceItem();
@@ -81,31 +83,31 @@ public function index(Request $request, InvoiceRepository $invoiceRepository, En
         $this->addFlash('success', 'La facture a été créée avec succès');
         
         return $this->render('invoice/page_invoice_new.html.twig', [
-            'invoice' => $invoice,
+            'quotation' => $quotation,
             'invoiceItem' => $invoiceItem,
             'products' => $products,
-            'type' => 'invoice',
+            'type' => 'quotation',
         ]);
     }
 
-    /* #[Route('invoice/edit/{id}', name: 'app_invoice_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
+    #[Route('quotation/edit/{id}', name: 'app_quotation_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Quotation $quotation, EntityManagerInterface $entityManager): Response
     {
         return $this->render('invoice/page_invoice_new.html.twig', [
-            'invoice' => $invoice,
+            'quotation' => $quotation,
             'edit' => "edit",
         ]);
     }
 
 
-    #[Route('invoice/delete/{id}/{token}', name: 'app_invoice_delete', methods: ['GET'])]
-    public function delete(Invoice $invoice, string $token, EntityManagerInterface $entityManager): Response
+    #[Route('quotation/delete/{id}/{token}', name: 'app_quotation_delete', methods: ['GET'])]
+    public function delete(Quotation $quotation, string $token, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$invoice->getId(), $token)) {
-            $entityManager->remove($invoice);
+        if ($this->isCsrfTokenValid('delete'.$quotation->getId(), $token)) {
+            $entityManager->remove($quotation);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
-    } */
+        return $this->redirectToRoute('app_quotation_index', [], Response::HTTP_SEE_OTHER);
+    }
 }

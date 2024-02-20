@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Invoice
 {
 
-    use Traits\Timestampable;
+    use Traits\Create;
 
     public const STATUS_UNPAID = 'Non payé';
     public const STATUS_PAID = 'Payé';
@@ -23,9 +23,6 @@ class Invoice
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $expiresIn = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
     private ?string $totalWithOutTaxe = null;
@@ -64,18 +61,6 @@ class Invoice
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getExpiresIn(): ?\DateTimeInterface
-    {
-        return $this->expiresIn;
-    }
-
-    public function setExpiresIn(?\DateTimeInterface $expiresIn): static
-    {
-        $this->expiresIn = $expiresIn;
-
-        return $this;
     }
 
     public function getTaxe(): ?float

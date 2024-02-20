@@ -3,16 +3,27 @@
 {% set title = "Invoice" %}
 
 {% block content %}
+{{ dump() }}
 <div class="flex w-full bg-bg-white dark:bg-dark-pr-blue rounded-lg mt-12" >
-        <div class="mx-20 mt-11 w-full">
+    <div class="mx-20 mt-11 w-full">
+        <div>
             <div>
-                <div>
-                    <h2>Facture {{invoice.id}}</h2>
-                </div>
+                <h2>
+                    {% if quotation is defined %}
+                    Devis {{ quotation.id }}
+                    {% else %}
+                    Facture {{ invoice.id }}
+                    {% endif %}
+                </h2>
             </div>
-            <div class="flex mt-2 justify-between" >
-                    <twig:InvoiceCreator invoice="{{ invoice }}" />
-            </div>
+        </div>
+        <div class="flex mt-2 justify-between" >
+            {% if quotation is defined %}
+                <twig:QuotationCreator quotation="{{ quotation }}" />
+            {% else %}
+                <twig:InvoiceCreator invoice="{{ invoice }}" />
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}

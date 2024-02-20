@@ -4,8 +4,9 @@
         <div class="w-full h-full bg-bg-white dark:bg-dark-pr-blue p-8 rounded shadow-2xl">
                 <twig:Status styles="w-24" status="{{data.status}}"/>
             <div class="mt-4 flex items-center justify-between">
-                <h2 class="text-2xl font-bold">Facture {{ data.id }}</h2>
-                <div class="flex gap-x-2">
+                <h2 class="text-2xl font-bold">{{ type == 'quotation' ? 'Devis' : 'Facture'  }} {{ data.id }}</h2>
+                {% if pathEdit is defined and pathEdit is not empty  %}
+                    <div class="flex gap-x-2">
                         <a href="{{ path(pathEdit, {'id': data.id}) }}" class="font-medium text-link-color">
                             <twig:Button>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -22,6 +23,7 @@
                             </twig:Button>
                         </a>
                 </div>
+                {% endif %}
             </div>
 
 {# ------------------------------------------------------------------------ Start Invoice ------------------------------------------------------------------------ #}
@@ -64,46 +66,19 @@
                     </tbody>
                 </table>
             </div>
-            {% if data.expiresIn is not empty and data.expiresIn is defined %}
+            {% if data.createdAt is defined and data.createdAt is not empty %}
             <div class="flex justify-between mb-4">
                 <span class="font-semibold">Date de création:</span>
                 <span>{{ data.createdAt.format('d-m-Y') }}</span>
             </div>
             {% endif %}
 
-            {% if data.expiresIn is not empty and data.expiresIn is defined %}
+            {% if  data.updatedAt is defined and data.updatedAt is not empty %}
             <div class="flex justify-between mb-4">
-                <span class="font-semibold">Date d'expiration:</span>
+                <span class="font-semibold">Date de modification:</span>
                 <span>{{ data.updatedAt|date('d-m-Y') }}</span>
             </div>
             {% endif %}
-
-            {# {% if data.totalWithOutTaxe is not empty and data.totalWithOutTaxe is defined %}
-            <div>
-                <div class="flex justify-between">
-                    <span class="font-semibold">Remise:</span>
-                    <span class="text-xl font-bold">300€</span>
-                </div>
-            </div>
-            <div>
-                <div class="flex justify-between">
-                    <span class="font-semibold">Sous Total:</span>
-                    <span class="text-xl font-bold">{{data.totalWithOutTaxe}}</span>
-                </div>
-            </div>
-            <div>
-                <div class="flex justify-between">
-                    <span class="font-semibold">Taxe</span>
-                    <span class="text-xl font-bold">{{data.taxe}}%</span>
-                </div>
-            </div>
-            <div class="mt-4 border-t border-gray-300 pt-4">
-                <div class="flex justify-between">
-                    <span class="font-semibold">Total:</span>
-                    <span class="text-xl font-bold">{{data.total}}</span>
-                </div>
-            </div>
-            {% endif %} #}
             <div class="border-t border-gray-300 flex justify-end">
                 <div class="text-end w-60 mt-4">
                     <div class="flex justify-between">

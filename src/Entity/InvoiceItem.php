@@ -15,8 +15,12 @@ class InvoiceItem
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'invoiceItems')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Invoice $invoice = null;
+
+    #[ORM\ManyToOne(inversedBy: 'invoiceItems')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Quotation $quotation = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -41,6 +45,18 @@ class InvoiceItem
     public function setInvoice(?Invoice $invoice): self
     {
         $this->invoice = $invoice;
+
+        return $this;
+    }
+
+    public function getQuotation(): ?Quotation
+    {
+        return $this->quotation;
+    }
+
+    public function setQuotation(?Quotation $quotation): self
+    {
+        $this->quotation = $quotation;
 
         return $this;
     }

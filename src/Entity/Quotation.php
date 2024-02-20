@@ -7,46 +7,32 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: QuotationRepository::class)]
 class Quotation
 {
+
     use Traits\Timestampable;
 
     public const STATUS_ACCEPTED = 'Accepté';
     public const STATUS_DENIED = 'Refusé';
-
+    public const STATUS_DRAFT = 'Brouillon';
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $expiresIn = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
+    private ?string $totalWithOutTaxe = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
-    private ?string $amount = null;
+    private ?string $total = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $option = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
-    private ?string $optionPrice = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $quantity = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
-    private ?string $totalWithOutTaxes = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2, nullable: true)]
-    private ?string $taxes = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
-    private ?string $totalWithTaxes = null;
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[Assert\Range(min: 0, max: 100)]
+    private ?float $taxe = 0;
 
     #[ORM\Column(nullable: true)]
     private ?bool $isValid = null;
@@ -54,8 +40,14 @@ class Quotation
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'quotations')]
     private Collection $users;
 
-    #[ORM\OneToMany(mappedBy: 'quotation', targetEntity: Invoice::class)]
-    private Collection $invoices;
+    #[ORM\ManyToOne(inversedBy: 'Quotations')]
+    private ?Quotation $quotation = null;
+
+    #[ORM\ManyToOne(inversedBy: 'Quotations')]
+    private ?Customer $customer = null;
+
+    #[ORM\OneToMany(mappedBy: 'quotation', targetEntity: InvoiceItem::class, orphanRemoval: true)]
+    private Collection $invoiceItems;
 
     #[ORM\Column(length: 255)]
     private ?string $status = null;
@@ -63,7 +55,7 @@ class Quotation
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->invoices = new ArrayCollection();
+        $this->invoiceItems = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -71,110 +63,37 @@ class Quotation
         return $this->id;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getTaxe(): ?float
     {
-        return $this->createdAt;
+        return $this->taxe;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setTaxe(?float $taxe): self
     {
-        $this->createdAt = $createdAt;
+        $this->taxe = $taxe;
+        return $this;
+    }
+
+    public function getTotalWithOutTaxe(): ?string
+    {
+        return $this->totalWithOutTaxe;
+    }
+
+    public function setTotalWithOutTaxe(?string $totalWithOutTaxe): static
+    {
+        $this->totalWithOutTaxe = $totalWithOutTaxe;
 
         return $this;
     }
 
-    public function getExpiresIn(): ?\DateTimeInterface
+    public function getTotal(): ?string
     {
-        return $this->expiresIn;
+        return $this->total;
     }
 
-    public function setExpiresIn(?\DateTimeInterface $expiresIn): static
+    public function setTotal(?string $total): static
     {
-        $this->expiresIn = $expiresIn;
-
-        return $this;
-    }
-
-    public function getAmount(): ?string
-    {
-        return $this->amount;
-    }
-
-    public function setAmount(?string $amount): static
-    {
-        $this->amount = $amount;
-
-        return $this;
-    }
-
-    public function getOption(): ?string
-    {
-        return $this->option;
-    }
-
-    public function setOption(?string $option): static
-    {
-        $this->option = $option;
-
-        return $this;
-    }
-
-    public function getOptionPrice(): ?string
-    {
-        return $this->optionPrice;
-    }
-
-    public function setOptionPrice(?string $optionPrice): static
-    {
-        $this->optionPrice = $optionPrice;
-
-        return $this;
-    }
-
-    public function getQuantity(): ?int
-    {
-        return $this->quantity;
-    }
-
-    public function setQuantity(?int $quantity): static
-    {
-        $this->quantity = $quantity;
-
-        return $this;
-    }
-
-    public function getTotalWithOutTaxes(): ?string
-    {
-        return $this->totalWithOutTaxes;
-    }
-
-    public function setTotalWithOutTaxes(?string $totalWithOutTaxes): static
-    {
-        $this->totalWithOutTaxes = $totalWithOutTaxes;
-
-        return $this;
-    }
-
-    public function getTaxes(): ?string
-    {
-        return $this->taxes;
-    }
-
-    public function setTaxes(?string $taxes): static
-    {
-        $this->taxes = $taxes;
-
-        return $this;
-    }
-
-    public function getTotalWithTaxes(): ?string
-    {
-        return $this->totalWithTaxes;
-    }
-
-    public function setTotalWithTaxes(?string $totalWithTaxes): static
-    {
-        $this->totalWithTaxes = $totalWithTaxes;
+        $this->total = $total;
 
         return $this;
     }
@@ -187,6 +106,35 @@ class Quotation
     public function setIsValid(?bool $isValid): static
     {
         $this->isValid = $isValid;
+
+        return $this;
+    }
+
+     /**
+     * @return Collection<int, InvoiceItem>
+     */
+    public function getInvoiceItems(): Collection
+    {
+        return $this->invoiceItems;
+    }
+
+    public function addInvoiceItem(InvoiceItem $invoiceItem): self
+    {
+        if (!$this->invoiceItems->contains($invoiceItem)) {
+            $this->invoiceItems->add($invoiceItem);
+            $invoiceItem->setQuotation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoiceItem(InvoiceItem $invoiceItem): self
+    {
+        if ($this->invoiceItems->removeElement($invoiceItem)) {
+            if ($invoiceItem->getQuotation() === $this) {
+                $invoiceItem->setQuotation(null);
+            }
+        }
 
         return $this;
     }
@@ -218,33 +166,37 @@ class Quotation
         return $this;
     }
 
-    /**
-     * @return Collection<int, Invoice>
-     */
-    public function getInvoices(): Collection
+    public function getCustomer(): ?Customer
     {
-        return $this->invoices;
+        return $this->customer;
     }
 
-    public function addInvoice(Invoice $invoice): static
+    public function setCustomer(?Customer $customer): static
     {
-        if (!$this->invoices->contains($invoice)) {
-            $this->invoices->add($invoice);
-            $invoice->setQuotation($this);
-        }
+        $this->customer = $customer;
 
         return $this;
     }
 
-    public function removeInvoice(Invoice $invoice): static
+    public function getStatus(): ?string
     {
-        if ($this->invoices->removeElement($invoice)) {
-            // set the owning side to null (unless already changed)
-            if ($invoice->getQuotation() === $this) {
-                $invoice->setQuotation(null);
-            }
-        }
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }
+
+    public static function getStatusChoices()
+    {
+        return [
+            'Accepté' => self::STATUS_ACCEPTED,
+            'Refusé' => self::STATUS_DENIED,
+            'Brouillon' => self::STATUS_DRAFT,
+        ];
+    }
+    
 }
