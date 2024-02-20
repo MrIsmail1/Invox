@@ -1,6 +1,10 @@
 <div {{ attributes }}>
     {# {% set customerEmail = "" %} #}
-    <form data-action="live#action" data-action-name="prevent|saveInvoice">
+    {% if quotation is defined %}
+        <form data-action="live#action" data-action-name="prevent|saveQuotation">
+        {% else %}
+        <form data-action="live#action" data-action-name="prevent|saveInvoice">
+    {% endif %}
         <div class="flex items-end flex-col mb-8">
             <h2>Logo</h2>
             <div class="items-center">
@@ -35,11 +39,18 @@
 
         </div>
         <div class="flex items-center">
-            <label for="invoice_status">Statut :</label>
-            <select class="ml-2 bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5 " id="invoice_status" x-model="invoice.status" data-model="invoice.status">
+            <label>Statut :</label>
+            {% if quotation is defined %}
+                <select class="ml-2 bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5 " id="quotation_status" x-model="quotation.status" data-model="quotation.status">
+                {% for key, value in quotation.getStatusChoices() %}
+                    <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}                    
+                {% else %}
+                <select class="ml-2 bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5 " id="invoice_status" x-model="invoice.status" data-model="invoice.status">
                 {% for key, value in invoice.getStatusChoices() %}
                     <option value="{{ key }}">{{ value }}</option>
-                {% endfor %}
+                {% endfor %}                    
+                {% endif %}
             </select>
         </div>
 {# _____________________________________________________________ Tableau debut _____________________________________________________________ #}
@@ -93,7 +104,23 @@
                 <div class="flex justify-between">
                     <p class="text-[18px] text-gray-500">TVA :</p>
                     <h6 class="flex justify-content-end text-[18px]">
-                        <div class="flex {{ _errors.has('invoice.taxe') ? 'is-invalid' : '' }}">
+                        {% if quotation is defined %}
+                        <div class="flex {{ _errors.has('quotation.taxe') ? 'is-invalid' : '' }}">
+                            <input
+                                type="number"
+                                data-model="quotation.taxe"
+                                class="bg-bg-white dark:bg-dark-pr-blue w-12 text-end"
+                                value="{{ quotation.taxe }}"
+                            >
+                            <span class="input-group-text">%</span>
+                        </div>
+                        {% if _errors.has('quotation.taxe') %}
+                            <div class="invalid-feedback">
+                                {{ _errors.get('quotation.taxe') }}
+                            </div>
+                        {% endif %}
+                            {% else %}
+                            <div class="flex {{ _errors.has('invoice.taxe') ? 'is-invalid' : '' }}">
                             <input
                                 type="number"
                                 data-model="invoice.taxe"
@@ -107,6 +134,8 @@
                                 {{ _errors.get('invoice.taxe') }}
                             </div>
                         {% endif %}
+                        {% endif %}
+                        
                     </h6>
                 </div>
 
@@ -117,7 +146,10 @@
             </div>
         </div>
 
-         <button class="text-gray-900 bg-bg-white border border-gray-300 focus:outline-none hover:bg-pr-blue hover:text-white focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 p-2.5 mb-2 dark:bg-dark-pr-blue dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+         <button 
+            class="text-gray-900 bg-bg-white border border-gray-300 focus:outline-none hover:bg-pr-blue hover:text-white focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 p-2.5 mb-2 dark:bg-dark-pr-blue dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+            {{ areAnyLineItemsEditing ? 'disabled' : '' }}
+            >
             Enregistrer
         </button>
         {% if saveFailed %}

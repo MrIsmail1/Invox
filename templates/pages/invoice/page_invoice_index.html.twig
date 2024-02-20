@@ -4,17 +4,17 @@
 
 {% block content %}
     <div class="flex justify-between" >
-        <h1>Facture</h1>
+         <h1>{{ type == 'quotation' ? 'Devis' : 'Facture' }}</h1>
     </div>
     {# <twig:DivLive /> #}
     {# {{ form_start(form) }}
         {{ form_widget(form) }}
     {{ form_end(form) }} #}
     <div class="flex justify-end mt-6 gap-2" >
-        <twig:Button content="Créer une facture" path="invoice/new"/>
+        <twig:Button content="{{ type == 'quotation' ? 'Créer un devis' : 'Créer une facture' }}" path="{{ type == 'quotation' ? 'quotation/new' : 'invoice/new' }}"/>
     </div>
     <div>
-        <twig:Table thead1="Numéro" thead2="Client" thead3="Total TTC" thead4="Status" thead5="Crée le" thead6="Modifier le" thead7="Action" pathEdit="app_invoice_edit" pathDelete="app_invoice_delete" data="{{data}}" invoiceItem="{{invoiceItem}}" products="{{products}}"/>
+        <twig:Table thead1="Numéro" thead2="Client" thead3="Total TTC" thead4="Status" thead5="Crée le" thead6="Modifier le" thead7="Action" pathEdit="{{ pathEdit is defined ? pathEdit : '' }}" pathDelete="{{pathDelete is defined ? pathDelete : ''}}" data="{{data}}" invoiceItem="{{invoiceItem}}" products="{{products}}" type="{{type}}"/>
     </div>
 
     {% if app.session.flashbag.has('success') %}
