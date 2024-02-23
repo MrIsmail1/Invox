@@ -2,17 +2,31 @@
 
 {% set title = "Invox | Connexion " %}
 
-   {% block body %}
+{% block body %}
+   <body
+        x-cloak
+        class="antialiased default lg:bg-none bg-bg-button"
+        x-data="{
+        darkMode: false,
+        showMenu: window.innerWidth > 768,
+        updateMenu() {
+            this.showMenu = window.innerWidth > 768;
+        }
+        }"
+        @resize.window="updateMenu()"
+        x-init="
+         darkMode = JSON.parse(localStorage.getItem('darkMode'));
+         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))">
        <main class="h-screen px-5 py-8 w-full ">
-           <div class="border bg-bg-button h-full rounded-2xl">
-               <div class="flex h-full justify-between">
-                   <div class="flex items-center w-1/2 justify-center border-r-2 my-16">
+           <div class="lg:border border-none bg-bg-button lg:h-full h-auto rounded-2xl">
+               <div class="flex lg:flex-row flex-col h-full justify-between">
+                   <div class="flex items-center lg:w-1/2 w-full justify-center lg:border-r-2 border-none my-16">
                        <img src="{{ asset('build/images/logoAuthentication.png') }}" alt="logoInvox" height="450"
                             width="450">
                    </div>
-                   <div class="flex justify-center w-1/2">
+                   <div class="flex justify-center lg:w-1/2 w-full ">
                        {{ form_start(loginForm, {'attr': {'class': 'flex flex-col justify-center w-full h-full'}}) }}
-                       <div class="flex flex-col justify-center gap-4 w-full px-20 h-5/6">
+                       <div class="flex flex-col justify-center gap-4 w-full lg:px-20 px-6 h-5/6">
                            <h1 class="h1 mb-10 font-weight-bold text-bg-black">Toutes vos activités en un seul
                                endroit.</h1>
                            {{ form_row(loginForm.email) }}
@@ -34,7 +48,7 @@
                                    <twig:ButtonDarkDefault type="submit" text="Se-connecter"/>
                                    <div class="mt-5">
                                        <twig:ButtonDarkGoogleIcon type="button" text="Se-connecter avec Google"
-                                                                  icon="{{ asset('build/images/googleIcon.svg') }}"/>
+                                        icon="{{ asset('build/images/googleIcon.svg') }}"/>
                                    </div>
                                </div>
                                <h6 class="text-bg-black mt-1">Vous n'avez pas de compte?
@@ -49,4 +63,5 @@
 
            </div>
        </main>
+       </body>
    {% endblock %}

@@ -1,6 +1,6 @@
 {% set totalDiscount = 0 %}
 <div x-show="open" @click.outside="open = false" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="w-1/2 flex items-center justify-center h-[90%] bg-gray-100 dark:bg-dark-pr-blue rounded">
+    <div class="w-[95%] lg:w-1/2 flex items-center justify-center h-[90%] bg-gray-100 dark:bg-dark-pr-blue rounded">
         <div class="w-full h-full bg-bg-white dark:bg-dark-pr-blue p-8 rounded shadow-2xl">
                 <twig:Status styles="w-24" status="{{data.status}}"/>
             <div class="mt-4 flex items-center justify-between">
