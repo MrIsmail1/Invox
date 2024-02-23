@@ -52,9 +52,6 @@ module.exports = {
         84: "21rem",
         88: "22rem",
       },
-      screens: {
-        xs: "320px",
-      },
       fontSize: {
         md: "0.9rem",
       },

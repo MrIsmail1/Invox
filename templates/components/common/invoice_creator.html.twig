@@ -5,7 +5,7 @@
         {% else %}
         <form data-action="live#action" data-action-name="prevent|saveInvoice">
     {% endif %}
-        <div class="flex items-end flex-col mb-8">
+        <div class="flex lg:items-end items-start flex-col mb-8">
             <h2>Logo</h2>
             <div class="items-center">
         <select class="bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5" x-model="selectedCustomerId" data-model="selectedCustomerId">
@@ -25,7 +25,7 @@
         'attr': {
             'x-model': 'invoice.status',
             'data-model': 'invoice.status',
-            'class': 'bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-2.5'
+            'class': 'bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block m-full p-2.5'
         }
         }) }}
 
@@ -57,7 +57,7 @@
         <div class="card">
             <div class="mt-6 mb-8 overflow-x-auto rounded-lg border-border-color border-border-width">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:bg-dark-pr-blue">
-                    <thead class="rounded-bl-lg rounded-br-lg bg-bg-hover-sidebar dark:bg-bg-hover-sidebar text-sm uppercase dark:text-white-font border-b-border-width border-border-color">
+                    <thead class="text-sm uppercase bg-bg-white dark:bg-dark-pr-blue dark:text-white-font border-b-border-width border-border-color">
                     <tr>
                         <th scope="col" class="px-6 py-3 w-96 rounded-bl-lg">Description</th>
                         <th scope="col" class="px-6 py-3 w-40">Catégorie</th>
@@ -91,7 +91,7 @@
                 </twig:Button>
             </div>
         </div>
-        <div class="flex justify-end">
+        <div class="flex lg:justify-end justify-start">
             <div class="text-end w-60">
                 <div class="flex justify-between">
                     <p class="text-[18px] text-gray-500">Remise total :</p>

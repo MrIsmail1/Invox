@@ -9,5 +9,5 @@ class RectangleCardDashboard
 {
     public string $title;
     public string $number;
-    public string $stats;
+    public string $picto;
 }

@@ -15,7 +15,7 @@ class Quotation
 
     use Traits\Timestampable;
 
-    public const STATUS_ACCEPTED = 'Accepté';
+    public const STATUS_ACCEPTED = 'Validé';
     public const STATUS_DENIED = 'Refusé';
     public const STATUS_DRAFT = 'Brouillon';
     
@@ -193,7 +193,7 @@ class Quotation
     public static function getStatusChoices()
     {
         return [
-            'Accepté' => self::STATUS_ACCEPTED,
+            'Validé' => self::STATUS_ACCEPTED,
             'Refusé' => self::STATUS_DENIED,
             'Brouillon' => self::STATUS_DRAFT,
         ];

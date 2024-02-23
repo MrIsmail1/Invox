@@ -3,30 +3,32 @@
 {% set title = "Dashboard" %}
 
 {% block content %}
-    <div class="flex justify-between" >
+    <div class="flex justify-between md:flex-row flex-col" >
         <h1>Bonjour, Hamza !</h1>
         {{ form_start(DashboardForm) }}
-        <div class="flex gap-8">
+        <div class="flex gap-8 md:flex-row flex-col">
         {{ form_row(DashboardForm.start_date) }}
         {{ form_row(DashboardForm.end_date) }}
             </div>
-        <button type="submit">Valider la période</button>
+        <twig:Button styles="mt-4" >
+            Valider la période
+        </twig:Button>
         {{ form_end(DashboardForm) }}
 
     </div>
-    <div class="flex mt-16 justify-between" >
-        <twig:CardDashboard src="{{ asset('build/images/devis.svg') }}" title="Nombre de devis" number="{{numberOfQuotations}}" />
-        <twig:CardDashboard src="{{ asset('build/images/devis.svg') }}" title="Nombre de devis validé" number="{{numberOfValidQuotations}}" />
-        <twig:CardDashboard src="{{ asset('build/images/factures.svg') }}" title="Nombre de facture" number="{{numberOfInvoices}}" />
-        <twig:CardDashboard src="{{ asset('build/images/factures.svg') }}" title="Facture encaisées" number="{{numberOfPaidInvoices}}" />
+    <div class="flex md:mt-16 mt-0 justify-between md:flex-row flex-col" >
+        <twig:CardDashboard picto="🧾" title="Nombre de devis" number="{{numberOfQuotations}}" />
+        <twig:CardDashboard picto="✅" title="Nombre de devis validé" number="{{numberOfValidQuotations}}" />
+        <twig:CardDashboard picto="🧾" title="Nombre de facture" number="{{numberOfInvoices}}" />
+        <twig:CardDashboard picto="🤑" title="Facture encaisées" number="{{numberOfPaidInvoices}}" />
     </div>
-    <div class="flex mt-14 justify-between w-full">
-        <div class="w-[39%]" >
+    <div class="flex md:mt-14 mt-8 justify-between w-full md:flex-row flex-col">
+        <div class="md:w-[39%] w-full" >
             <div class="mb-6" >
-                <twig:RectangleCardDashboard title="Nouveau clients" number="{{numberOfCustomers}}" stats="18,7%" />
+                <twig:RectangleCardDashboard picto="🥳" title="Nouveau clients" number="{{numberOfCustomers}}" />
             </div>
             <div>
-                <twig:RectangleCardDashboard title="Facture en retard" number="{{numberOfLateInvoices}}" stats="18,7%" />
+                <twig:RectangleCardDashboard picto="⏰" title="Facture en retard" number="{{numberOfLateInvoices}}" />
             </div>
         </div>
         <twig:ChartDashboard months="{{months}}" totals="{{totals}}" />
