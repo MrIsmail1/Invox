@@ -18,8 +18,8 @@ class Table
     public $data = null;
     public $invoiceItem = null;
     public $products = null;
-    public ?string $pathDelete = "";
-    public ?string $pathEdit = "";
-    public ?string $type = null;
+    public ?string $pathDelete = null;
+    public ?string $pathEdit = null;
+    public ?string $modal = null;
 
 }
