@@ -38,9 +38,9 @@
         {# ------------------------------------------------------------------------------  Search Form ------------------------------------------------------------------------  #}
 
         {# {{ component('SearchLive', {
-    dataModel: 'query',
-    }) }} #}
-        {# <twig:SearchLive /> #}
+            dataModel: 'query',
+        }) }} #}
+        {# <twig:SearchLive/> #}
     </div>
 
     <div x-data="{ showModal: false }"
@@ -66,42 +66,46 @@
             </tr>
             </thead>
             <tbody>
-            {% for dataItem in data %}
-                <tr x-data="{ open: false }"
-                    x-on:click="open = !open;"
-                    class="bg-bg-white border-b border-b-border-color dark:bg-dark-pr-blue dark:border-gray-700 hover:bg-bg-hover-light dark:hover:bg-gray-600">
-                    <td class="w-4 p-4">
-                        <div class="flex items-center">
-                            <input id="checkbox-table-search-1" type="checkbox"
-                                   class="w-4 h-4 text-link-color bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                            <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
-                        </div>
-                    </td>
-                    {% for key, label in theads %}
-                        <td class="px-6 py-4 ">
-                            {% if key == 'id' %}
-                                <span class="font-bold">{{ attribute(dataItem, key) }}</span>
-                            {% elseif key == 'total' and attribute(dataItem, key) is defined %}
-                                {{ attribute(dataItem, key) }} €
-                            {% elseif key == 'price' and attribute(dataItem, key) is defined %}
-                                {{ attribute(dataItem, key) }} €
-                            {% elseif key == 'status' %}
-                                <div class="flex items-center">
-                                    <twig:Status status="{{ attribute(dataItem, key) }}"/>
-                                </div>
-                            {% elseif (key == 'createdAt' or key == 'updatedAt') and attribute(dataItem, key) is not empty and attribute(dataItem, key) is defined %}
-                                {{ attribute(dataItem, key)|date('d-m-Y') }}
-                            {% else %}
-                                {{ attribute(dataItem, key) }}
-                                <twig:Modal data="{{ dataItem }}" pathEdit="{{ pathEdit }}"
-                                            pathDelete="{{ pathDelete }}"
-                                            modal="{{ modal }}" invoiceItem="{{ invoiceItem }}"
-                                            products="{{ products }}"/>
-                            {% endif %}
+            {% if data|length > 0 %}
+                {% for dataItem in data %}
+                    <tr x-data="{ open: false }" data-loading="addClass(opacity-50)"
+                        @click="open = true; $dispatch('open-modal')"
+                        class="bg-bg-white border-b border-b-border-color dark:bg-dark-pr-blue dark:border-gray-700 hover:bg-bg-hover-light dark:hover:bg-gray-600">
+                        <td class="w-4 p-4">
+                            <div class="flex items-center">
+                                <input id="checkbox-table-search-1" type="checkbox"
+                                       class="w-4 h-4 text-link-color bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                            </div>
                         </td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
+                        {% for key, label in theads %}
+                            <td class="px-6 py-4 ">
+                                {% if key == 'id' %}
+                                    <span class="font-bold">{{ attribute(dataItem, key) }}</span>
+                                {% elseif key == 'total' and attribute(dataItem, key) is defined %}
+                                    {{ attribute(dataItem, key) }} €
+                                {% elseif key == 'price' and attribute(dataItem, key) is defined %}
+                                    {{ attribute(dataItem, key) }} €
+                                {% elseif key == 'status' %}
+                                    <div class="flex items-center">
+                                        <twig:Status status="{{ attribute(dataItem, key) }}"/>
+                                    </div>
+                                {% elseif (key == 'createdAt' or key == 'updatedAt') and attribute(dataItem, key) is not empty and attribute(dataItem, key) is defined %}
+                                    {{ attribute(dataItem, key)|date('d-m-Y') }}
+                                {% else %}
+                                    {{ attribute(dataItem, key) }}
+                                    <twig:Modal data="{{ dataItem }}" pathEdit="{{ pathEdit }}"
+                                                pathDelete="{{ pathDelete }}"
+                                                modal="{{ modal }}" invoiceItem="{{ invoiceItem }}"
+                                                products="{{ products }}"/>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <div class="pt-3">Ah! No packages found matching "{{ query }}"</div>
+            {% endif %}
             </tbody>
         </table>
     </div>
