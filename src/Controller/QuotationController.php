@@ -12,20 +12,41 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Form\SearchAutocomplete;
 
 class QuotationController extends AbstractController
 {
-    #[Route('/quotation', name: 'app_quotation_index', methods: ['GET', 'POST'])]
-    public function index(Request $request, QuotationRepository $quotationRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response
-    {
-        $invoiceItem = new InvoiceItem();
-        $query = $quotationRepository->createQueryBuilder('a')->getQuery();
+#[Route('/quotation', name: 'app_quotation_index', methods: ['GET', 'POST'])]
+public function index(Request $request, QuotationRepository $quotationRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response 
+{
+    $invoiceItem = new InvoiceItem();
 
-        $data = $paginatorInterface->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            15
-        );
+    $form = $this->createForm(SearchAutocomplete::class);
+    $form->handleRequest($request);
+
+    // Initialiser la requête de base pour toutes les quotations
+    $queryBuilder = $quotationRepository->createQueryBuilder('a');
+
+    // Vérifier si le formulaire est soumis et valide
+    if ($form->isSubmitted() && $form->isValid()) {
+        $customer = $form->get('customer')->getData();
+
+        // Modifier la requête pour filtrer par client, si un client est sélectionné
+        if ($customer) {
+            $queryBuilder->andWhere('a.customer = :customer')
+                         ->setParameter('customer', $customer);
+        }
+    }
+
+
+    $query = $queryBuilder->getQuery();
+    $data = $paginatorInterface->paginate(
+        $query,
+        $request->query->getInt('page', 1),
+        15
+    );
+    
+
 
         // Initialiser $productDataByInvoiceId avant de l'utiliser
         $productDataByQuotationId = [];

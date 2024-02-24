@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Form\SearchAutocomplete;
 
 class InvoiceController extends AbstractController
 {
@@ -21,11 +22,30 @@ class InvoiceController extends AbstractController
         $invoiceItem = new InvoiceItem();
         $query = $invoiceRepository->createQueryBuilder('a')->getQuery();
 
-        $data = $paginatorInterface->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            15
-        );
+    $form = $this->createForm(SearchAutocomplete::class);
+    $form->handleRequest($request);
+
+    // Initialiser la requête de base pour toutes les quotations
+    $queryBuilder = $invoiceRepository->createQueryBuilder('a');
+
+    // Vérifier si le formulaire est soumis et valide
+    if ($form->isSubmitted() && $form->isValid()) {
+        $customer = $form->get('customer')->getData();
+
+        // Modifier la requête pour filtrer par client, si un client est sélectionné
+        if ($customer) {
+            $queryBuilder->andWhere('a.customer = :customer')
+                         ->setParameter('customer', $customer);
+        }
+    }
+
+
+    $query = $queryBuilder->getQuery();
+    $data = $paginatorInterface->paginate(
+        $query,
+        $request->query->getInt('page', 1),
+        15
+    );
 
         // Initialiser $productDataByInvoiceId avant de l'utiliser
         $productDataByInvoiceId = [];

@@ -15,9 +15,9 @@ class Quotation
 
     use Traits\Timestampable;
 
-    public const STATUS_ACCEPTED = 'Validé';
-    public const STATUS_DENIED = 'Refusé';
     public const STATUS_DRAFT = 'Brouillon';
+    public const STATUS_DENIED = 'Refusé';
+    public const STATUS_ACCEPTED = 'Validé';
     
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -193,9 +193,9 @@ class Quotation
     public static function getStatusChoices()
     {
         return [
-            'Validé' => self::STATUS_ACCEPTED,
-            'Refusé' => self::STATUS_DENIED,
             'Brouillon' => self::STATUS_DRAFT,
+            'Refusé' => self::STATUS_DENIED,
+            'Validé' => self::STATUS_ACCEPTED,
         ];
     }
     

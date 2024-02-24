@@ -201,8 +201,6 @@ class InvoiceCreator extends AbstractController
 
     private function findProduct(int $id): Product
     {
-        $product = $this->productRepository->find($id);
-        dump($product);
         return $this->productRepository->find($id);
     }
 

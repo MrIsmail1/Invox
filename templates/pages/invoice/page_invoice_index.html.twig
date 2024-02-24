@@ -6,10 +6,6 @@
     <div class="flex justify-between">
         <h1>{{ type == 'quotation' ? 'Devis' : 'Facture' }}</h1>
     </div>
-    {# <twig:DivLive /> #}
-    {# {{ form_start(form) }}
-        {{ form_widget(form) }}
-    {{ form_end(form) }} #}
     <div class="flex justify-end mt-6 gap-2">
         <twig:Button content="{{ type == 'quotation' ? 'Créer un devis' : 'Créer une facture' }}"
                      path="{{ type == 'quotation' ? 'quotation/new' : 'invoice/new' }}"/>
@@ -17,9 +13,9 @@
     <div>
         <twig:Table modal="{{ modal }}"
                     theads="{{ {"id":"Numéro","customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le", "updatedAt":"Echeance"} }}"
-                    pathEdit=""
-                    pathDelete="invoice_delete" data="{{ data }}" invoiceItem="{{ invoiceItem }}"
-                    products="{{ products }}" type="{{ type }}"/>
+                    pathEdit="{{ pathEdit is defined ? pathEdit : '' }}"
+                    pathDelete="{{pathDelete is defined ? pathDelete : ''}}" data="{{ data }}" invoiceItem="{{ invoiceItem }}"
+                    products="{{ products }}" type="{{ type }}" form="{{SearchBar}}"/>
     </div>
 
     {% if app.session.flashbag.has('success') %}
