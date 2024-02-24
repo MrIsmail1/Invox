@@ -206,6 +206,7 @@ private function isNewInvoice(): bool
 
     private function findProduct(int $id): Product
     {
+        dd($this->productRepository->find($id));
         return $this->productRepository->find($id);
     }
 

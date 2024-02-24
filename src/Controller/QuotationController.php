@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
+use App\Form\SearchAutocomplete;
 
 class QuotationController extends AbstractController
 {
@@ -19,13 +20,33 @@ class QuotationController extends AbstractController
 public function index(Request $request, QuotationRepository $quotationRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response 
 {
     $invoiceItem = new InvoiceItem();
-    $query = $quotationRepository->createQueryBuilder('a')->getQuery();
 
+    $form = $this->createForm(SearchAutocomplete::class);
+    $form->handleRequest($request);
+
+    // Initialiser la requête de base pour toutes les quotations
+    $queryBuilder = $quotationRepository->createQueryBuilder('a');
+
+    // Vérifier si le formulaire est soumis et valide
+    if ($form->isSubmitted() && $form->isValid()) {
+        $customer = $form->get('customer')->getData();
+
+        // Modifier la requête pour filtrer par client, si un client est sélectionné
+        if ($customer) {
+            $queryBuilder->andWhere('a.customer = :customer')
+                         ->setParameter('customer', $customer);
+        }
+    }
+
+
+    $query = $queryBuilder->getQuery();
     $data = $paginatorInterface->paginate(
         $query,
         $request->query->getInt('page', 1),
         15
     );
+    
+
 
     // Initialiser $productDataByInvoiceId avant de l'utiliser
     $productDataByQuotationId = [];
@@ -61,6 +82,7 @@ public function index(Request $request, QuotationRepository $quotationRepository
         'pathEdit' => 'app_quotation_edit',
         'pathDelete' => 'app_quotation_delete',
         'type' => 'quotation',
+        'SearchBar' => $form->createView(),
     ]);
 }
 

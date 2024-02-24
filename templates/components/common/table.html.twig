@@ -1,5 +1,5 @@
 <div {{ attributes }} class="mb-4">
-<div class="mt-4 rounded-lg p-4 flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-bg-white dark:bg-dark-pr-blue border-border-width border-border-color">
+<div class="px-8 mt-4 rounded-lg p-4 flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-bg-white dark:bg-dark-pr-blue border-border-width border-border-color">
      <div x-data="{ open: false }">
         <p class="ml-1 dark:text-white-font">Status</p>
         <button  @click="open = ! open" class="dark:text-white-font mt-2 inline-flex items-center text-gray-500 bg-bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-dark-pr-blue dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
@@ -22,9 +22,15 @@
                 </li>
             </ul>
         </div>
-    </div>
+    {# ------------------------------------------------------------------------------  SEARCH BAR AUTOCOMPLETE ------------------------------------------------------------------------  #}
+        </div>
+        <div>
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <twig:Button styles="mt-4" >Valider</twig:Button>
+            {{ form_end(form) }}
+        </div>
 
-{# ------------------------------------------------------------------------------  Search Form ------------------------------------------------------------------------  #}
     
     {# {{ component('SearchLive', {
     dataModel: 'query',
