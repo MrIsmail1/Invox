@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <twig:Head title="{{ title }}"/>
-    </head>
-    {% block body %}
-    <body
+<head>
+    <twig:Head title="{{ title ?? '' }}"/>
+</head>
+{% block body %}
+<body
         x-cloak
         class="antialiased default"
         x-data="{

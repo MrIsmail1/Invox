@@ -26,12 +26,11 @@ class Product
     private ?string $name = null;
 
     #[ORM\Column]
-    private ?int $price = null;
+    private ?float $price = null;
 
     #[ORM\Column(length: 255)]
     private ?string $category = null;
 
-    
 
     public function getId(): ?int
     {
