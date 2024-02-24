@@ -3,25 +3,30 @@
 {% set title = "Invox | Invoice" %}
 
 {% block content %}
-    <div class="flex justify-between" >
-         <h1>{{ type == 'quotation' ? 'Devis' : 'Facture' }}</h1>
+    <div class="flex justify-between">
+        <h1>{{ type == 'quotation' ? 'Devis' : 'Facture' }}</h1>
     </div>
-    <div class="flex justify-end mt-6 gap-2" >
-        <twig:Button content="{{ type == 'quotation' ? 'Créer un devis' : 'Créer une facture' }}" path="{{ type == 'quotation' ? 'quotation/new' : 'invoice/new' }}"/>
+    <div class="flex justify-end mt-6 gap-2">
+        <twig:Button content="{{ type == 'quotation' ? 'Créer un devis' : 'Créer une facture' }}"
+                     path="{{ type == 'quotation' ? 'quotation/new' : 'invoice/new' }}"/>
     </div>
     <div>
-        <twig:Table thead1="Numéro" thead2="Client" thead3="Total TTC" thead4="Status" thead5="Crée le" thead6="Modifier le" thead7="Action" pathEdit="{{ pathEdit is defined ? pathEdit : '' }}" pathDelete="{{pathDelete is defined ? pathDelete : ''}}" data="{{data}}" invoiceItem="{{invoiceItem}}" products="{{products}}" type="{{type}}" form="{{SearchBar}}"/>
+        <twig:Table modal="{{ modal }}"
+                    theads="{{ {"id":"Numéro","customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le", "updatedAt":"Echeance"} }}"
+                    pathEdit="{{ pathEdit is defined ? pathEdit : '' }}"
+                    pathDelete="{{pathDelete is defined ? pathDelete : ''}}" data="{{ data }}" invoiceItem="{{ invoiceItem }}"
+                    products="{{ products }}" type="{{ type }}" form="{{SearchBar}}"/>
     </div>
 
     {% if app.session.flashbag.has('success') %}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Cette ligne récupère le message flash
-            const message = "{{ app.session.flashbag.get('success')[0]|escape('js') }}";
-            // Cette ligne utilise Notyf pour afficher le message flash
-            notyf.success("Success message");
-        });
-    </script>
-{% endif %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Cette ligne récupère le message flash
+                const message = "{{ app.session.flashbag.get('success')[0]|escape('js') }}";
+                // Cette ligne utilise Notyf pour afficher le message flash
+                notyf.success("Success message");
+            });
+        </script>
+    {% endif %}
 
 {% endblock %}

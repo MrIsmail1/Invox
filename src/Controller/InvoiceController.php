@@ -4,23 +4,23 @@ namespace App\Controller;
 
 use App\Entity\Invoice;
 use App\Entity\InvoiceItem;
-use App\Repository\ProductRepository;
 use App\Repository\InvoiceRepository;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Knp\Component\Pager\PaginatorInterface;
 use App\Form\SearchAutocomplete;
 
 class InvoiceController extends AbstractController
 {
-#[Route('/invoice', name: 'app_invoice_index', methods: ['GET', 'POST'])]
-public function index(Request $request, InvoiceRepository $invoiceRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response 
-{
-    $invoiceItem = new InvoiceItem();
-    $query = $invoiceRepository->createQueryBuilder('a')->getQuery();
+    #[Route('/invoice', name: 'app_invoice_index', methods: ['GET', 'POST'])]
+    public function index(Request $request, InvoiceRepository $invoiceRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response
+    {
+        $invoiceItem = new InvoiceItem();
+        $query = $invoiceRepository->createQueryBuilder('a')->getQuery();
 
     $form = $this->createForm(SearchAutocomplete::class);
     $form->handleRequest($request);
@@ -47,41 +47,41 @@ public function index(Request $request, InvoiceRepository $invoiceRepository, En
         15
     );
 
-    // Initialiser $productDataByInvoiceId avant de l'utiliser
-    $productDataByInvoiceId = [];
+        // Initialiser $productDataByInvoiceId avant de l'utiliser
+        $productDataByInvoiceId = [];
 
-    foreach ($data as $invoice) {
-        $invoiceId = $invoice->getId();
-        $invoiceItems = $invoice->getInvoiceItems();
-        $productData = [];
+        foreach ($data as $invoice) {
+            $invoiceId = $invoice->getId();
+            $invoiceItems = $invoice->getInvoiceItems();
+            $productData = [];
 
-        foreach ($invoiceItems as $invoiceItem) {
-            $product = $invoiceItem->getProduct();
-            $quantity = $invoiceItem->getQuantity();
-            $discount = $invoiceItem->getDiscount();
+            foreach ($invoiceItems as $invoiceItem) {
+                $product = $invoiceItem->getProduct();
+                $quantity = $invoiceItem->getQuantity();
+                $discount = $invoiceItem->getDiscount();
 
-            if ($product !== null) {
-                $productData[] = [
-                    'name' => $product->getName(),
-                    'price' => $product->getPrice(),
-                    'category' => $product->getCategory(),
-                    'quantity' => $quantity,
-                    'discount' => $discount,
-                ];
+                if ($product !== null) {
+                    $productData[] = [
+                        'name' => $product->getName(),
+                        'price' => $product->getPrice(),
+                        'category' => $product->getCategory(),
+                        'quantity' => $quantity,
+                        'discount' => $discount,
+                    ];
+                }
             }
+
+            $productDataByInvoiceId[$invoiceId] = $productData;
         }
 
-        $productDataByInvoiceId[$invoiceId] = $productData;
+        return $this->render('invoice/page_invoice_index.html.twig', [
+            'data' => $data,
+            'invoiceItem' => $invoiceItem,
+            'modal' => "invoiceModal",
+            'products' => $productDataByInvoiceId,
+            'type' => 'invoice',
+        ]);
     }
-
-    return $this->render('invoice/page_invoice_index.html.twig', [
-        'data' => $data,
-        'invoiceItem' => $invoiceItem,
-        'products' => $productDataByInvoiceId,
-        'type' => 'invoice',
-        'SearchBar' => $form->createView(),
-    ]);
-}
 
 
     #[Route('invoice/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
@@ -94,13 +94,13 @@ public function index(Request $request, InvoiceRepository $invoiceRepository, En
         if ($form->isSubmitted() && $form->isValid()) {
             // Traitez l'enregistrement de l'entité $invoice comme d'habitude
         } */
-        
+
         $invoiceItem = new InvoiceItem();
         $products = $productRepository->findAll();
 
         // Pour créer une notification de succès
         $this->addFlash('success', 'La facture a été créée avec succès');
-        
+
         return $this->render('invoice/page_invoice_new.html.twig', [
             'invoice' => $invoice,
             'invoiceItem' => $invoiceItem,
