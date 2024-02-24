@@ -1,5 +1,5 @@
-<div x-show="open" @click.stop class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="w-[95%] lg:w-1/2 flex items-center justify-center h-[90%] bg-gray-100 dark:bg-dark-pr-blue rounded">
+<div x-show="open" @click.stop class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20">
+    <div class="w-[95%] lg:w-1/2 flex items-center justify-center h-auto bg-gray-100 dark:bg-dark-pr-blue rounded">
         <div class="w-full h-full bg-bg-white dark:bg-dark-pr-blue p-8 rounded shadow-2xl">
             <div class="w-full flex justify-end">
                 <button @click="open = false"
@@ -156,6 +156,49 @@
                     <hr/>
                     <h3>Catégorie :</h3>
                     <h4>{{ data.category }}</h4>
+                    <hr/>
+                </div>
+            {% endif %}
+            {% if modal == "customerModal" %}
+                <div class=" mt-4 flex items-center justify-between
+            ">
+                    <h2 class="text-2xl font-bold">Client n° {{ data.id }} </h2>
+                    <div class="flex gap-x-2">
+                        <a href="{{ path(pathEdit, {'id': data.id}) }}" class="font-medium text-link-color">
+                            <twig:Button js=""
+                            >
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 19H6.425L16.2 9.225L14.775 7.8L5 17.575V19ZM3 21V16.75L16.2 3.575C16.4 3.39167 16.621 3.25 16.863 3.15C17.105 3.05 17.359 3 17.625 3C17.8917 3 18.15 3.05 18.4 3.15C18.65 3.25 18.8667 3.4 19.05 3.6L20.425 5C20.625 5.18333 20.771 5.4 20.863 5.65C20.955 5.9 21.0007 6.15 21 6.4C21 6.66667 20.9543 6.921 20.863 7.163C20.7717 7.405 20.6257 7.62567 20.425 7.825L7.25 21H3ZM15.475 8.525L14.775 7.8L16.2 9.225L15.475 8.525Z"/>
+                                </svg>
+                            </twig:Button>
+                        </a>
+                        <a href="{{ path(pathDelete, {'id': data.id, 'token': csrf_token('delete' ~ data.id)}) }}"
+                           class="font-medium text-link-color">
+                            <twig:Button>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 21C6.45 21 5.97933 20.8043 5.588 20.413C5.19667 20.0217 5.00067 19.5507 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8043 20.021 18.413 20.413C18.0217 20.805 17.5507 21.0007 17 21H7ZM17 6H7V19H17V6ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z"/>
+                                </svg>
+                            </twig:Button>
+                        </a>
+                    </div>
+                </div>
+                <div class="w-full">
+                </div>
+                <div class="flex flex-col gap-y-7 mt-5" id="replaced-on-button-click"
+                >
+                    <h3>Nom :</h3>
+                    <h4>{{ data.firstName }}</h4>
+                    <hr/>
+                    <h3>Prénom :</h3>
+                    <h4>{{ data.lastName }} €</h4>
+                    <hr/>
+                    <h3>Catégorie :</h3>
+                    <h4>{{ data.email }}</h4>
+                    <hr/>
+                    <h3>Catégorie :</h3>
+                    <h4>{{ data.address }}</h4>
                     <hr/>
                 </div>
             {% endif %}

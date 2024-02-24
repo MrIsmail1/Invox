@@ -49,9 +49,9 @@ class CustomerController extends AbstractController
             return $this->redirectToRoute('app_customer_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('page_customer_new.html.twig', [
+        return $this->render('pages/customer/page_customer_new.html.twig', [
             'customer' => $customer,
-            'form' => $form,
+            'CustomerForm' => $form,
         ]);
     }
 
@@ -75,9 +75,9 @@ class CustomerController extends AbstractController
             return $this->redirectToRoute('app_customer_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('page_customer_edit.html.twig', [
+        return $this->render('customer/page_customer_edit.html.twig', [
             'customer' => $customer,
-            'form' => $form,
+            'customerform' => $form,
         ]);
     }
 

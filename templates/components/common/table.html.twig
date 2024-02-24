@@ -79,28 +79,29 @@
                             </div>
                         </td>
                         {% for key, label in theads %}
-                            <td class="px-6 py-4 ">
+                            <td class="px-6 py-4">
+                                {% set value = attribute(dataItem, key) is defined ? attribute(dataItem, key) : null %}
+
                                 {% if key == 'id' %}
-                                    <span class="font-bold">{{ attribute(dataItem, key) }}</span>
-                                {% elseif key == 'total' and attribute(dataItem, key) is defined %}
-                                    {{ attribute(dataItem, key) }} €
-                                {% elseif key == 'price' and attribute(dataItem, key) is defined %}
-                                    {{ attribute(dataItem, key) }} €
+                                    <span class="font-bold">{{ value }}</span>
+                                {% elseif key in ['total', 'price'] and value is not null %}
+                                    {{ value }} €
                                 {% elseif key == 'status' %}
                                     <div class="flex items-center">
-                                        <twig:Status status="{{ attribute(dataItem, key) }}"/>
+                                        <twig:Status status="{{ value }}"/>
                                     </div>
-                                {% elseif (key == 'createdAt' or key == 'updatedAt') and attribute(dataItem, key) is not empty and attribute(dataItem, key) is defined %}
-                                    {{ attribute(dataItem, key)|date('d-m-Y') }}
+                                {% elseif key in ['createdAt', 'updatedAt'] and value is not null %}
+                                    {{ value|date('d-m-Y') }}
                                 {% else %}
-                                    {{ attribute(dataItem, key) }}
+                                    {{ value }}
                                     <twig:Modal data="{{ dataItem }}" pathEdit="{{ pathEdit }}"
                                                 pathDelete="{{ pathDelete }}"
                                                 modal="{{ modal }}" invoiceItem="{{ invoiceItem }}"
-                                                products="{{ products }}"/>
+                                                products="{{ products }}" type="{{ type }}"/>
                                 {% endif %}
                             </td>
                         {% endfor %}
+
                     </tr>
                 {% endfor %}
             {% endif %}
