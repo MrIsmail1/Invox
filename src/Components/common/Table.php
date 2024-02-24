@@ -21,5 +21,6 @@ class Table
     public ?string $pathDelete = null;
     public ?string $pathEdit = null;
     public ?string $modal = null;
+    public ?string $type = null;
 
 }

@@ -18,5 +18,7 @@ class Modal extends AbstractController
 
     public $form = null;
 
+    public ?string $type = null;
+
 }
 

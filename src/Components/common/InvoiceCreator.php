@@ -5,8 +5,8 @@ namespace App\Components\common;
 use App\Entity\Invoice;
 use App\Entity\InvoiceItem;
 use App\Entity\Product;
-use App\Repository\ProductRepository;
 use App\Repository\CustomerRepository;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Constraints\Valid;
@@ -56,25 +56,25 @@ class InvoiceCreator extends AbstractController
     }
 
     public function mount(Invoice $invoice): void
-{
-    $this->invoice = $invoice;
-    $this->status = $invoice->getStatus();
-    $this->selectedCustomerId = $invoice->getCustomer() ? $invoice->getCustomer()->getId() : null;
-    $this->lineItems = $this->populateLineItems($invoice);
+    {
+        $this->invoice = $invoice;
+        $this->status = $invoice->getStatus();
+        $this->selectedCustomerId = $invoice->getCustomer() ? $invoice->getCustomer()->getId() : null;
+        $this->lineItems = $this->populateLineItems($invoice);
 
-    $customersCollection = $this->customerRepository->findAll();
-    $customersArray = [];
-    foreach ($customersCollection as $customer) {
-        // Here, you store an array with all the details you need
-        $customersArray[$customer->getId()] = [
-            'name' => (string) $customer,
-            'email' => $customer->getEmail(),
-            'address' => $customer->getAddress(),
-        ];
+        $customersCollection = $this->customerRepository->findAll();
+        $customersArray = [];
+        foreach ($customersCollection as $customer) {
+            // Here, you store an array with all the details you need
+            $customersArray[$customer->getId()] = [
+                'name' => (string)$customer,
+                'email' => $customer->getEmail(),
+                'address' => $customer->getAddress(),
+            ];
+        }
+
+        $this->customers = $customersArray;
     }
-
-    $this->customers = $customersArray;
-}
 
     private function populateLineItems(Invoice $invoice): array
     {
@@ -87,7 +87,7 @@ class InvoiceCreator extends AbstractController
                 'isEditing' => false,
             ];
         }
-        
+
         return $lineItems;
     }
 
@@ -115,18 +115,18 @@ class InvoiceCreator extends AbstractController
     }
 
     #[LiveListener('line_item:save')]
-    public function saveLineItem(#[LiveArg] int $key, #[LiveArg] Product $product, #[LiveArg] int $quantity,#[LiveArg] float $discount ): void
+    public function saveLineItem(#[LiveArg] int $key, #[LiveArg] Product $product, #[LiveArg] int $quantity, #[LiveArg] float $discount): void
     {
         if (!isset($this->lineItems[$key])) {
             // shouldn't happen
             return;
         }
 
-         $this->lineItems[$key] = [
-        'productId' => $product->getId(),
-        'quantity' => $quantity,
-        'discount' => $discount,
-    ];
+        $this->lineItems[$key] = [
+            'productId' => $product->getId(),
+            'quantity' => $quantity,
+            'discount' => $discount,
+        ];
     }
 
     #[LiveAction]
@@ -147,11 +147,11 @@ class InvoiceCreator extends AbstractController
         $this->validate();
         $this->saveFailed = false;
 
-         if (!$this->selectedCustomerId) {
-        $this->saveFailed = true;
-        $this->addFlash('error', 'Un client doit être sélectionné.');
-        return; // Arrêtez l'exécution de la méthode ici
-    }
+        if (!$this->selectedCustomerId) {
+            $this->saveFailed = true;
+            $this->addFlash('error', 'Un client doit être sélectionné.');
+            return; // Arrêtez l'exécution de la méthode ici
+        }
 
         foreach ($this->invoice->getInvoiceItems() as $key => $item) {
             if (!isset($this->lineItems[$key])) {
@@ -188,7 +188,7 @@ class InvoiceCreator extends AbstractController
         if ($isNew) {
             $this->addFlash('success', 'Facture créée avec succès.');
             return $this->redirectToRoute('app_invoice_index', []);
-        }else {
+        } else {
             $this->addFlash('success', 'Facture éditée avec succès.');
             return $this->redirectToRoute('app_invoice_index', []);
         }
@@ -196,24 +196,14 @@ class InvoiceCreator extends AbstractController
         $this->savedSuccessfully = true;
 
         $this->lineItems = $this->populateLineItems($this->invoice);
-        
-    }
 
-private function isNewInvoice(): bool
-{
-    return null === $this->invoice->getId();
-}
+    }
 
     private function findProduct(int $id): Product
     {
+        $product = $this->productRepository->find($id);
+        dump($product);
         return $this->productRepository->find($id);
-    }
-
-    public function getTotal(): float
-    {
-        $taxMultiplier = 1 + ($this->invoice->getTaxe() / 100);
-
-        return $this->getSubtotal() * $taxMultiplier;
     }
 
     public function getSubtotal(): float
@@ -231,6 +221,13 @@ private function isNewInvoice(): bool
         }
 
         return $subTotal;
+    }
+
+    public function getTotal(): float
+    {
+        $taxMultiplier = 1 + ($this->invoice->getTaxe() / 100);
+
+        return $this->getSubtotal() * $taxMultiplier;
     }
 
     public function getAllDiscount(): float
@@ -254,6 +251,11 @@ private function isNewInvoice(): bool
         }
 
         return false;
+    }
+
+    private function isNewInvoice(): bool
+    {
+        return null === $this->invoice->getId();
     }
 
 }
