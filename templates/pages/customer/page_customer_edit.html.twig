@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+{% set title = "Invox | Modifier client " %}
+{% block content %}
+    <div class="mb-3 text-black-font">
+        <h1>Modifier client</h1>
+    </div>
+    <div class="flex bg-white-font rounded-lg p-5">
+        {{ form_start(CustomerForm, {'attr': {'class': 'w-full h-full'}}) }}
+        <div class="flex w-full justify-around p-5">
+            <div class="flex flex-col gap-y-8 w-1/2">
+                {{ form_row(CustomerForm.firstName) }}
+                {{ form_row(CustomerForm.lastName) }}
+                {{ form_row(CustomerForm.email) }}
+                {{ form_row(CustomerForm.address) }}
+                <div class="mt-6">
+                    <twig:ButtonDarkDefault type="submit" text="Enregistrer"/>
+                </div>
+            </div>
+        </div>
+        {{ form_end(CustomerForm) }}
+    </div>
+{% endblock content %}
+
+
