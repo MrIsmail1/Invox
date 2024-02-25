@@ -36,7 +36,6 @@
                         </twig:Item>
                     {% endfor %}
                 {% else %}
-                    <span class="text-pr-grey text-md ml-6">MENU</span>
                     {% for headerItem in this.headerItems %}
                         <twig:Item icon="{{ asset(headerItem['icon']) }}" ul="{{ headerItem['name'] }}"
                                    linkUl="{{ headerItem['route'] }}">

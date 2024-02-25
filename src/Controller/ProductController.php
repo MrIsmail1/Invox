@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Form\ProductFormType;
+use App\Form\SearchAutocompleteProduct;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -12,18 +13,35 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 #[Route('/products')]
 class ProductController extends AbstractController
 {
-    #[Route('/', name: 'app_product_index', methods: ['GET'])]
+    #[Route('/', name: 'app_product_index', methods: ['GET', 'POST'])]
     public function index(Request $request, ProductRepository $productRepository, PaginatorInterface $paginatorInterface): Response
     {
-        $query = $productRepository->createQueryBuilder('a')->getQuery();
-        $data = $paginatorInterface->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            15
-        );
+        $searchForm = $this->createForm(SearchAutocompleteProduct::class);
+    $searchForm->handleRequest($request);
+
+    $queryBuilder = $productRepository->createQueryBuilder('a');
+
+    if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+        $searchedName = $searchForm->get('name')->getData();
+
+        if ($searchedName) {
+            $queryBuilder->where('a.name LIKE :name')
+                         ->setParameter('name', '%' . $searchedName . '%');
+        }
+    }
+
+    $query = $queryBuilder->getQuery();
+    $data = $paginatorInterface->paginate(
+        $query,
+        $request->query->getInt('page', 1),
+        15
+    );
+
+        
         $product = new Product();
         $form = $this->createForm(ProductFormType::class, $product);
         $form->handleRequest($request);
@@ -32,6 +50,7 @@ class ProductController extends AbstractController
             'productForm' => $form,
             'data' => $data,
             'modal' => "productModal",
+            'SearchBar' => $searchForm->createView(),
         ]);
     }
 

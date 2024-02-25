@@ -11,11 +11,11 @@
                      path="{{ type == 'quotation' ? 'quotation/new' : 'invoice/new' }}"/>
     </div>
     <div>
-        <twig:Table modal="{{ modal }}"
-                    theads="{{ {"id":"Numéro","customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le", "updatedAt":"Echeance"} }}"
-                    pathEdit="{{ pathEdit is defined ? pathEdit : '' }}"
-                    pathDelete="{{pathDelete is defined ? pathDelete : ''}}" data="{{ data }}" invoiceItem="{{ invoiceItem }}"
-                    products="{{ products }}" type="{{ type }}" form="{{SearchBar}}"/>
+    <twig:Table modal="{{ modal }}"
+                theads="{{ {"id":"Numéro","customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le", "updatedAt":"modifié le"} }}"
+                pathEdit="{{ pathEdit is defined ? pathEdit : '' }}"
+                pathDelete="{{pathDelete is defined ? pathDelete : ''}}" data="{{ data }}" invoiceItem="{{ invoiceItem }}"
+                products="{{ products }}" type="{{ type }}" form="{{SearchBar}}"/>
     </div>
 
     {% if app.session.flashbag.has('success') %}
