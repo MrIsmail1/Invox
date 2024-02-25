@@ -13,7 +13,7 @@ class MediaFormType extends AbstractType
     {
         $builder
             ->add('uploadedFile', VichFileType::class, [
-                'label' => false,
+                'label' => 'Photo de profil',
                 'required' => false,
                 'allow_delete' => false,
                 'download_uri' => false,

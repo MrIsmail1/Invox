@@ -28,7 +28,7 @@ class Media
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'media')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'media')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $uploadedBy = null;
 
