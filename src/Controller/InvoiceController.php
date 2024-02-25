@@ -80,6 +80,7 @@ class InvoiceController extends AbstractController
             'modal' => "invoiceModal",
             'products' => $productDataByInvoiceId,
             'type' => 'invoice',
+            'SearchBar' => $form->createView(),
         ]);
     }
 

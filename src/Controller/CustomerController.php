@@ -11,19 +11,35 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Form\SearchAutocomplete;
 
 #[Route('/customers')]
 class CustomerController extends AbstractController
 {
-    #[Route('/', name: 'app_customer_index', methods: ['GET'])]
+    #[Route('/', name: 'app_customer_index', methods: ['GET', 'POST'])]
     public function index(Request $request, CustomerRepository $customerRepository, PaginatorInterface $paginatorInterface): Response
     {
-        $query = $customerRepository->createQueryBuilder('a')->getQuery();
-        $data = $paginatorInterface->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            15
-        );
+    $searchForm = $this->createForm(SearchAutocomplete::class);
+    $searchForm->handleRequest($request);
+
+    $queryBuilder = $customerRepository->createQueryBuilder('a');
+
+    if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+        $selectedCustomer = $searchForm->get('customer')->getData();
+
+        if ($selectedCustomer) {
+            // Filtrer les clients en fonction du prénom du client sélectionné
+            $queryBuilder->where('a.firstName = :firstName')
+                         ->setParameter('firstName', $selectedCustomer->getFirstName());
+        }
+    }
+
+    $query = $queryBuilder->getQuery();
+    $data = $paginatorInterface->paginate(
+        $query,
+        $request->query->getInt('page', 1),
+        15
+    );
         $customer = new Customer();
         $form = $this->createForm(CustomerFormType::class, $customer);
         $form->handleRequest($request);
@@ -32,6 +48,7 @@ class CustomerController extends AbstractController
             'customerForm' => $form,
             'data' => $data,
             'modal' => "customerModal",
+            'SearchBar' => $searchForm->createView(),
         ]);
     }
 

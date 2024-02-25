@@ -83,7 +83,7 @@ public function index(Request $request, QuotationRepository $quotationRepository
             'pathEdit' => 'app_quotation_edit',
             'pathDelete' => 'app_quotation_delete',
             'type' => 'quotation',
-
+            'SearchBar' => $form->createView(),
         ]);
     }
 

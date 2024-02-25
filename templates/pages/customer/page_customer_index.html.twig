@@ -13,6 +13,6 @@
         <twig:Table modal="{{ modal }}"
                     theads="{{ {"id":"Numéro","firstName":"Prénom","lastName":"Nom","email":"E-mail","address":"Adresse"} }}"
                     pathEdit="app_customer_edit"
-                    pathDelete="app_customer_delete" data="{{ data }}"/>
+                    pathDelete="app_customer_delete" data="{{ data }}" form="{{SearchBar}}"/>
     </div>
 {% endblock content %}

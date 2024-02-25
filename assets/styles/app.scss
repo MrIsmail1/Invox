@@ -182,7 +182,8 @@ td {
   box-shadow: none !important;
 }
 
-#search_autocomplete_customer-ts-control {
+#search_autocomplete_customer-ts-control,
+#search_autocomplete_product_name-ts-control {
   font-size: 14px !important;
   color: var(--white-font) !important;
 }
