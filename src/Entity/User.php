@@ -38,7 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min: 8, max: 255, minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères", maxMessage: "Le mot de passe ne peut pas contenir plus de {{ limit }} caractères")]
     private ?string $password = null;
 
-    #[ORM\OneToMany(mappedBy: 'uploadedBy', targetEntity: Media::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'uploadedBy', targetEntity: Media::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $media;
 
     #[ORM\ManyToMany(targetEntity: Quotation::class, inversedBy: 'users')]
@@ -288,10 +288,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function addMedium(Media $medium): static
     {
         if (!$this->media->contains($medium)) {
-            $this->media->add($medium);
+            $this->media["uploadedFile"] = $medium;
             $medium->setUploadedBy($this);
         }
-
         return $this;
     }
 

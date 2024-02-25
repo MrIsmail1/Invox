@@ -43,24 +43,24 @@ class SettingsController extends AbstractController
     {
 
         $user = $this->getUser();
-
-
         $form = $this->createForm(UserProfileFormType::class, $user);
-        $media = new Media();
-        $user->addMedium($media);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $uploadedFile = $form['media']['uploadedFile']['file']->getData();
+            $media = new Media();
+            $media->setUploadedFile($uploadedFile);
+            $user->addMedium($media);
             $entityManager->flush();
-
-            /*return $this->redirectToRoute('app_settings_user_profile', [], Response::HTTP_SEE_OTHER);*/
+            $user->removeMedium($media);
+            return $this->redirectToRoute('app_settings_user_profile', [], Response::HTTP_SEE_OTHER);
         }
-
 
         return $this->render('settings/page_edit_user_profile.html.twig', [
             'user' => $user,
             'UserProfileForm' => $form,
         ]);
     }
+
 }

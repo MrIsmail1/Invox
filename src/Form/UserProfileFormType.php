@@ -40,8 +40,6 @@ class UserProfileFormType extends AbstractType
             ])
             ->add('media', MediaFormType::class, [
                 'label' => false,
-                'mapped' => true,
-                'required' => false,
             ]);
 
     }
