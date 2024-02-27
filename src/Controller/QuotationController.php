@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\SearchAutocomplete;
+use App\Service\PdfService;
 
 class QuotationController extends AbstractController
 {
@@ -74,7 +75,6 @@ public function index(Request $request, QuotationRepository $quotationRepository
 
             $productDataByQuotationId[$quotationId] = $productData;
         }
-
         return $this->render('invoice/page_invoice_index.html.twig', [
             'data' => $data,
             'invoiceItem' => $invoiceItem,
@@ -82,9 +82,52 @@ public function index(Request $request, QuotationRepository $quotationRepository
             'products' => $productDataByQuotationId,
             'pathEdit' => 'app_quotation_edit',
             'pathDelete' => 'app_quotation_delete',
+            'pathExport' => 'app_quotation_export',
             'type' => 'quotation',
             'SearchBar' => $form->createView(),
         ]);
+    }
+
+    #[Route('quotation/pdf/{id}', name: 'app_quotation_export', methods: ['GET' , 'POST'])]
+    public function generatePdfQuotation(Quotation $quotation = null, PdfService $pdf) {
+
+        
+    if (!$quotation) {
+        throw $this->createNotFoundException('Le devis demandée n\'existe pas');
+    }
+    // Récupérer les données nécessaires pour cette quotation spécifique
+    $invoiceItems = $quotation->getInvoiceItems();
+    $productData = [];
+    /* $productDataByQuotationId = []; */
+
+    foreach ($invoiceItems as $invoiceItem) {
+        $product = $invoiceItem->getProduct();
+        $quantity = $invoiceItem->getQuantity();
+        $discount = $invoiceItem->getDiscount();
+
+        if ($product !== null) {
+            $productData[] = [
+                'name' => $product->getName(),
+                'price' => $product->getPrice(),
+                'category' => $product->getCategory(),
+                'quantity' => $quantity,
+                'discount' => $discount,
+            ];
+        }
+    }
+    
+    $response = $this->render('invoice/page_invoice_pdf.html.twig', [
+        'products' => $productData,
+        'data' => $quotation,
+    ]);
+        $html = $response->getContent();
+        $pdfContent = $pdf->generateBinaryPDF($html); // Récupérer le contenu du PDF
+
+        return new Response($pdfContent, 200, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'attachment; filename="quotation.pdf"'
+    ]);
+
     }
 
 

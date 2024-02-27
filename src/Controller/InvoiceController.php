@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\SearchAutocomplete;
+use App\Service\PdfService;
 
 class InvoiceController extends AbstractController
 {
@@ -25,7 +26,7 @@ class InvoiceController extends AbstractController
     $form = $this->createForm(SearchAutocomplete::class);
     $form->handleRequest($request);
 
-    // Initialiser la requête de base pour toutes les quotations
+    // Initialiser la requête de base pour toutes les invoices
     $queryBuilder = $invoiceRepository->createQueryBuilder('a');
 
     // Vérifier si le formulaire est soumis et valide
@@ -81,7 +82,51 @@ class InvoiceController extends AbstractController
             'products' => $productDataByInvoiceId,
             'type' => 'invoice',
             'SearchBar' => $form->createView(),
+            'pathExport' => 'app_invoice_export',
         ]);
+    }
+
+
+        #[Route('invoice/pdf/{id}', name: 'app_invoice_export', methods: ['GET' , 'POST'])]
+    public function generatePdfInvoice(Invoice $invoice = null, PdfService $pdf) {
+
+        
+    if (!$invoice) {
+        throw $this->createNotFoundException('Le devis demandée n\'existe pas');
+    }
+    // Récupérer les données nécessaires pour cette invoice spécifique
+    $invoiceItems = $invoice->getInvoiceItems();
+    $productData = [];
+    /* $productDataByInvoiceId = []; */
+
+    foreach ($invoiceItems as $invoiceItem) {
+        $product = $invoiceItem->getProduct();
+        $quantity = $invoiceItem->getQuantity();
+        $discount = $invoiceItem->getDiscount();
+
+        if ($product !== null) {
+            $productData[] = [
+                'name' => $product->getName(),
+                'price' => $product->getPrice(),
+                'category' => $product->getCategory(),
+                'quantity' => $quantity,
+                'discount' => $discount,
+            ];
+        }
+    }
+    
+    $response = $this->render('invoice/page_invoice_pdf.html.twig', [
+        'products' => $productData,
+        'data' => $invoice,
+    ]);
+        $html = $response->getContent();
+        $pdfContent = $pdf->generateBinaryPDF($html); // Récupérer le contenu du PDF
+
+        return new Response($pdfContent, 200, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'attachment; filename="invoice.pdf"'
+    ]);
+
     }
 
 

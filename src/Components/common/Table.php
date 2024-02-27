@@ -20,6 +20,7 @@ class Table
     public $products = null;
     public ?string $pathDelete = null;
     public ?string $pathEdit = null;
+    public ?string $pathExport = null;
     public ?string $modal = null;
     public ?string $type = null;
 
