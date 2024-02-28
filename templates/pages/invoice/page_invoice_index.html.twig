@@ -15,7 +15,7 @@
                 theads="{{ {"id":"Numéro","customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le", "updatedAt":"modifié le"} }}"
                 pathEdit="{{ pathEdit is defined ? pathEdit : '' }}"
                 pathDelete="{{pathDelete is defined ? pathDelete : ''}}" data="{{ data }}" invoiceItem="{{ invoiceItem }}"
-                products="{{ products }}" type="{{ type }}" form="{{SearchBar}}"/>
+                products="{{ products }}" type="{{ type }}" form="{{SearchBar}}" pathExport="{{pathExport}}" />
     </div>
 
     {% if app.session.flashbag.has('success') %}
