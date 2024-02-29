@@ -74,6 +74,7 @@ class DashboardController extends AbstractController
             'numberOfLateInvoices' => $numberOfLateInvoices,
             'months' => $months,
             'totals' => $totals,
+            'user' => $user,
         ]);
     }
 }

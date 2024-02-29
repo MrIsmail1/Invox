@@ -3,6 +3,13 @@
 {% set title = "Invox | Invoice" %}
 
 {% block content %}
+{% if type == 'invoice' %}
+    {% set theads = {"id":"Numéro","customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le"} %}
+    {% else %}
+    {% set theads = {"id":"Numéro","customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le", "updatedAt":"modifié le"} %}
+{% endif %}
+
+
     <div class="flex justify-between">
         <h1>{{ type == 'quotation' ? 'Devis' : 'Facture' }}</h1>
     </div>
@@ -12,10 +19,10 @@
     </div>
     <div>
     <twig:Table modal="{{ modal }}"
-                theads="{{ {"id":"Numéro","customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le", "updatedAt":"modifié le"} }}"
-                pathEdit="{{ pathEdit is defined ? pathEdit : '' }}"
-                pathDelete="{{pathDelete is defined ? pathDelete : ''}}" data="{{ data }}" invoiceItem="{{ invoiceItem }}"
-                products="{{ products }}" type="{{ type }}" form="{{SearchBar}}" pathExport="{{pathExport}}" />
+        theads="{{ theads }}"
+        pathEdit="{{ pathEdit is defined ? pathEdit : '' }}"
+        pathDelete="{{pathDelete is defined ? pathDelete : ''}}" data="{{ data }}" invoiceItem="{{ invoiceItem }}"
+        products="{{ products }}" type="{{ type }}" form="{{SearchBar}}" pathExport="{{pathExport}}" />
     </div>
 
     {% if app.session.flashbag.has('success') %}
