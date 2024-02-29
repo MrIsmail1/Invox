@@ -9,15 +9,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use App\Form\DashboardFormType;
 
 class DashboardController extends AbstractController
 {
     #[Route('/', name: 'dashboard',methods: ['GET','POST'])]
     public function dashboard(InvoiceRepository $invoiceRepository, QuotationRepository $quotationRepository, CustomerRepository $customerRepository,Request $request): Response
-
     {
+        $user = $this->getUser();
+        
          $form = $this->createForm(DashboardFormType::class, null, [
             'method' => 'POST'
         ]);
@@ -35,22 +35,22 @@ class DashboardController extends AbstractController
             $endDate = $data['end_date'];
 
             // Assurez-vous que les dates sont au format approprié pour votre DB
-            $invoice = $invoiceRepository->findByCreatedAtRange($startDate, $endDate);
-            $quotation = $quotationRepository->findByCreatedAtRange($startDate, $endDate);
-            $customer = $customerRepository->findByCreatedAtRange($startDate, $endDate);
+            $invoice = $invoiceRepository->findByUserAndCreatedAtRange($user, $startDate, $endDate);
+            $quotation = $quotationRepository->findByUserAndCreatedAtRange($user, $startDate, $endDate);
+            /* $customer = $customerRepository->findByUserAndCreatedAtRange($user, $startDate, $endDate); */
         } else {
-            $invoice = $invoiceRepository->findAll();
-            $quotation = $quotationRepository->findAll();
+            $invoice = $invoiceRepository->findByUser($user);
+            $quotation = $quotationRepository->findByUser($user);
             $customer = $customerRepository->findAll();
         }
 
         // Comptages et récupération des totaux mensuels
-        $numberOfValidQuotations = $quotationRepository->countValidQuotations();
-        $numberOfPaidInvoices = $invoiceRepository->countInvoicesByStatus("Payé");
-        $numberOfLateInvoices = $invoiceRepository->countInvoicesByStatus("Retard");
+        $numberOfValidQuotations = $quotationRepository->countValidQuotationsByUser($user);
+        $numberOfPaidInvoices = $invoiceRepository->countInvoicesByStatusAndUser("Payé",$user);
+        $numberOfLateInvoices = $invoiceRepository->countInvoicesByStatusAndUser("Retard",$user);
 
         // Extraction des totaux par mois pour les 12 derniers mois
-        $totalsByMonth = $invoiceRepository->getTotalByMonthForLastYear();
+        $totalsByMonth = $invoiceRepository->getTotalByMonthForLastYearForUser($user);
 
         // Préparation des données pour le graphique
         $months = [];

@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Invoice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\User;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @extends ServiceEntityRepository<Invoice>
@@ -46,11 +48,14 @@ class InvoiceRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-public function findByCreatedAtRange($startDate, $endDate): array
+public function findByUserAndCreatedAtRange($user, $startDate, $endDate): array
 {
     $qb = $this->createQueryBuilder('i')
-        ->where('i.createdAt >= :startDate')
+        ->innerJoin('i.users', 'u') // Joindre la table des utilisateurs
+        ->where('u.id = :userId') // Filtrer par l'ID de l'utilisateur
+        ->andWhere('i.createdAt >= :startDate')
         ->andWhere('i.createdAt <= :endDate')
+        ->setParameter('userId', $user->getId()) // Assurez-vous de passer l'objet User entier à la méthode
         ->setParameter('startDate', $startDate ? $startDate->format('Y-m-d 00:00:00') : null)
         ->setParameter('endDate', $endDate ? $endDate->format('Y-m-d 23:59:59') : null)
         ->getQuery();
@@ -58,43 +63,67 @@ public function findByCreatedAtRange($startDate, $endDate): array
     return $qb->getResult();
 }
 
-public function countInvoicesByStatus(string $status): int
+
+
+public function countInvoicesByStatusAndUser(string $status, User $user): int
 {
     $qb = $this->createQueryBuilder('i')
         ->select('COUNT(i.id)')
+        ->innerJoin('i.users', 'u')
         ->where('i.status = :status')
-        ->setParameter('status', $status);
+        ->andWhere('u.id = :userId')
+        ->setParameter('status', $status)
+        ->setParameter('userId', $user->getId());
 
     return (int) $qb->getQuery()->getSingleScalarResult();
 }
 
-public function getTotalByMonthForLastYear(): array
+
+public function getTotalByMonthForLastYearForUser(User $user): array
 {
     $conn = $this->getEntityManager()->getConnection();
     $sql = '
-        SELECT SUM(total) as total, EXTRACT(MONTH FROM created_at) as month, EXTRACT(YEAR FROM created_at) as year
-        FROM invoice
-        WHERE created_at >= :date
-        GROUP BY EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at)
+        SELECT SUM(i.total) as total, EXTRACT(MONTH FROM i.created_at) as month, EXTRACT(YEAR FROM i.created_at) as year
+        FROM invoice i
+        JOIN user_invoice ui ON i.id = ui.invoice_id
+        WHERE i.created_at >= :date AND ui.user_id = :userId
+        GROUP BY EXTRACT(YEAR FROM i.created_at), EXTRACT(MONTH FROM i.created_at)
         ORDER BY year ASC, month ASC
     ';
-    $stmt = $conn->executeQuery($sql, ['date' => (new \DateTime())->modify('-12 months')->format('Y-m-d')]);
+    $stmt = $conn->executeQuery($sql, [
+        'date' => (new \DateTime())->modify('-12 months')->format('Y-m-d'),
+        'userId' => $user->getId(),
+    ]);
 
     return $stmt->fetchAllAssociative();
 }
 
 
 
+ public function createQueryBuilderForUser(User $user, string $sort = 'a.id', string $direction = 'asc'): QueryBuilder
+    {
+        // Initialise le QueryBuilder avec un filtre sur l'utilisateur
+        $qb = $this->createQueryBuilder('a')
+            ->innerJoin('a.users', 'u')
+            ->where('u.id = :userId')
+            ->setParameter('userId', $user->getId());
 
-public function findBySearchQuery(string $query): array
-{
-    return $this->createQueryBuilder('i')
-        ->leftJoin('i.customer', 'c')
-        ->where('c.firstName LIKE :searchTerm')
-        ->orWhere('c.lastName LIKE :searchTerm')
-        ->setParameter('searchTerm', '%'.$query.'%')
-        ->getQuery()
-        ->getResult();
-}
+        // Ajoute un tri basé sur les paramètres fournis
+        if (!empty($sort) && !empty($direction)) {
+            $qb->orderBy($sort, $direction);
+        }
+
+        return $qb;
+    }
+
+     public function findByUser(User $user)
+    {
+        return $this->createQueryBuilder('i')
+            ->innerJoin('i.users', 'u') // Assurez-vous que 'users' est le nom correct de la propriété dans Invoice qui référence User
+            ->where('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->getQuery()
+            ->getResult();
+    }
 
 }

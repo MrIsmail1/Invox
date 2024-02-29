@@ -133,6 +133,8 @@ class QuotationCreator extends AbstractController
     public function saveQuotation(EntityManagerInterface $entityManager)
     {
 
+        $user = $this->getUser();
+
         if (empty($this->lineItems)) {
             $this->saveFailed = true;
             $this->addFlash('error', 'La facture doit contenir au moins un élément.');
@@ -176,6 +178,7 @@ class QuotationCreator extends AbstractController
         }
 
         /* Enregistrer les éléments dans la table quotation */
+        $this->quotation->addUser($user);
         $this->quotation->setStatus($this->quotation->getStatus());
         $this->quotation->setTaxe($this->quotation->getTaxe());
         $this->quotation->setTotalWithOutTaxe($this->getSubtotal());

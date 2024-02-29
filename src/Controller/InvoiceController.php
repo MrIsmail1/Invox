@@ -20,14 +20,18 @@ class InvoiceController extends AbstractController
     #[Route('/invoice', name: 'app_invoice_index', methods: ['GET', 'POST'])]
     public function index(Request $request, InvoiceRepository $invoiceRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response
     {
-        $invoiceItem = new InvoiceItem();
-        $query = $invoiceRepository->createQueryBuilder('a')->getQuery();
 
+    $user = $this->getUser();
+    $invoices = $user->getInvoices();
+
+    $invoiceItem = new InvoiceItem();
+    /* $query = $invoiceRepository->createQueryBuilder('a')->getQuery(); */
+    // Initialiser la requête de base pour les invoices de l'utilisateur
+    $queryBuilder = $invoiceRepository->createQueryBuilderForUser($user);
+
+    // Search bar
     $form = $this->createForm(SearchAutocomplete::class);
     $form->handleRequest($request);
-
-    // Initialiser la requête de base pour toutes les invoices
-    $queryBuilder = $invoiceRepository->createQueryBuilder('a');
 
     // Vérifier si le formulaire est soumis et valide
     if ($form->isSubmitted() && $form->isValid()) {
@@ -41,16 +45,14 @@ class InvoiceController extends AbstractController
     }
 
 
-    $query = $queryBuilder->getQuery();
     $data = $paginatorInterface->paginate(
-        $query,
+        $queryBuilder->getQuery(),
         $request->query->getInt('page', 1),
         15
     );
 
         // Initialiser $productDataByInvoiceId avant de l'utiliser
         $productDataByInvoiceId = [];
-
         foreach ($data as $invoice) {
             $invoiceId = $invoice->getId();
             $invoiceItems = $invoice->getInvoiceItems();
@@ -74,7 +76,6 @@ class InvoiceController extends AbstractController
 
             $productDataByInvoiceId[$invoiceId] = $productData;
         }
-
         return $this->render('invoice/page_invoice_index.html.twig', [
             'data' => $data,
             'invoiceItem' => $invoiceItem,
@@ -133,14 +134,8 @@ class InvoiceController extends AbstractController
     #[Route('invoice/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
     public function new(ProductRepository $productRepository, Request $request): Response
     {
-        $invoice = new Invoice();
-        /* $form = $this->createForm(SelectFormType::class, $invoice);
-        $form->handleRequest($request);
         
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Traitez l'enregistrement de l'entité $invoice comme d'habitude
-        } */
-
+        $invoice = new Invoice();
         $invoiceItem = new InvoiceItem();
         $products = $productRepository->findAll();
 

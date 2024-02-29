@@ -20,13 +20,17 @@ class QuotationController extends AbstractController
 #[Route('/quotation', name: 'app_quotation_index', methods: ['GET', 'POST'])]
 public function index(Request $request, QuotationRepository $quotationRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response 
 {
+
+    $user = $this->getUser();
+    $invoices = $user->getInvoices();
+
     $invoiceItem = new InvoiceItem();
+    // Initialiser la requête de base pour les invoices de l'utilisateur
+    $queryBuilder = $quotationRepository->createQueryBuilderForUser($user);
 
     $form = $this->createForm(SearchAutocomplete::class);
     $form->handleRequest($request);
 
-    // Initialiser la requête de base pour toutes les quotations
-    $queryBuilder = $quotationRepository->createQueryBuilder('a');
 
     // Vérifier si le formulaire est soumis et valide
     if ($form->isSubmitted() && $form->isValid()) {
@@ -40,9 +44,8 @@ public function index(Request $request, QuotationRepository $quotationRepository
     }
 
 
-    $query = $queryBuilder->getQuery();
     $data = $paginatorInterface->paginate(
-        $query,
+        $queryBuilder->getQuery(),
         $request->query->getInt('page', 1),
         15
     );
