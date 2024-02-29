@@ -43,7 +43,6 @@ class InvoiceCreator extends AbstractController
 
     public bool $savedSuccessfully = false;
     public bool $saveFailed = false;
-    /* public ?object $selectFormType = null; */
 
     private CustomerRepository $customerRepository;
     private ProductRepository $productRepository;
@@ -57,6 +56,7 @@ class InvoiceCreator extends AbstractController
 
     public function mount(Invoice $invoice): void
     {
+        /* $user = $this->getUser(); */
         $this->invoice = $invoice;
         $this->status = $invoice->getStatus();
         $this->selectedCustomerId = $invoice->getCustomer() ? $invoice->getCustomer()->getId() : null;
@@ -133,6 +133,8 @@ class InvoiceCreator extends AbstractController
     public function saveInvoice(EntityManagerInterface $entityManager)
     {
 
+        $user = $this->getUser();
+
         if (empty($this->lineItems)) {
             $this->saveFailed = true;
             $this->addFlash('error', 'La facture doit contenir au moins un élément.');
@@ -176,6 +178,7 @@ class InvoiceCreator extends AbstractController
         }
 
         /* Enregistrer les éléments dans la table invoice */
+        $this->invoice->addUser($user);
         $this->invoice->setStatus($this->invoice->getStatus());
         $this->invoice->setTaxe($this->invoice->getTaxe());
         $this->invoice->setTotalWithOutTaxe($this->getSubtotal());
