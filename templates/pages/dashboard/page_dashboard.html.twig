@@ -3,8 +3,14 @@
 {% set title = "Dashboard" %}
 
 {% block content %}
+{% set paths = {
+    'quotationPath': path('app_quotation_index'),
+    'invoicePath': path('app_invoice_index'),
+    'customerPath': path('app_customer_index'),
+} %}
+
     <div class="flex justify-between md:flex-row flex-col" >
-        <h1>Bonjour, Hamza !</h1>
+        <h1>Bonjour {{ user.firstName ? user.firstName : "" }}!</h1>
         {{ form_start(DashboardForm) }}
         <div class="flex gap-8 md:flex-row flex-col">
         {{ form_row(DashboardForm.start_date) }}
@@ -17,18 +23,18 @@
 
     </div>
     <div class="flex md:mt-16 mt-0 justify-between md:flex-row flex-col" >
-        <twig:CardDashboard picto="🧾" title="Nombre de devis" number="{{numberOfQuotations}}" />
-        <twig:CardDashboard picto="✅" title="Nombre de devis validé" number="{{numberOfValidQuotations}}" />
-        <twig:CardDashboard picto="🧾" title="Nombre de facture" number="{{numberOfInvoices}}" />
-        <twig:CardDashboard picto="🤑" title="Facture encaisées" number="{{numberOfPaidInvoices}}" />
+        <twig:CardDashboard picto="🧾" path="{{paths.quotationPath}}" title="Nombre de devis" number="{{numberOfQuotations}}" />
+        <twig:CardDashboard picto="✅" path="{{paths.quotationPath}}" title="Nombre de devis validé" number="{{numberOfValidQuotations}}" />
+        <twig:CardDashboard picto="🧾" path="{{paths.invoicePath}}" title="Nombre de facture" number="{{numberOfInvoices}}" />
+        <twig:CardDashboard picto="🤑" path="{{paths.invoicePath}}" title="Facture encaisées" number="{{numberOfPaidInvoices}}" />
     </div>
     <div class="flex md:mt-14 mt-8 justify-between w-full md:flex-row flex-col">
         <div class="md:w-[39%] w-full" >
             <div class="mb-6" >
-                <twig:RectangleCardDashboard picto="🥳" title="Nouveau clients" number="{{numberOfCustomers}}" />
+                <twig:RectangleCardDashboard picto="🥳" path="{{paths.customerPath}}" title="Nouveau clients" number="{{numberOfCustomers}}" />
             </div>
             <div>
-                <twig:RectangleCardDashboard picto="⏰" title="Facture en retard" number="{{numberOfLateInvoices}}" />
+                <twig:RectangleCardDashboard picto="⏰" path="{{paths.invoicePath}}" title="Facture en retard" number="{{numberOfLateInvoices}}" />
             </div>
         </div>
         <twig:ChartDashboard months="{{months}}" totals="{{totals}}" />

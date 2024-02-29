@@ -95,7 +95,7 @@ class QuotationCreator extends AbstractController
     public function addLineItem(): void
     {
         $this->lineItems[] = [
-            'productId' => null,
+            'productId' => 1,
             'quantity' => 1,
             'discount' => 0,
             'isEditing' => true,
@@ -176,7 +176,6 @@ class QuotationCreator extends AbstractController
             $quotationItem->setQuantity($lineItem['quantity']);
             $quotationItem->setDiscount($lineItem['discount']);
         }
-
         /* Enregistrer les éléments dans la table quotation */
         $this->quotation->addUser($user);
         $this->quotation->setStatus($this->quotation->getStatus());

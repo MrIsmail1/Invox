@@ -10,4 +10,5 @@ class RectangleCardDashboard
     public string $title;
     public string $number;
     public string $picto;
+    public string $path;
 }
