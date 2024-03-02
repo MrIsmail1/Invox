@@ -2,23 +2,23 @@
 
 namespace App\Controller;
 
+use App\Form\DashboardFormType;
+use App\Repository\CustomerRepository;
 use App\Repository\InvoiceRepository;
 use App\Repository\QuotationRepository;
-use App\Repository\CustomerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-use App\Form\DashboardFormType;
 
 class DashboardController extends AbstractController
 {
-    #[Route('/', name: 'dashboard',methods: ['GET','POST'])]
-    public function dashboard(InvoiceRepository $invoiceRepository, QuotationRepository $quotationRepository, CustomerRepository $customerRepository,Request $request): Response
+    #[Route('/', name: 'dashboard', methods: ['GET', 'POST'])]
+    public function dashboard(InvoiceRepository $invoiceRepository, QuotationRepository $quotationRepository, CustomerRepository $customerRepository, Request $request): Response
     {
         $user = $this->getUser();
-        
-         $form = $this->createForm(DashboardFormType::class, null, [
+
+        $form = $this->createForm(DashboardFormType::class, null, [
             'method' => 'POST'
         ]);
 
@@ -41,13 +41,13 @@ class DashboardController extends AbstractController
         } else {
             $invoice = $invoiceRepository->findByUser($user);
             $quotation = $quotationRepository->findByUser($user);
-            $customer = $customerRepository->findAll();
+            $customer = $user->getCustomers();
         }
 
         // Comptages et récupération des totaux mensuels
         $numberOfValidQuotations = $quotationRepository->countValidQuotationsByUser($user);
-        $numberOfPaidInvoices = $invoiceRepository->countInvoicesByStatusAndUser("Payé",$user);
-        $numberOfLateInvoices = $invoiceRepository->countInvoicesByStatusAndUser("Retard",$user);
+        $numberOfPaidInvoices = $invoiceRepository->countInvoicesByStatusAndUser("Payé", $user);
+        $numberOfLateInvoices = $invoiceRepository->countInvoicesByStatusAndUser("Retard", $user);
 
         // Extraction des totaux par mois pour les 12 derniers mois
         $totalsByMonth = $invoiceRepository->getTotalByMonthForLastYearForUser($user);

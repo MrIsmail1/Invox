@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -45,4 +47,19 @@ class ProductRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function createQueryBuilderForUser(User $user, string $sort = 'a.id', string $direction = 'asc'): QueryBuilder
+    {
+        // Initialise le QueryBuilder avec un filtre sur l'utilisateur
+        $qb = $this->createQueryBuilder('a')
+            ->innerJoin('a.users', 'u')
+            ->where('u.id = :userId')
+            ->setParameter('userId', $user->getId());
+
+        // Ajoute un tri basé sur les paramètres fournis
+        if (!empty($sort) && !empty($direction)) {
+            $qb->orderBy($sort, $direction);
+        }
+
+        return $qb;
+    }
 }

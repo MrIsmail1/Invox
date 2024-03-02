@@ -31,6 +31,10 @@ class Product
     #[ORM\Column(length: 255)]
     private ?string $category = null;
 
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $users = null;
+
 
     public function getId(): ?int
     {
@@ -82,5 +86,17 @@ class Product
     {
         return $this->getName();
     }
+
+     public function getUsers(): ?User
+     {
+         return $this->users;
+     }
+
+     public function setUsers(?User $users): static
+     {
+         $this->users = $users;
+
+         return $this;
+     }
 
 }

@@ -4,16 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Invoice;
 use App\Entity\InvoiceItem;
+use App\Form\SearchAutocomplete;
 use App\Repository\InvoiceRepository;
 use App\Repository\ProductRepository;
+use App\Service\PdfService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Form\SearchAutocomplete;
-use App\Service\PdfService;
 
 class InvoiceController extends AbstractController
 {
@@ -21,38 +21,37 @@ class InvoiceController extends AbstractController
     public function index(Request $request, InvoiceRepository $invoiceRepository, EntityManagerInterface $entityManager, PaginatorInterface $paginatorInterface): Response
     {
 
-    $user = $this->getUser();
-    $invoices = $user->getInvoices();
+        $user = $this->getUser();
 
-    $companyDetails = $user->getCompanyDetails();
-    $entityManager->initializeObject($companyDetails);
+        $companyDetails = $user->getCompanyDetails();
+        $entityManager->initializeObject($companyDetails);
 
-    $invoiceItem = new InvoiceItem();
-    /* $query = $invoiceRepository->createQueryBuilder('a')->getQuery(); */
-    // Initialiser la requête de base pour les invoices de l'utilisateur
-    $queryBuilder = $invoiceRepository->createQueryBuilderForUser($user);
+        $invoiceItem = new InvoiceItem();
+        /* $query = $invoiceRepository->createQueryBuilder('a')->getQuery(); */
+        // Initialiser la requête de base pour les invoices de l'utilisateur
+        $queryBuilder = $invoiceRepository->createQueryBuilderForUser($user);
 
-    // Search bar
-    $form = $this->createForm(SearchAutocomplete::class);
-    $form->handleRequest($request);
+        // Search bar
+        $form = $this->createForm(SearchAutocomplete::class);
+        $form->handleRequest($request);
 
-    // Vérifier si le formulaire est soumis et valide
-    if ($form->isSubmitted() && $form->isValid()) {
-        $customer = $form->get('customer')->getData();
+        // Vérifier si le formulaire est soumis et valide
+        if ($form->isSubmitted() && $form->isValid()) {
+            $customer = $form->get('customer')->getData();
 
-        // Modifier la requête pour filtrer par client, si un client est sélectionné
-        if ($customer) {
-            $queryBuilder->andWhere('a.customer = :customer')
-                         ->setParameter('customer', $customer);
+            // Modifier la requête pour filtrer par client, si un client est sélectionné
+            if ($customer) {
+                $queryBuilder->andWhere('a.customer = :customer')
+                    ->setParameter('customer', $customer);
+            }
         }
-    }
 
 
-    $data = $paginatorInterface->paginate(
-        $queryBuilder->getQuery(),
-        $request->query->getInt('page', 1),
-        15
-    );
+        $data = $paginatorInterface->paginate(
+            $queryBuilder->getQuery(),
+            $request->query->getInt('page', 1),
+            15
+        );
 
         // Initialiser $productDataByInvoiceId avant de l'utiliser
         $productDataByInvoiceId = [];
@@ -79,7 +78,7 @@ class InvoiceController extends AbstractController
 
             $productDataByInvoiceId[$invoiceId] = $productData;
         }
-        
+
         return $this->render('invoice/page_invoice_index.html.twig', [
             'data' => $data,
             'invoiceItem' => $invoiceItem,
@@ -93,55 +92,56 @@ class InvoiceController extends AbstractController
     }
 
 
-        #[Route('invoice/pdf/{id}', name: 'app_invoice_export', methods: ['GET' , 'POST'])]
-    public function generatePdfInvoice(Invoice $invoice = null, PdfService $pdf, EntityManagerInterface $entityManager) {
+    #[Route('invoice/pdf/{id}', name: 'app_invoice_export', methods: ['GET', 'POST'])]
+    public function generatePdfInvoice(Invoice $invoice = null, PdfService $pdf, EntityManagerInterface $entityManager): Response
+    {
 
-        
-    if (!$invoice) {
-        throw $this->createNotFoundException('Le devis demandée n\'existe pas');
-    }
 
-    $user = $this->getUser();
-    $companyDetails = $user->getCompanyDetails();
-    $entityManager->initializeObject($companyDetails);
-
-    $customer = $invoice->getCustomer();
-    $entityManager->initializeObject($customer);
-
-    // Récupérer les données nécessaires pour cette invoice spécifique
-    $invoiceItems = $invoice->getInvoiceItems();
-    $productData = [];
-    /* $productDataByInvoiceId = []; */
-
-    foreach ($invoiceItems as $invoiceItem) {
-        $product = $invoiceItem->getProduct();
-        $quantity = $invoiceItem->getQuantity();
-        $discount = $invoiceItem->getDiscount();
-
-        if ($product !== null) {
-            $productData[] = [
-                'name' => $product->getName(),
-                'price' => $product->getPrice(),
-                'category' => $product->getCategory(),
-                'quantity' => $quantity,
-                'discount' => $discount,
-            ];
+        if (!$invoice) {
+            throw $this->createNotFoundException('Le devis demandée n\'existe pas');
         }
-    }
-    
-    $response = $this->render('invoice/page_invoice_pdf.html.twig', [
-        'products' => $productData,
-        'data' => $invoice,
-        'companyDetails' => $companyDetails,
-        'customer' => $customer,
-    ]);
+
+        $user = $this->getUser();
+        $companyDetails = $user->getCompanyDetails();
+        $entityManager->initializeObject($companyDetails);
+
+        $customer = $invoice->getCustomer();
+        $entityManager->initializeObject($customer);
+
+        // Récupérer les données nécessaires pour cette invoice spécifique
+        $invoiceItems = $invoice->getInvoiceItems();
+        $productData = [];
+        /* $productDataByInvoiceId = []; */
+
+        foreach ($invoiceItems as $invoiceItem) {
+            $product = $invoiceItem->getProduct();
+            $quantity = $invoiceItem->getQuantity();
+            $discount = $invoiceItem->getDiscount();
+
+            if ($product !== null) {
+                $productData[] = [
+                    'name' => $product->getName(),
+                    'price' => $product->getPrice(),
+                    'category' => $product->getCategory(),
+                    'quantity' => $quantity,
+                    'discount' => $discount,
+                ];
+            }
+        }
+
+        $response = $this->render('invoice/page_invoice_pdf.html.twig', [
+            'products' => $productData,
+            'data' => $invoice,
+            'companyDetails' => $companyDetails,
+            'customer' => $customer,
+        ]);
         $html = $response->getContent();
         $pdfContent = $pdf->generateBinaryPDF($html); // Récupérer le contenu du PDF
 
         return new Response($pdfContent, 200, [
-        'Content-Type' => 'application/pdf',
-        'Content-Disposition' => 'attachment; filename="invoice.pdf"'
-    ]);
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="invoice.pdf"'
+        ]);
 
     }
 
@@ -149,10 +149,11 @@ class InvoiceController extends AbstractController
     #[Route('invoice/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
     public function new(ProductRepository $productRepository, Request $request): Response
     {
-        
+
+        $user = $this->getUser();
         $invoice = new Invoice();
         $invoiceItem = new InvoiceItem();
-        $products = $productRepository->findAll();
+        $products = $user->getProducts();
 
         // Pour créer une notification de succès
         $this->addFlash('success', 'La facture a été créée avec succès');

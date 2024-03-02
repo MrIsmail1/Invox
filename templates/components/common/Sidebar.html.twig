@@ -36,12 +36,23 @@
                 {% endfor %}
             {% else %}
                 {% for headerItem in this.headerItems %}
-                    <twig:Item icon="{{ asset(headerItem['icon']) }}" ul="{{ headerItem['name'] }}"
-                               linkUl="{{ headerItem['route'] }}">
-                        {% block svg %}
-                            {{ headerItem['icon'] | raw }}
-                        {% endblock %}
-                    </twig:Item>
+                    {% if headerItem.role is defined and headerItem.role == 'ROLE_ADMIN' %}
+                        {% if is_admin %}
+                            <twig:Item icon="{{ asset(headerItem['icon']) }}" ul="{{ headerItem['name'] }}"
+                                       linkUl="{{ headerItem['route'] }}">
+                                {% block svg %}
+                                    {{ headerItem['icon'] | raw }}
+                                {% endblock %}
+                            </twig:Item>
+                        {% endif %}
+                    {% else %}
+                        <twig:Item icon="{{ asset(headerItem['icon']) }}" ul="{{ headerItem['name'] }}"
+                                   linkUl="{{ headerItem['route'] }}">
+                            {% block svg %}
+                                {{ headerItem['icon'] | raw }}
+                            {% endblock %}
+                        </twig:Item>
+                    {% endif %}
                 {% endfor %}
             {% endif %}
         </nav>
