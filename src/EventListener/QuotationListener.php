@@ -2,7 +2,7 @@
 
 namespace App\EventListener;
 
-use App\Entity\Invoice;
+use App\Entity\Quotation;
 use App\Service\PdfService;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,9 +14,9 @@ use Symfony\Component\Mime\Email;
 use Twig\Environment;
 
 
-#[AsEntityListener(event: Events::postPersist, method: 'postPersist', entity: Invoice::class)]
-#[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', entity: Invoice::class)]
-class InvoiceListener
+#[AsEntityListener(event: Events::postPersist, method: 'postPersist', entity: Quotation::class)]
+#[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', entity: Quotation::class)]
+class QuotationListener
 {
     private MailerInterface $mailer;
     private PdfService $pdfService;
@@ -35,19 +35,21 @@ class InvoiceListener
         $this->twig = $twig;
     }
 
-    public function postPersist(Invoice $invoice, LifecycleEventArgs $args): void
+    public function postPersist(Quotation $quotation, LifecycleEventArgs $args): void
     {
         $entity = $args->getObject();
-
-        if (!$entity instanceof Invoice) {
+        if (!$entity instanceof Quotation) {
             return;
         }
 
+        if ($entity->getStatus() !== 'Validé') {
+            return;
+        }
         $customer = $entity->getCustomer();
         $user = $this->security->getUser();
         if ($customer) {
             $customerEmail = $customer->getEmail();
-            $htmlContent = $this->twig->render('invoice/template_invoice.html.twig', [
+            $htmlContent = $this->twig->render('invoice/template_quotation.html.twig', [
                 'user' => $user,
             ]);
             // Generate the PDF from the HTML content
@@ -57,7 +59,7 @@ class InvoiceListener
             $email = (new Email())
                 ->from('your_email@example.com')
                 ->to($customerEmail)
-                ->subject('Invox - Confirmation de la création de votre facture n°' . $entity->getId())
+                ->subject('Invox - Confirmation de la création de votre devis n°' . $entity->getId())
                 ->html($htmlContent)
                 ->attach($pdfContent, 'invoice.pdf', 'application/pdf');
 
@@ -66,21 +68,21 @@ class InvoiceListener
         }
     }
 
-    public function generatePdfInvoice(Invoice $invoice)
+    public function generatePdfInvoice(Quotation $quotation)
     {
-        if (!$invoice) {
-            throw $this->createNotFoundException('La facture demandée n\'existe pas');
+        if (!$quotation) {
+            throw $this->createNotFoundException('Le devis demandée n\'existe pas');
         }
 
         $user = $this->security->getUser();
         $companyDetails = $user->getCompanyDetails();
         $this->entityManager->initializeObject($companyDetails);
 
-        $customer = $invoice->getCustomer();
+        $customer = $quotation->getCustomer();
         $this->entityManager->initializeObject($customer);
 
         // Récupérer les données nécessaires pour cette invoice spécifique
-        $invoiceItems = $invoice->getInvoiceItems();
+        $invoiceItems = $quotation->getInvoiceItems();
         $productData = [];
 
         foreach ($invoiceItems as $invoiceItem) {
@@ -101,7 +103,7 @@ class InvoiceListener
 
         $html = $this->twig->render('invoice/page_invoice_pdf.html.twig', [
             'products' => $productData,
-            'data' => $invoice,
+            'data' => $quotation,
             'companyDetails' => $companyDetails,
             'customer' => $customer,
         ]);
@@ -111,14 +113,16 @@ class InvoiceListener
 
     }
 
-    public function postUpdate(Invoice $invoice, LifecycleEventArgs $args): void
+    public function postUpdate(Quotation $quotation, LifecycleEventArgs $args): void
     {
         $entity = $args->getObject();
-
-        if (!$entity instanceof Invoice) {
+        if (!$entity instanceof Quotation) {
             return;
         }
 
+        if ($entity->getStatus() !== 'Validé') {
+            return;
+        }
         $customer = $entity->getCustomer();
         $user = $this->security->getUser();
         if ($customer) {
@@ -133,9 +137,9 @@ class InvoiceListener
             $email = (new Email())
                 ->from('your_email@example.com')
                 ->to($customerEmail)
-                ->subject('Invox - Confirmation de la modification de votre facture n°' . $entity->getId())
+                ->subject('Invox - Confirmation de la modification de votre devis n°' . $entity->getId())
                 ->html($htmlContent)
-                ->attach($pdfContent, 'invoice.pdf', 'application/pdf');
+                ->attach($pdfContent, 'devis.pdf', 'application/pdf');
 
             // Send the email
             $this->mailer->send($email);
