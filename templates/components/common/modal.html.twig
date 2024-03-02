@@ -1,6 +1,6 @@
 <div x-show="open" @click.stop class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50">
     <div class="w-[95%] lg:w-1/2 flex items-center justify-center h-[70%] bg-gray-100 dark:bg-dark-pr-blue rounded">
-        <div class="w-full h-full bg-bg-white dark:bg-dark-pr-blue p-8 rounded shadow-2xl">
+        <div class="w-full h-[104%] bg-bg-white dark:bg-dark-pr-blue p-8 rounded shadow-2xl">
             <div class="w-full flex justify-end">
                 <button @click="open = false"
                         class="p-2 rounded-full transition duration-300 ease-in-out hover:shadow-md">
@@ -51,6 +51,24 @@
                 </div>
 
                 {# ------------------------------------------------------------------------ Start Invoice ------------------------------------------------------------------------ #}
+                 <!-- User & Customer Details on the same line -->
+                <div class="flex justify-between mt-4 lg:flex-row flex-col">
+                    <!-- Company Details -->
+                    <div class="pr-4">
+                        <h5 class="font-bold">{{ companyDetails.companyName }}</h5>
+                        <p class="dark:text-svg-color mt-2">{{ companyDetails.companyEmail }}</p>
+                        <p class="dark:text-svg-color">{{ companyDetails.address }}, <br> {{ companyDetails.postalCode }}, {{ companyDetails.city }}</p>
+                        <p class="dark:text-svg-color">{{ companyDetails.website }}</p>
+                    </div>
+                    
+                    <!-- Customer Details -->
+                    <div class="lg:mt-0 mt-4" >
+                        <h5 class="font-bold">{{ data.customer.firstName }} {{ data.customer.lastName }}</h5>
+                        <p class="dark:text-svg-color mt-2">{{ data.customer.email }}</p>
+                        <p class="dark:text-svg-color">{{ data.customer.address }}</p>
+                    </div>
+                </div>
+
                 <div class="mt-6 mb-8 overflow-x-auto rounded-lg border-border-color border-border-width">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:bg-dark-pr-blue">
                         <thead class="rounded-bl-lg rounded-br-lg dark:bg-bg-hover-sidebar text-sm uppercase dark:text-white-font border-b-border-width border-border-color">
@@ -59,7 +77,7 @@
                             <th scope="col" class="px-6 py-3 w-44">Catégorie</th>
                             <th scope="col" class="px-6 py-3 w-44">Quantité</th>
                             <th scope="col" class="px-6 py-3 w-44">Prix</th>
-                            <th scope="col" class="px-6 py-3 w-44">Remise</th>
+                            <th scope="col" class="px-6 py-3 w-44 rounded-br-lg">Remise</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -115,8 +133,8 @@
                         </div>
                         <div class="flex justify-between">
                             <p class="text-[18px] text-gray-500">TVA :</p>
-                            <h6 class="flex justify-content-end text-[18px]">
-                                <div class="w-20 flex">
+                            <h6 class="flex text-[18px]">
+                                <div class="w-20 flex justify-end">
                                     <span class="text-xl font-bold">{{ data.taxe }}%</span>
                                 </div>
                             </h6>

@@ -18,6 +18,7 @@ class Table
     public $data = null;
     public $invoiceItem = null;
     public $products = null;
+    public $companyDetails = null;
     public ?string $pathDelete = null;
     public ?string $pathEdit = null;
     public ?string $pathExport = null;

@@ -24,6 +24,9 @@ class InvoiceController extends AbstractController
     $user = $this->getUser();
     $invoices = $user->getInvoices();
 
+    $companyDetails = $user->getCompanyDetails();
+    $entityManager->initializeObject($companyDetails);
+
     $invoiceItem = new InvoiceItem();
     /* $query = $invoiceRepository->createQueryBuilder('a')->getQuery(); */
     // Initialiser la requête de base pour les invoices de l'utilisateur
@@ -76,6 +79,7 @@ class InvoiceController extends AbstractController
 
             $productDataByInvoiceId[$invoiceId] = $productData;
         }
+        
         return $this->render('invoice/page_invoice_index.html.twig', [
             'data' => $data,
             'invoiceItem' => $invoiceItem,
@@ -84,17 +88,26 @@ class InvoiceController extends AbstractController
             'type' => 'invoice',
             'SearchBar' => $form->createView(),
             'pathExport' => 'app_invoice_export',
+            'companyDetails' => $companyDetails,
         ]);
     }
 
 
         #[Route('invoice/pdf/{id}', name: 'app_invoice_export', methods: ['GET' , 'POST'])]
-    public function generatePdfInvoice(Invoice $invoice = null, PdfService $pdf) {
+    public function generatePdfInvoice(Invoice $invoice = null, PdfService $pdf, EntityManagerInterface $entityManager) {
 
         
     if (!$invoice) {
         throw $this->createNotFoundException('Le devis demandée n\'existe pas');
     }
+
+    $user = $this->getUser();
+    $companyDetails = $user->getCompanyDetails();
+    $entityManager->initializeObject($companyDetails);
+
+    $customer = $invoice->getCustomer();
+    $entityManager->initializeObject($customer);
+
     // Récupérer les données nécessaires pour cette invoice spécifique
     $invoiceItems = $invoice->getInvoiceItems();
     $productData = [];
@@ -119,6 +132,8 @@ class InvoiceController extends AbstractController
     $response = $this->render('invoice/page_invoice_pdf.html.twig', [
         'products' => $productData,
         'data' => $invoice,
+        'companyDetails' => $companyDetails,
+        'customer' => $customer,
     ]);
         $html = $response->getContent();
         $pdfContent = $pdf->generateBinaryPDF($html); // Récupérer le contenu du PDF
