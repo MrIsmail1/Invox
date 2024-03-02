@@ -1,75 +1,85 @@
-
 <aside
-  x-show="showMenu"
-  class="transition-transform ease-in-out duration-300 text-white-font md:sticky inset-y-0 z-50 h-screen w-64 flex-shrink-0 bg-pr-blue focus:outline-none dark:bg-dark-pr-blue absolute"
-  :class="showMenu ? 'translate-x-0' : '-translate-x-full'"
+        x-show="showMenu"
+        class="transition-transform ease-in-out duration-300 text-white-font md:sticky inset-y-0 z-50 h-screen w-64 flex-shrink-0 bg-pr-blue focus:outline-none dark:bg-dark-pr-blue absolute"
+        :class="showMenu ? 'translate-x-0' : '-translate-x-full'"
 >{# absolute duration-300 ease-linear lg:translate-x-0 translate-x-full #}
-<button @click.prevent="showMenu = !showMenu " class="md:hidden px-2 py-4 flex justify-between text-white-font">
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-<path d="M19.0004 10.9997H7.83041L12.7104 6.11967C13.1004 5.72967 13.1004 5.08967 12.7104 4.69967C12.6179 4.60697 12.508 4.53342 12.387 4.48324C12.2661 4.43306 12.1364 4.40723 12.0054 4.40723C11.8744 4.40723 11.7448 4.43306 11.6238 4.48324C11.5028 4.53342 11.3929 4.60697 11.3004 4.69967L4.71041 11.2897C4.61771 11.3822 4.54416 11.4921 4.49398 11.613C4.4438 11.734 4.41797 11.8637 4.41797 11.9947C4.41797 12.1256 4.4438 12.2553 4.49398 12.3763C4.54416 12.4973 4.61771 12.6072 4.71041 12.6997L11.3004 19.2897C11.393 19.3823 11.5029 19.4557 11.6239 19.5058C11.7448 19.5559 11.8745 19.5817 12.0054 19.5817C12.1363 19.5817 12.266 19.5559 12.387 19.5058C12.5079 19.4557 12.6178 19.3823 12.7104 19.2897C12.803 19.1971 12.8764 19.0872 12.9265 18.9662C12.9766 18.8452 13.0024 18.7156 13.0024 18.5847C13.0024 18.4537 12.9766 18.3241 12.9265 18.2031C12.8764 18.0822 12.803 17.9723 12.7104 17.8797L7.83041 12.9997H19.0004C19.5504 12.9997 20.0004 12.5497 20.0004 11.9997C20.0004 11.4497 19.5504 10.9997 19.0004 10.9997Z"/>
-</svg>
+    <button @click.prevent="showMenu = !showMenu " class="md:hidden px-2 py-4 flex justify-between text-white-font">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19.0004 10.9997H7.83041L12.7104 6.11967C13.1004 5.72967 13.1004 5.08967 12.7104 4.69967C12.6179 4.60697 12.508 4.53342 12.387 4.48324C12.2661 4.43306 12.1364 4.40723 12.0054 4.40723C11.8744 4.40723 11.7448 4.43306 11.6238 4.48324C11.5028 4.53342 11.3929 4.60697 11.3004 4.69967L4.71041 11.2897C4.61771 11.3822 4.54416 11.4921 4.49398 11.613C4.4438 11.734 4.41797 11.8637 4.41797 11.9947C4.41797 12.1256 4.4438 12.2553 4.49398 12.3763C4.54416 12.4973 4.61771 12.6072 4.71041 12.6997L11.3004 19.2897C11.393 19.3823 11.5029 19.4557 11.6239 19.5058C11.7448 19.5559 11.8745 19.5817 12.0054 19.5817C12.1363 19.5817 12.266 19.5559 12.387 19.5058C12.5079 19.4557 12.6178 19.3823 12.7104 19.2897C12.803 19.1971 12.8764 19.0872 12.9265 18.9662C12.9766 18.8452 13.0024 18.7156 13.0024 18.5847C13.0024 18.4537 12.9766 18.3241 12.9265 18.2031C12.8764 18.0822 12.803 17.9723 12.7104 17.8797L7.83041 12.9997H19.0004C19.5504 12.9997 20.0004 12.5497 20.0004 11.9997C20.0004 11.4497 19.5504 10.9997 19.0004 10.9997Z"/>
+        </svg>
 
-</button>
-  <div class="flex lg:h-full h-[93%] flex-col pt-6">
-    <div class="px-10">
-      <a href="{{path("default_index")}}">
-        <img
-          class="w-full"
-          src="{{ asset('build/images/logo.svg') }}"
-          alt="Logo Invox"
-        />
-      </a>
-    </div>
-    <!-- Sidebar links -->
-    <nav
-      aria-label="Main"
-      class="flex-1 space-y-2 overflow-y-hidden px-3 py-8 hover:overflow-y-auto"
-    >
-      {% if app.request.attributes.get('_route') starts with "app_settings" %}
-                    <span class="text-pr-grey text-md ml-6">Paramètres</span>
-                    {% for headerItem in this.settingsHeaderItems %}
-                        <twig:Item ul="{{ headerItem['name'] }}"
-                                   linkUl="{{ headerItem['route'] }}">
-                            {% block svg %}
-                                {{ headerItem['icon'] | raw }}
-                            {% endblock %}
-                        </twig:Item>
-                    {% endfor %}
-                {% else %}
-                    {% for headerItem in this.headerItems %}
+    </button>
+    <div class="flex lg:h-full h-[93%] flex-col pt-6">
+        <div class="px-10">
+            <a href="{{ path("default_index") }}">
+                <img
+                        class="w-full"
+                        src="{{ asset('build/images/logo.svg') }}"
+                        alt="Logo Invox"
+                />
+            </a>
+        </div>
+        <!-- Sidebar links -->
+        <nav
+                aria-label="Main"
+                class="flex-1 space-y-2 overflow-y-hidden px-3 py-8 hover:overflow-y-auto"
+        >
+            {% if app.request.attributes.get('_route') starts with "app_settings" %}
+                <span class="text-pr-grey text-md ml-6">Paramètres</span>
+                {% for headerItem in this.settingsHeaderItems %}
+                    <twig:Item ul="{{ headerItem['name'] }}"
+                               linkUl="{{ headerItem['route'] }}">
+                        {% block svg %}
+                            {{ headerItem['icon'] | raw }}
+                        {% endblock %}
+                    </twig:Item>
+                {% endfor %}
+            {% else %}
+                {% for headerItem in this.headerItems %}
+                    {% if headerItem.role is defined and headerItem.role == 'ROLE_ADMIN' %}
+                        {% if is_admin %}
+                            <twig:Item icon="{{ asset(headerItem['icon']) }}" ul="{{ headerItem['name'] }}"
+                                       linkUl="{{ headerItem['route'] }}">
+                                {% block svg %}
+                                    {{ headerItem['icon'] | raw }}
+                                {% endblock %}
+                            </twig:Item>
+                        {% endif %}
+                    {% else %}
                         <twig:Item icon="{{ asset(headerItem['icon']) }}" ul="{{ headerItem['name'] }}"
                                    linkUl="{{ headerItem['route'] }}">
                             {% block svg %}
                                 {{ headerItem['icon'] | raw }}
                             {% endblock %}
                         </twig:Item>
-                    {% endfor %}
-                {% endif %}
-            </nav>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </nav>
 
-            <!-- Sidebar footer -->
-            <div
-                    class="relative flex-shrink-0 items-center justify-center space-y-2 px-2 py-4"
-            >
-                {% if app.request.attributes.get('_route') starts with "app_settings" %}
-                    {% for footerItem in this.settingsFooterItems %}
-                        <twig:Item icon="{{ asset(footerItem['icon']) }}" ul="{{ footerItem['name'] }}"
-                                   linkUl="{{ footerItem['route'] }}">
-                            {% block svg %}
-                                {{ footerItem['icon'] | raw }}
-                            {% endblock %}
-                        </twig:Item>
-                    {% endfor %}
-                {% else %}
-                    {% for footerItem in this.footerItems %}
-                        <twig:Item icon="{{ asset(footerItem['icon']) }}" ul="{{ footerItem['name'] }}"
-                                   linkUl="{{ footerItem['route'] }}">
-                            {% block svg %}
-                                {{ footerItem['icon'] | raw }}
-                            {% endblock %}
-                        </twig:Item>
-                    {% endfor %}
-                {% endif %}
+        <!-- Sidebar footer -->
+        <div
+                class="relative flex-shrink-0 items-center justify-center space-y-2 px-2 py-4"
+        >
+            {% if app.request.attributes.get('_route') starts with "app_settings" %}
+                {% for footerItem in this.settingsFooterItems %}
+                    <twig:Item icon="{{ asset(footerItem['icon']) }}" ul="{{ footerItem['name'] }}"
+                               linkUl="{{ footerItem['route'] }}">
+                        {% block svg %}
+                            {{ footerItem['icon'] | raw }}
+                        {% endblock %}
+                    </twig:Item>
+                {% endfor %}
+            {% else %}
+                {% for footerItem in this.footerItems %}
+                    <twig:Item icon="{{ asset(footerItem['icon']) }}" ul="{{ footerItem['name'] }}"
+                               linkUl="{{ footerItem['route'] }}">
+                        {% block svg %}
+                            {{ footerItem['icon'] | raw }}
+                        {% endblock %}
+                    </twig:Item>
+                {% endfor %}
+            {% endif %}
+        </div>
     </div>
-  </div>
 </aside>

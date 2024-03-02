@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Customer;
 use App\Form\CustomerFormType;
+use App\Form\SearchAutocomplete;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -11,7 +12,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Form\SearchAutocomplete;
 
 #[Route('/customers')]
 class CustomerController extends AbstractController
@@ -19,27 +19,29 @@ class CustomerController extends AbstractController
     #[Route('/', name: 'app_customer_index', methods: ['GET', 'POST'])]
     public function index(Request $request, CustomerRepository $customerRepository, PaginatorInterface $paginatorInterface): Response
     {
-    $searchForm = $this->createForm(SearchAutocomplete::class);
-    $searchForm->handleRequest($request);
+        $searchForm = $this->createForm(SearchAutocomplete::class);
+        $searchForm->handleRequest($request);
 
-    $queryBuilder = $customerRepository->createQueryBuilder('a');
+        $user = $this->getUser();
 
-    if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-        $selectedCustomer = $searchForm->get('customer')->getData();
+        $queryBuilder = $customerRepository->createQueryBuilderForUser($user);
 
-        if ($selectedCustomer) {
-            // Filtrer les clients en fonction du prénom du client sélectionné
-            $queryBuilder->where('a.firstName = :firstName')
-                         ->setParameter('firstName', $selectedCustomer->getFirstName());
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $selectedCustomer = $searchForm->get('customer')->getData();
+
+            if ($selectedCustomer) {
+                // Filtrer les clients en fonction du prénom du client sélectionné
+                $queryBuilder->where('a.firstName = :firstName')
+                    ->setParameter('firstName', $selectedCustomer->getFirstName());
+            }
         }
-    }
 
-    $query = $queryBuilder->getQuery();
-    $data = $paginatorInterface->paginate(
-        $query,
-        $request->query->getInt('page', 1),
-        15
-    );
+        $query = $queryBuilder->getQuery();
+        $data = $paginatorInterface->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            15
+        );
         $customer = new Customer();
         $form = $this->createForm(CustomerFormType::class, $customer);
         $form->handleRequest($request);
@@ -56,10 +58,12 @@ class CustomerController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $customer = new Customer();
+        $user = $this->getUser();
         $form = $this->createForm(CustomerFormType::class, $customer);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user->addCustomer($customer);
             $entityManager->persist($customer);
             $entityManager->flush();
 

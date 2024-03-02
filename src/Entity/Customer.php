@@ -32,6 +32,10 @@ class Customer
     #[ORM\OneToMany(mappedBy: 'customers', targetEntity: Invoice::class)]
     private Collection $Invoices;
 
+    #[ORM\ManyToOne(inversedBy: 'customers')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $users = null;
+
     public function __construct()
     {
         $this->Invoices = new ArrayCollection();
@@ -122,5 +126,17 @@ class Customer
     public function __toString(): string
     {
         return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
+    public function getUsers(): ?User
+    {
+        return $this->users;
+    }
+
+    public function setUsers(?User $users): static
+    {
+        $this->users = $users;
+
+        return $this;
     }
 }

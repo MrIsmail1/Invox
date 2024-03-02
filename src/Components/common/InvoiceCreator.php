@@ -56,13 +56,13 @@ class InvoiceCreator extends AbstractController
 
     public function mount(Invoice $invoice): void
     {
-        /* $user = $this->getUser(); */
+        $user = $this->getUser();
         $this->invoice = $invoice;
         $this->status = $invoice->getStatus();
         $this->selectedCustomerId = $invoice->getCustomer() ? $invoice->getCustomer()->getId() : null;
         $this->lineItems = $this->populateLineItems($invoice);
 
-        $customersCollection = $this->customerRepository->findAll();
+        $customersCollection = $user->getCustomers();
         $customersArray = [];
         foreach ($customersCollection as $customer) {
             // Here, you store an array with all the details you need

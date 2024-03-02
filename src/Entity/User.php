@@ -47,9 +47,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Invoice::class, inversedBy: 'users')]
     private Collection $invoices;
 
-    #[ORM\ManyToOne(inversedBy: 'users')]
-    private ?Accounting $accountings = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $firstName = null;
 
@@ -68,11 +65,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?CompanyDetails $company_details = null;
 
+    #[ORM\OneToMany(mappedBy: 'users', targetEntity: Product::class, orphanRemoval: true)]
+    private Collection $products;
+
+    #[ORM\OneToMany(mappedBy: 'users', targetEntity: Customer::class, orphanRemoval: true)]
+    private Collection $customers;
+
     public function __construct()
     {
         $this->quotations = new ArrayCollection();
         $this->invoices = new ArrayCollection();
         $this->media = new ArrayCollection();
+        $this->products = new ArrayCollection();
+        $this->customers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -192,18 +197,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    public function getAccountings(): ?Accounting
-    {
-        return $this->accountings;
-    }
-
-    public function setAccountings(?Accounting $accountings): static
-    {
-        $this->accountings = $accountings;
-
-        return $this;
-    }
+    
 
     public function getFirstName(): ?string
     {
@@ -300,6 +294,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($medium->getUploadedBy() === $this) {
                 $medium->setUploadedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Product $product): static
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->setUsers($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): static
+    {
+        if ($this->products->removeElement($product)) {
+            // set the owning side to null (unless already changed)
+            if ($product->getUsers() === $this) {
+                $product->setUsers(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Customer>
+     */
+    public function getCustomers(): Collection
+    {
+        return $this->customers;
+    }
+
+    public function addCustomer(Customer $customer): static
+    {
+        if (!$this->customers->contains($customer)) {
+            $this->customers->add($customer);
+            $customer->setUsers($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCustomer(Customer $customer): static
+    {
+        if ($this->customers->removeElement($customer)) {
+            // set the owning side to null (unless already changed)
+            if ($customer->getUsers() === $this) {
+                $customer->setUsers(null);
             }
         }
 

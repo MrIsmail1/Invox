@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% set title = "Invox | Modifier utilisateur " %}
+{% block content %}
+    <div class="mb-3 text-black-font">
+        <h1>Modifier utilisateur</h1>
+    </div>
+    <div class="flex bg-white-font rounded-lg p-5">
+        {{ form_start(UserForm, {'attr': {'class': 'w-full h-full'}}) }}
+        <div class="flex w-full justify-around p-5">
+            <div class="flex flex-col gap-y-8 w-1/2">
+                {{ form_row(UserForm.email) }}
+                {{ form_row(UserForm.lastName) }}
+                {{ form_row(UserForm.firstName) }}
+                {{ form_row(UserForm.job) }}
+                {{ form_row(UserForm.roles) }}
+                <div class="mt-6">
+                    <twig:ButtonDarkDefault type="submit" text="Enregistrer"/>
+                </div>
+            </div>
+        </div>
+        {{ form_end(UserForm) }}
+    </div>
+{% endblock content %}
+
+

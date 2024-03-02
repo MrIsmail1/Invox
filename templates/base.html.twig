@@ -3,8 +3,9 @@
 <head>
     <twig:Head title="{{ title ?? '' }}"/>
 </head>
-{% block body %}
+
 <body
+        {% block body %}
         x-cloak
         class="antialiased default"
         x-data="{
@@ -18,15 +19,15 @@
         x-init="
          darkMode = JSON.parse(localStorage.getItem('darkMode'));
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))">
-        <main class="flex w-full bg-button {# md:h-auto #} min-h-screen h-auto" :class="{'dark': darkMode === true}" >
-            <twig:Sidebar/>
-            <div class="w-full bg-bg-button dark:bg-dark-bg-button dark:text-white-font">
-                <twig:Header />
-                <div class="mx-6 lg:mx-12 mt-6">
-                {% block content %}{% endblock content %}
-                </div>
-            </div>
-        </main>
-        {% endblock body %}
-    </body>
+<main class="flex w-full bg-button {# md:h-auto #} min-h-screen h-auto" :class="{'dark': darkMode === true}">
+    <twig:Sidebar/>
+    <div class="w-full bg-bg-button dark:bg-dark-bg-button dark:text-white-font">
+        <twig:Header/>
+        <div class="mx-6 lg:mx-12 mt-6">
+            {% block content %}{% endblock content %}
+        </div>
+    </div>
+</main>
+{% endblock body %}
+</body>
 </html>

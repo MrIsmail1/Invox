@@ -21,27 +21,29 @@ class ProductController extends AbstractController
     public function index(Request $request, ProductRepository $productRepository, PaginatorInterface $paginatorInterface): Response
     {
         $searchForm = $this->createForm(SearchAutocompleteProduct::class);
-    $searchForm->handleRequest($request);
+        $searchForm->handleRequest($request);
 
-    $queryBuilder = $productRepository->createQueryBuilder('a');
+        $user = $this->getUser();
 
-    if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-        $searchedName = $searchForm->get('name')->getData();
+        $queryBuilder = $productRepository->createQueryBuilderForUser($user);
 
-        if ($searchedName) {
-            $queryBuilder->where('a.name LIKE :name')
-                         ->setParameter('name', '%' . $searchedName . '%');
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $searchedName = $searchForm->get('name')->getData();
+
+            if ($searchedName) {
+                $queryBuilder->where('a.name LIKE :name')
+                    ->setParameter('name', '%' . $searchedName . '%');
+            }
         }
-    }
 
-    $query = $queryBuilder->getQuery();
-    $data = $paginatorInterface->paginate(
-        $query,
-        $request->query->getInt('page', 1),
-        15
-    );
+        $query = $queryBuilder->getQuery();
+        $data = $paginatorInterface->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            15
+        );
 
-        
+
         $product = new Product();
         $form = $this->createForm(ProductFormType::class, $product);
         $form->handleRequest($request);
@@ -58,10 +60,14 @@ class ProductController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $product = new Product();
+        $user = $this->getUser();
+
         $form = $this->createForm(ProductFormType::class, $product);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $user->addProduct($product);
             $entityManager->persist($product);
             $entityManager->flush();
 
