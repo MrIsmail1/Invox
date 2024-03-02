@@ -98,7 +98,7 @@ class InvoiceController extends AbstractController
 
 
         if (!$invoice) {
-            throw $this->createNotFoundException('Le devis demandée n\'existe pas');
+            throw $this->createNotFoundException('La facture demandée n\'existe pas');
         }
 
         $user = $this->getUser();
