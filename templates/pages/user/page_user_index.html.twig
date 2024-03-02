@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% set title = "Invox | Utilisateurs " %}
+
+{% block content %}
+    <div class="flex justify-between">
+        <h1>Utilisateurs</h1>
+    </div>
+    <div>
+        <twig:Table modal="{{ modal }}"
+                    theads="{{ {"id":"Numéro","email":"E-mail","lastName":"Nom","lastName":"Prénom","firstName":"Nom","job":"Poste","roles":"Role"} }}"
+                    pathEdit="app_user_edit"
+                    pathDelete="app_user_delete" data="{{ data }}" form="{{ SearchBar }}"/>
+    </div>
+{% endblock content %}
+

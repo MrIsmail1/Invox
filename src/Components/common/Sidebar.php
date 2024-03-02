@@ -9,7 +9,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 #[AsTwigComponent]
 class Sidebar
 {
-
+    public ?string $is_admin = null;
     public array $headerItems = [
         [
             'name' => 'Dashboard',
@@ -55,7 +55,7 @@ class Sidebar
         [
             'name' => 'Produits',
             'icon' => '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"
-                             xmlns="http://www.w3.org/2000/svg">
+                             >
                             <path fill-rule="evenodd" clip-rule="evenodd"
                                   d="M2 2.5C1.86739 2.5 1.74021 2.55268 1.64645 2.64645C1.55268 2.74021 1.5 2.86739 1.5 3V4C1.5 4.13261 1.55268 4.25979 1.64645 4.35355C1.74021 4.44732 1.86739 4.5 2 4.5H3C3.13261 4.5 3.25979 4.44732 3.35355 4.35355C3.44732 4.25979 3.5 4.13261 3.5 4V3C3.5 2.86739 3.44732 2.74021 3.35355 2.64645C3.25979 2.55268 3.13261 2.5 3 2.5H2ZM3 3H2V4H3V3Z"
                                   fill="currentColor"/>
@@ -67,8 +67,13 @@ class Sidebar
                         </svg>',
             'route' => '/products',
         ],
+        [
+            'name' => 'Utilisateurs',
+            'icon' => '<svg width="1.08em" width="16" height="16" fill="currentColor" viewBox="0 0 1920 1792"><path fill="currentColor" d="M593 896q-162 5-265 128H194q-82 0-138-40.5T0 865q0-353 124-353q6 0 43.5 21t97.5 42.5T384 597q67 0 133-23q-5 37-5 66q0 139 81 256m1071 637q0 120-73 189.5t-194 69.5H523q-121 0-194-69.5T256 1533q0-53 3.5-103.5t14-109T300 1212t43-97.5t62-81t85.5-53.5T602 960q10 0 43 21.5t73 48t107 48t135 21.5t135-21.5t107-48t73-48t43-21.5q61 0 111.5 20t85.5 53.5t62 81t43 97.5t26.5 108.5t14 109t3.5 103.5M640 256q0 106-75 181t-181 75t-181-75t-75-181t75-181T384 0t181 75t75 181m704 384q0 159-112.5 271.5T960 1024T688.5 911.5T576 640t112.5-271.5T960 256t271.5 112.5T1344 640m576 225q0 78-56 118.5t-138 40.5h-134q-103-123-265-128q81-117 81-256q0-29-5-66q66 23 133 23q59 0 119-21.5t97.5-42.5t43.5-21q124 0 124 353m-128-609q0 106-75 181t-181 75t-181-75t-75-181t75-181t181-75t181 75t75 181"/></svg>',
+            'route' => '/admin/users',
+            'role' => 'ROLE_ADMIN',
+        ],
     ];
-
     public array $footerItems = [
         [
             'name' => 'Paramètres',
@@ -123,7 +128,6 @@ class Sidebar
             'route' => '',
         ],
     ];
-
     public array $settingsFooterItems = [
         [
             'name' => 'Accueil',

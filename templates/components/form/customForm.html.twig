@@ -51,6 +51,20 @@
 {% endblock money_widget %}
 
 
+{# CUSTOM CHOICE INPUT #}
+{% block _user_roles_widget %}
+    <select {{ block('widget_attributes') }}
+            class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5">
+        {% for choice in choices %}
+            <option value="{{ choice.value }}"
+                    {% if choice.value in value %} selected="selected" {% endif %}>
+                {{ choice.label }}
+            </option>
+        {% endfor %}
+    </select>
+{% endblock %}
+
+
 {# CUSTOM FORM LABEL #}
 {%- block form_label -%}
     <label class="block mb-2 text-md font-medium text-bg-black" for="{{- id -}}">{{- label -}}</label>

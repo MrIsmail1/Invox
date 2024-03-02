@@ -35,8 +35,7 @@ security:
       # https://symfony.com/doc/current/security/impersonating_user.html
       # switch_user: true
   role_hierarchy:
-    ROLE_ACCOUNTANT: []
-    ROLE_USER: ROLE_ACCOUNTANT
+    ROLE_USER: [ ]
     ROLE_ADMIN: ROLE_USER
 
     # Easy way to control access for large sections of your site
@@ -49,8 +48,6 @@ security:
     - { path: ^/reset-password/confirm, roles: PUBLIC_ACCESS }
     - { path: ^/verify/email, roles: PUBLIC_ACCESS }
     - { path: ^/, roles: ROLE_USER }
-    - { path: ^/invoice, roles: PUBLIC_ACCESS }
-    - { path: ^/quotation, roles: PUBLIC_ACCESS }
 
 when@test:
   security:
