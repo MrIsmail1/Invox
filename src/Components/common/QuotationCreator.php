@@ -57,12 +57,13 @@ class QuotationCreator extends AbstractController
 
     public function mount(Quotation $quotation): void
 {
+    $user = $this->getUser();
     $this->quotation = $quotation;
     $this->status = $quotation->getStatus();
     $this->selectedCustomerId = $quotation->getCustomer() ? $quotation->getCustomer()->getId() : null;
     $this->lineItems = $this->populateLineItems($quotation);
 
-    $customersCollection = $this->customerRepository->findAll();
+    $customersCollection = $user->getCustomers();
     $customersArray = [];
     foreach ($customersCollection as $customer) {
         // Here, you store an array with all the details you need
