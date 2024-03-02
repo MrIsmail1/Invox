@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\SearchAutocomplete;
 use App\Service\PdfService;
+use Doctrine\ORM\EntityManager;
 
 class QuotationController extends AbstractController
 {
@@ -23,6 +24,9 @@ public function index(Request $request, QuotationRepository $quotationRepository
 
     $user = $this->getUser();
     $invoices = $user->getInvoices();
+
+    $companyDetails = $user->getCompanyDetails();
+    $entityManager->initializeObject($companyDetails);
 
     $invoiceItem = new InvoiceItem();
     // Initialiser la requête de base pour les invoices de l'utilisateur
@@ -78,6 +82,7 @@ public function index(Request $request, QuotationRepository $quotationRepository
 
             $productDataByQuotationId[$quotationId] = $productData;
         }
+
         return $this->render('invoice/page_invoice_index.html.twig', [
             'data' => $data,
             'invoiceItem' => $invoiceItem,
@@ -88,16 +93,25 @@ public function index(Request $request, QuotationRepository $quotationRepository
             'pathExport' => 'app_quotation_export',
             'type' => 'quotation',
             'SearchBar' => $form->createView(),
+            'companyDetails' => $companyDetails,
         ]);
     }
 
     #[Route('quotation/pdf/{id}', name: 'app_quotation_export', methods: ['GET' , 'POST'])]
-    public function generatePdfQuotation(Quotation $quotation = null, PdfService $pdf) {
+    public function generatePdfQuotation(Quotation $quotation = null, PdfService $pdf, EntityManagerInterface $entityManager) {
 
         
     if (!$quotation) {
         throw $this->createNotFoundException('Le devis demandée n\'existe pas');
     }
+
+    $user = $this->getUser();
+    $companyDetails = $user->getCompanyDetails();
+    $entityManager->initializeObject($companyDetails);
+
+    $customer = $quotation->getCustomer();
+    $entityManager->initializeObject($customer);
+
     // Récupérer les données nécessaires pour cette quotation spécifique
     $invoiceItems = $quotation->getInvoiceItems();
     $productData = [];
@@ -122,6 +136,8 @@ public function index(Request $request, QuotationRepository $quotationRepository
     $response = $this->render('invoice/page_invoice_pdf.html.twig', [
         'products' => $productData,
         'data' => $quotation,
+        'companyDetails' => $companyDetails,
+        'customer' => $customer,
     ]);
         $html = $response->getContent();
         $pdfContent = $pdf->generateBinaryPDF($html); // Récupérer le contenu du PDF

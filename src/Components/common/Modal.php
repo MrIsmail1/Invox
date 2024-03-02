@@ -12,6 +12,7 @@ class Modal extends AbstractController
     public $data = [];
     public $invoiceItem = [];
     public $products = [];
+    public $companyDetails = null;
     public ?string $pathDelete = null;
     public ?string $pathEdit = null;
     public ?string $pathExport = null;

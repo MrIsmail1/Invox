@@ -1,5 +1,6 @@
 <div {{ attributes }} class="mb-4">
 <div class="px-8 mt-4 rounded-lg p-4 flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-bg-white dark:bg-dark-pr-blue border-border-width border-border-color">
+    
      <div x-data="{ open: false }">
         <p class="ml-1 dark:text-white-font">Status</p>
         <button  @click="open = ! open" class="dark:text-white-font mt-2 inline-flex items-center text-gray-500 bg-bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-dark-pr-blue dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
@@ -30,13 +31,6 @@
             <twig:Button styles="mt-4" >Valider</twig:Button>
             {{ form_end(form) }}
         </div>
-
-        {# ------------------------------------------------------------------------------  Search Form ------------------------------------------------------------------------  #}
-
-        {# {{ component('SearchLive', {
-            dataModel: 'query',
-        }) }} #}
-        {# <twig:SearchLive/> #}
     </div>
 
     <div x-data="{ showModal: false }"
@@ -67,7 +61,6 @@
                         {% for key, label in theads %}
                             <td class="px-6 py-4">
                                 {% set value = attribute(dataItem, key) is defined ? attribute(dataItem, key) : null %}
-
                                 {% if key == 'id' %}
                                     <span class="font-bold">{{ value }}</span>
                                 {% elseif key in ['total', 'price'] and value is not null %}
@@ -83,7 +76,7 @@
                                     <twig:Modal data="{{ dataItem }}" pathEdit="{{ pathEdit }}"
                                                 pathDelete="{{ pathDelete }}"
                                                 modal="{{ modal }}" invoiceItem="{{ invoiceItem }}"
-                                                products="{{ products }}" type="{{ type }}" pathExport="{{pathExport}}"/>
+                                                products="{{ products }}" type="{{ type }}" pathExport="{{pathExport}}" companyDetails="{{companyDetails}}" />
                                 {% endif %}
                             </td>
                         {% endfor %}

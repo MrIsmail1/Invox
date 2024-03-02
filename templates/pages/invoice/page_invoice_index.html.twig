@@ -9,7 +9,6 @@
     {% set theads = {"id":"Numéro","customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le", "updatedAt":"modifié le"} %}
 {% endif %}
 
-
     <div class="flex justify-between">
         <h1>{{ type == 'quotation' ? 'Devis' : 'Facture' }}</h1>
     </div>
@@ -22,7 +21,7 @@
         theads="{{ theads }}"
         pathEdit="{{ pathEdit is defined ? pathEdit : '' }}"
         pathDelete="{{pathDelete is defined ? pathDelete : ''}}" data="{{ data }}" invoiceItem="{{ invoiceItem }}"
-        products="{{ products }}" type="{{ type }}" form="{{SearchBar}}" pathExport="{{pathExport}}" />
+        products="{{ products }}" type="{{ type }}" form="{{SearchBar}}" pathExport="{{pathExport}}" companyDetails="{{companyDetails}}" />
     </div>
 
     {% if app.session.flashbag.has('success') %}
