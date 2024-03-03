@@ -5,7 +5,7 @@
 {% block content %}
     <div class="flex flex-col gap-3">
         <h1>Profil utilisateur</h1>
-        <div class="flex bg-white-font rounded-lg p-5">
+        <div class="flex bg-white-font rounded-lg p-5 dark:bg-dark-pr-blue">
             {{ form_start(UserProfileForm, {'attr': {'class': 'w-full h-full'}}) }}
             <div class="flex w-full justify-around p-5">
                 <div class="grid grid-cols-2 gap-5 w-full">
@@ -19,6 +19,7 @@
                     </div>
                     <div class="flex flex-col gap-y-8">
                         {{ form_row(UserProfileForm.email) }}
+                        {{ form_row(UserProfileForm.theme) }}
                         <div class="w-full">
                             {{ form_widget(UserProfileForm.media) }}
                         </div>

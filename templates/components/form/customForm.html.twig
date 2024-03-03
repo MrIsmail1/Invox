@@ -2,15 +2,16 @@
     {%- set force_error = true -%}
     {{- form_label(form) -}}
     <div x-data="{ src: '{{ asset('build/images/upload.png') | raw }}', uploaded: false }"
-         class="relative inline-flex items-center justify-between border border-pr-grey rounded-lg bg-white-font pr-3 cursor-pointer">
+         class="relative inline-flex items-center justify-between border border-pr-grey rounded-lg bg-white-font pr-3 cursor-pointer dark:bg-pr-blue">
         <input
                 id="{{- id -}}" name="{{ full_name }}[file]"
                 x-ref="fileInput"
                 type="file"
                 @change="src = URL.createObjectURL($event.target.files[0]); uploaded = true;"
-                class="hidden"/>
+                class="hidden "/>
         <img :src="src" alt="" :class="uploaded ? 'w-full h-auto' : 'w-[3.5rem] h-[3.5rem]'"
-             class="rounded-lg transition-all duration-300 ease-in-out" @click="$refs.fileInput.click()"/>
+             class="rounded-lg transition-all duration-300 ease-in-out dark:bg-pr-blue"
+             @click="$refs.fileInput.click()"/>
         <div x-show="uploaded" class="absolute top-0 right-0 p-1 bg-white bg-opacity-75 rounded-bl-lg">
             <svg @click="$refs.fileInput.click()" class="w-6 h-6 text-gray-700 cursor-pointer"
                  viewBox="0 0 24 24">

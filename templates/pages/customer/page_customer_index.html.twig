@@ -3,7 +3,7 @@
 {% set title = "Invox | Clients " %}
 
 {% block content %}
-    <div class="flex justify-between">
+    <div class="flex justify-between text-black-font dark:text-white-font">
         <h1>Clients</h1>
     </div>
     <div class="flex justify-end mt-6 gap-2">
@@ -13,6 +13,6 @@
         <twig:Table modal="{{ modal }}"
                     theads="{{ {"id":"Numéro","firstName":"Prénom","lastName":"Nom","email":"E-mail","address":"Adresse"} }}"
                     pathEdit="app_customer_edit"
-                    pathDelete="app_customer_delete" data="{{ data }}" form="{{SearchBar}}"/>
+                    pathDelete="app_customer_delete" data="{{ data }}" form="{{ SearchBar }}"/>
     </div>
 {% endblock content %}

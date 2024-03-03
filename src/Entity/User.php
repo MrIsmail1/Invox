@@ -71,6 +71,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'users', targetEntity: Customer::class, orphanRemoval: true)]
     private Collection $customers;
 
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Theme $theme = null;
+
     public function __construct()
     {
         $this->quotations = new ArrayCollection();
@@ -197,7 +201,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    
+
 
     public function getFirstName(): ?string
     {
@@ -359,5 +363,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getTheme(): ?Theme
+    {
+        return $this->theme;
+    }
+
+    public function setTheme(?Theme $theme): static
+    {
+        $this->theme = $theme;
+
+        return $this;
+    }
+
 
 }

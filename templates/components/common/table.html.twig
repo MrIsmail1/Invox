@@ -38,8 +38,10 @@
         </div>
         <div>
             {{ form_start(form) }}
-            {{ form_widget(form) }}
-            <twig:Button styles="mt-4">Valider</twig:Button>
+            <div class="flex space-x-1.5">
+                {{ form_widget(form) }}
+                <twig:Button styles="mt-4">Valider</twig:Button>
+            </div>
             {{ form_end(form) }}
         </div>
     </div>
