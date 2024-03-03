@@ -87,6 +87,8 @@ class InvoiceController extends AbstractController
             'SearchBar' => $form->createView(),
             'pathExport' => 'app_invoice_export',
             'companyDetails' => $companyDetails,
+            'pathEdit' => 'app_invoice_edit',
+            'pathDelete' => 'app_invoice_delete',
         ]);
     }
 
@@ -165,7 +167,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    /* #[Route('invoice/edit/{id}', name: 'app_invoice_edit', methods: ['GET', 'POST'])]
+    #[Route('invoice/edit/{id}', name: 'app_invoice_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
         return $this->render('invoice/page_invoice_new.html.twig', [
@@ -184,5 +186,5 @@ class InvoiceController extends AbstractController
         }
 
         return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
-    } */
+    }
 }

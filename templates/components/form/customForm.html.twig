@@ -2,7 +2,7 @@
     {%- set force_error = true -%}
     {{- form_label(form) -}}
     <div x-data="{ src: '{{ asset('build/images/upload.png') | raw }}', uploaded: false }"
-         class="relative inline-flex items-center justify-between border border-pr-grey rounded-lg bg-white-font pr-3 cursor-pointer dark:bg-pr-blue">
+         class="relative inline-flex items-center justify-between border border-pr-grey rounded-lg bg-bg-white pr-3 cursor-pointer dark:bg-pr-blue">
         <input
                 id="{{- id -}}" name="{{ full_name }}[file]"
                 x-ref="fileInput"

@@ -26,7 +26,7 @@
                                     </svg>
                                 </twig:Button>
                             </a>
-                        {% if pathEdit is defined and pathEdit is not empty %}
+                        {% if pathEdit is defined and pathEdit is not empty and data.status != "Payé" %}
                             <a href="{{ path(pathEdit, {'id': data.id}) }}" class="font-medium text-link-color">
                                 <twig:Button>
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
