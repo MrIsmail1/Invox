@@ -50,8 +50,6 @@ class QuotationFixtures extends Fixture
     public function getDependencies()
     {
         return [
-            UserFixtures::class,
-            CustomerFixtures::class,
             ProductFixtures::class,
         ];
     }

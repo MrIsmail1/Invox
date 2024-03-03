@@ -21,7 +21,7 @@ class UserFixtures extends Fixture
     {
         $faker = Factory::create();
 
-        for ($i = 0; $i < 6; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $user = new User();
             $user->setEmail($faker->email);
             $user->setFirstName($faker->firstName);
@@ -39,10 +39,17 @@ class UserFixtures extends Fixture
 
             $manager->persist($user);
 
-            // Ajouter une référence pour être utilisée dans d'autres fixtures
             $this->addReference('user_' . $i, $user);
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            ThemeFixtures::class,
+            CompanyDetailsFixtures::class,
+        ];
     }
 }

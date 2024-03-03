@@ -20,8 +20,11 @@ class CustomerFixtures extends Fixture
             $customer->setEmail($faker->safeEmail);
             $customer->setAddress($faker->address);
 
+            $randomUserId = rand(1, 9);
+            $user = $this->getReference('user_'.$randomUserId);
+            $customer->setUsers($user);
+
             $manager->persist($customer);
-            $this->addReference('customer_' . $i, $customer);
         }
 
         $manager->flush();
@@ -31,7 +34,6 @@ class CustomerFixtures extends Fixture
     {
         return [
             UserFixtures::class,
-            ProductFixtures::class,
         ];
     }
 }

@@ -49,7 +49,6 @@ class InvoiceFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return [
-            UserFixtures::class,
             ProductFixtures::class,
             QuotationFixtures::class,
         ];
