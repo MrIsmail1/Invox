@@ -21,6 +21,7 @@ use Symfony\UX\LiveComponent\DefaultActionTrait;
 use Symfony\UX\LiveComponent\LiveResponder;
 use Symfony\UX\LiveComponent\ValidatableComponentTrait;
 use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[AsLiveComponent(template: 'components/common/invoice_creator_line_item.html.twig')]
 class InvoiceCreatorLineItem
@@ -47,8 +48,12 @@ class InvoiceCreatorLineItem
     #[LiveProp]
     public bool $isEditing = false;
 
-    public function __construct(private ProductRepository $productRepository)
+    private $tokenStorage;
+
+    public function __construct(private ProductRepository $productRepository, TokenStorageInterface $tokenStorage)
     {
+        $this->productRepository = $productRepository;
+        $this->tokenStorage = $tokenStorage;
     }
 
     public function mount(?int $productId): void
@@ -92,7 +97,9 @@ class InvoiceCreatorLineItem
     #[ExposeInTemplate]
     public function getProducts(): array
     {
-        return $this->productRepository->findAll();
+        $token = $this->tokenStorage->getToken();
+        $user = $token->getUser();
+        return $user->getProducts()->toArray();
     }
 
 }

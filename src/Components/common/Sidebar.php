@@ -117,11 +117,6 @@ class Sidebar
 </svg>',
             'route' => '/settings/user_profile',
         ],
-        [
-            'name' => 'Rappels de paiement',
-            'icon' => '',
-            'route' => '/settings/payment_reminders',
-        ],
     ];
     public array $settingsFooterItems = [
         [

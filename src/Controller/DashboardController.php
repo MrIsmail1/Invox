@@ -9,15 +9,18 @@ use App\Repository\QuotationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractController
 {
     #[Route('/', name: 'dashboard', methods: ['GET', 'POST'])]
-    public function dashboard(InvoiceRepository $invoiceRepository, QuotationRepository $quotationRepository, CustomerRepository $customerRepository, Request $request): Response
+    public function dashboard(InvoiceRepository $invoiceRepository, QuotationRepository $quotationRepository, CustomerRepository $customerRepository, Request $request, SessionInterface $session): Response
     {
-        $user = $this->getUser();
 
+        $user = $this->getUser();
+        $theme = $user->getTheme();
+        $session->set('theme', $theme->getValue());
         $form = $this->createForm(DashboardFormType::class, null, [
             'method' => 'POST'
         ]);

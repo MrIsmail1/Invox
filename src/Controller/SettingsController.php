@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/settings')]
@@ -39,7 +40,7 @@ class SettingsController extends AbstractController
     }
 
     #[Route('/user_profile', name: 'app_settings_user_profile', methods: ['GET', 'POST'])]
-    public function editUserProfile(Request $request, EntityManagerInterface $entityManager): Response
+    public function editUserProfile(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
 
         $user = $this->getUser();
@@ -48,6 +49,9 @@ class SettingsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $theme = $user->getTheme();
+            $user->setTheme($theme);
+            $session->set('theme', $theme->getValue());
             $uploadedFile = $form['media']['uploadedFile']['file']->getData();
             $media = new Media();
             $media->setUploadedFile($uploadedFile);

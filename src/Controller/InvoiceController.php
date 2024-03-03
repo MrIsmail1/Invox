@@ -22,7 +22,6 @@ class InvoiceController extends AbstractController
     {
 
         $user = $this->getUser();
-
         $companyDetails = $user->getCompanyDetails();
         $entityManager->initializeObject($companyDetails);
 
