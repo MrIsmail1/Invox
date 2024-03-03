@@ -2,8 +2,19 @@
 
 {% set title = "Invox | Produits " %}
 
+{% block alert %}
+    {% if app.request.query.get('alert') == 'true' %}
+        <div class="absolute z-50 inset-3 w-1/5 transition-opacity ease-in duration-1000 opacity-100"
+             x-data="{show: true}"
+             x-init="setTimeout(() => { show = false; window.location.href = '/products'; }, 5000)" x-show="show">
+            <twig:Alert headerMessage="Erreur"
+                        message="Ce produit est lié à une ou plusieurs factures et ne peut être supprimé"
+            />
+        </div>
+    {% endif %}
+{% endblock alert %}
 {% block content %}
-    <div class="flex justify-between">
+    <div class="flex justify-between relative">
         <h1>Produits</h1>
     </div>
     <div class="flex justify-end mt-6 gap-2">
@@ -13,6 +24,6 @@
         <twig:Table modal="{{ modal }}"
                     theads="{{ {"name":"Nom","price":"Total TTC","category":"Catégorie"} }}"
                     pathEdit="app_product_edit"
-                    pathDelete="app_product_delete" data="{{ data }}" form="{{ SearchBar }}" />
+                    pathDelete="app_product_delete" data="{{ data }}" form="{{ SearchBar }}"/>
     </div>
 {% endblock content %}

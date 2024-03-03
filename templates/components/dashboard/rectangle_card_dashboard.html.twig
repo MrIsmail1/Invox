@@ -1,13 +1,13 @@
 <div
-  class="h-48 w-full cursor-pointer rounded-xxl border-border-width border-border-color bg-bg-white dark:bg-dark-pr-blue"
+        class="h-48 w-full cursor-pointer rounded-xxl border-border-width border-border-color bg-bg-white dark:bg-dark-pr-blue"
 >
-  <a href="{{ path }}">
-    <div class="ml-12 py-8">
-      <h2 class="font-bold">{{ picto }}</h2>
-      <h3 class="font-bold">{{ title }}</h3>
-      <div class="flex items-center">
-        <h1 class="">{{ number }}</h1>
-      </div>
-    </div>
-  </a>
+    <a href="{{ path }}">
+        <div class="ml-12 py-8">
+            <h2 class="font-bold">{{ picto | raw }}</h2>
+            <h3 class="font-bold">{{ title }}</h3>
+            <div class="flex items-center">
+                <h1 class="">{{ number }}</h1>
+            </div>
+        </div>
+    </a>
 </div>

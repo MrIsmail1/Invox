@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\InvoiceItem;
 use App\Entity\Product;
 use App\Form\ProductFormType;
 use App\Form\SearchAutocompleteProduct;
@@ -100,10 +101,24 @@ class ProductController extends AbstractController
     public function delete(Request $request, Product $product, string $token, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $product->getId(), $token)) {
+
+            $invoiceItems = $entityManager->getRepository(InvoiceItem::class)->findBy(['product' => $product]);
+
+            if (!empty($invoiceItems)) {
+
+                $this->addFlash('error', 'Product cannot be deleted because it is in use.');
+
+                return $this->redirectToRoute('app_product_index', [
+                    'alert' => 'true'
+                ], Response::HTTP_SEE_OTHER);
+            }
+
             $entityManager->remove($product);
             $entityManager->flush();
+
         }
 
         return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
     }
+
 }

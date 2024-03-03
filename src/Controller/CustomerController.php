@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Customer;
+use App\Entity\Invoice;
 use App\Form\CustomerFormType;
 use App\Form\SearchAutocomplete;
 use App\Repository\CustomerRepository;
@@ -104,12 +105,24 @@ class CustomerController extends AbstractController
 
     #[Route('/{id}/{token}', name: 'app_customer_delete', methods: ['GET'])]
     public function delete(Request $request, Customer $customer, string $token, EntityManagerInterface $entityManager): Response
+
     {
         if ($this->isCsrfTokenValid('delete' . $customer->getId(), $token)) {
+
+            $invoice = $entityManager->getRepository(Invoice::class)->findBy(['customer' => $customer]);
+
+            if (!empty($invoice)) {
+
+                return $this->redirectToRoute('app_customer_index', [
+                    'alert' => 'true'
+                ], Response::HTTP_SEE_OTHER);
+            }
+
             $entityManager->remove($customer);
             $entityManager->flush();
+
         }
 
-        return $this->redirectToRoute('app_customer_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
     }
 }

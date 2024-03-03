@@ -19,6 +19,9 @@ class DashboardController extends AbstractController
     {
 
         $user = $this->getUser();
+        if ($user && !$user->isIsVerified()) {
+            return $this->redirectToRoute('app_logout', ['alert' => true]);
+        }
         $theme = $user->getTheme();
         $session->set('theme', $theme->getValue());
         $form = $this->createForm(DashboardFormType::class, null, [
