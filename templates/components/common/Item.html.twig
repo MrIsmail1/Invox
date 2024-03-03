@@ -1,0 +1,45 @@
+<!-- Layouts links -->
+<div x-data="{ isActive: false, open: false}">
+    <!-- Balise UL -->
+    <a
+        href="{{linkUl}}"
+        class="flex items-center p-2 transition-colors rounded-md dark:text-light hover:bg-bg-hover-sidebar dark:hover:bg-pr-grey"
+        class="{'bg-indigo-100 dark:bg-pr-grey': isActive || open}"
+        aria-haspopup="true"
+        aria-expanded="(open || isActive) ? 'true' : 'false'"
+    >
+        {% block svg %}{% endblock %}
+        <p class="ml-2 text-white-font"> {{ul}} </p>
+        <span aria-hidden="true" class="ml-auto">
+
+        <!-- Fléche open item -->
+        {% if content.li is defined and content.li is not empty %}
+        <svg
+            class="w-4 h-4 transition-transform transform text-white-font"
+            class="{ 'rotate-180': open }"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+        >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+        </span>
+        {% endif %}
+    </a>
+    <!-- Balise LI -->
+    {% if content.li is defined and content.li is not empty %}
+    <div x-show="open" class="mt-1 space-y-1 px-7" role="menu" aria-label="li">
+        <!-- active & hover classes 'text-gray-700 dark:text-light' -->
+        <!-- inActive classes 'text-gray-400 dark:text-gray-400' -->
+        <a
+        href="{{linkLi}}"
+        class="block p-1 text-sm text-white-font transition-colors duration-200 rounded-md dark:text-light dark:hover:text-light hover:text-gray-700"
+        >
+        {% for li in content.li %}
+            <p> {{li}} </p>
+        {% endfor %}
+        </a>
+    </div>
+    {% endif %}
+</div>

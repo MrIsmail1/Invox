@@ -2,7 +2,188 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Satoshi";
+  src: url("../font/Satoshi/Satoshi-Black.woff2") format("woff2");
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("../font/Satoshi/Satoshi-Bold.woff2") format("woff2");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("../font/Satoshi/Satoshi-Medium.woff2") format("woff2");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("../font/Satoshi/Satoshi-Regular.woff2") format("woff2");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("../font/Satoshi/Satoshi-Light.woff2") format("woff2");
+  font-weight: 300;
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  border-width: 0;
+}
+
+@layer base {
+  .default {
+    --color-pr-blue: 54, 73, 89;
+    --color-pr-grey: 162, 175, 188;
+    --color-sd-blue: 90, 107, 122;
+    --color-bg-button: 239, 244, 251;
+    --color-bg-button-white: 252, 252, 252;
+    --color-white-font: 252, 252, 252;
+    --color-black-font: 26, 34, 44;
+    --color-bg-black: 26, 34, 44;
+    --color-link-color: 37, 99, 235;
+    --color-svg-color: 107, 114, 128;
+    --border-radius-xxl: 2.5rem;
+    --border-radius-xl: 2rem;
+    --border-radius-lg: 0.75rem;
+    --border-radius-md: 0.6rem;
+    --font: "Satoshi", sans-serif;
+    --color-bg-white: 255, 255, 255;
+    --color-bg-succeed: 218, 253, 214;
+    --color-text-succeed: 13, 234, 12;
+    --border-width: 0rem;
+    --border-color: none;
+    --bg-hover-light: 249, 250, 251;
+    --bg-hover-sidebar: 162, 175, 188;
+  }
+
+  .pikachu {
+    --color-pr-blue: 255, 243, 72;
+    --color-pr-grey: 206, 115, 255;
+    --color-sd-blue: 0, 232, 255;
+    --color-button: 255, 101, 151;
+    --color-sidebar: 17, 26, 59;
+    --color-bg-button: 255, 243, 72;
+    --color-bg-button-white: 239, 68, 68;
+    --color-white-font: 26, 34, 44;
+    --color-black-font: 26, 34, 44;
+    --color-bg-black: 26, 34, 44;
+    --color-link-color: 37, 99, 235;
+    --color-svg-color: 107, 114, 128;
+    --border-radius-xxl: 0rem;
+    --border-radius-xl: 0rem;
+    --border-radius-lg: 0rem;
+    --border-radius-md: 0rem;
+    --font: sans-serif;
+    --color-bg-white: 255, 243, 72;
+    --border-width: 0.1rem;
+    --border-color: 17, 26, 59;
+    --bg-hover-light: 232, 220, 64;
+    --bg-hover-sidebar: 232, 220, 64;
+  }
+
+  .girl {
+    --color-pr-blue: 249, 230, 243;
+    --color-pr-grey: 232, 109, 123;
+    --color-sd-blue: 235, 250, 204;
+    --color-button: 179, 255, 23;
+    --color-sidebar: 36, 52, 3;
+    --color-bg-button: 249, 230, 243;
+    --color-bg-button-white: 212, 255, 122;
+    --color-white-font: 26, 34, 44;
+    --color-black-font: 26, 34, 44;
+    --color-bg-black: 26, 34, 44;
+    --color-link-color: 37, 99, 235;
+    --color-svg-color: 107, 114, 128;
+    --border-radius-xxl: 1.5rem;
+    --border-radius-xl: 1rem;
+    --border-radius-lg: 0.75rem;
+    --border-radius-md: 0.5rem;
+    --font: serif;
+    --color-bg-white: 249, 230, 243;
+    --border-width: 0.1rem;
+    --border-color: 17, 26, 59;
+    --bg-hover-light: 235, 212, 225;
+    --bg-hover-sidebar: 235, 212, 225;
+  }
+}
 
 body {
-    background-color: lightgray;
+  margin: 0;
+  padding: 0;
+  color: black;
+  font-family: var(--font);
+}
+
+h1 {
+  font-size: 2.75rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+h4 {
+  font-size: 1.625rem;
+  font-weight: 400;
+}
+
+h5 {
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+h6 {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+p {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #1a222c;
+}
+
+th {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+td {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+[x-cloak] {
+  display: none !important;
+}
+
+.ts-control {
+  background-color: var(--bg-bg-white) !important;
+  background-image: none !important;
+  color: var(--white-font) !important;
+  font-size: 14px !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#search_autocomplete_customer-ts-control,
+#search_autocomplete_product_name-ts-control {
+  font-size: 14px !important;
+  color: var(--white-font) !important;
 }

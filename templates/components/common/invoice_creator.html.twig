@@ -1,0 +1,161 @@
+<div {{ attributes }}>
+    {# {% set customerEmail = "" %} #}
+    {% if quotation is defined %}
+        <form data-action="live#action" data-action-name="prevent|saveQuotation">
+        {% else %}
+        <form data-action="live#action" data-action-name="prevent|saveInvoice">
+    {% endif %}
+
+<section class="flex justify-between lg:flex-row flex-col" >
+                <!-- User & Customer Details on the same line -->
+                <div>
+                    <!-- Company Details -->
+                    <h5 class="font-bold">{{ companyDetails.companyName }}</h5>
+                    <p class="dark:text-svg-color mt-2">{{ companyDetails.companyEmail }}</p>
+                    <p class="dark:text-svg-color"> {% if companyDetails.address is not empty %}{{ companyDetails.address }},{% endif %} <br> {% if companyDetails.postalCode is not empty %}{{ companyDetails.postalCode }},{% endif %}  {{ companyDetails.city }}</p>
+                    <p class="dark:text-svg-color">{{ companyDetails.website }}</p>
+                </div>
+                    
+                <div>
+                    {# <h2>Logo</h2> #}
+                    <div class="items-center">
+                <select class="bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5" x-model="selectedCustomerId" data-model="selectedCustomerId">
+                    <option value="">Sélectionnez un client</option>
+                    {% for customerId, customerDetails in customers %}
+                        <option value="{{ customerId }}">{{ customerDetails.name }}</option>
+                    {% endfor %}
+                </select>
+                </div>
+                {% if selectedCustomerId is not null %}
+                    <div>
+                    <h6>Adresse : <span>{{ customers[selectedCustomerId]['address'] }}</span></h6>
+                    <h6>Email : <span>{{ customers[selectedCustomerId]['email'] }}</span></h6>
+                </div>    
+            </div>
+            {% endif %}
+</section>
+
+
+
+        <div class="flex items-center lg:mt-0 mt-6">
+            <label>Statut :</label>
+            {% if quotation is defined %}
+                <select class="ml-2 bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5 " id="quotation_status" x-model="quotation.status" data-model="quotation.status">
+                {% for key, value in quotation.getStatusChoices() %}
+                    <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}                    
+                {% else %}
+                <select class="ml-2 bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5 " id="invoice_status" x-model="invoice.status" data-model="invoice.status">
+                {% for key, value in invoice.getStatusChoices() %}
+                    <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}                    
+                {% endif %}
+            </select>
+        </div>
+{# _____________________________________________________________ Tableau debut _____________________________________________________________ #}
+        <div class="card">
+            <div class="mt-6 mb-8 overflow-x-auto rounded-lg border-border-color border-border-width">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:bg-dark-pr-blue">
+                    <thead class="text-sm uppercase bg-bg-white dark:bg-dark-pr-blue dark:text-white-font border-b-border-width border-border-color">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 w-96 rounded-bl-lg">Description</th>
+                        <th scope="col" class="px-6 py-3 w-40">Catégorie</th>
+                        <th scope="col" class="px-6 py-3 w-40">Quantité</th>
+                        <th scope="col" class="px-6 py-3 w-40">Prix</th>
+                        <th scope="col" class="px-6 py-3 w-40">Remise</th>
+                        <th scope="col" class="px-6 py-3 w-40 rounded-br-lg">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, line in lineItems %}
+                        <twig:InvoiceCreatorLineItem
+                            key="{{ key }}"
+                            productId="{{ line.productId }}"
+                            quantity="{{ line.quantity }}"
+                            discount="{{ line.discount }}"
+                            isEditing="{{ line.isEditing }}"
+                        />
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <twig:Button 
+                    action="live#action"
+                    actionName="addLineItem"
+                    styles="mt-3 flex items-center"
+                    >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.5 12.5H6V11.5H11.5V6H12.5V11.5H18V12.5H12.5V18H11.5V12.5Z" fill="currentColor"/>
+                    </svg>
+                    Ajouter un produit
+                </twig:Button>
+            </div>
+        </div>
+        <div class="flex lg:justify-end justify-start">
+            <div class="text-end w-60">
+                <div class="flex justify-between">
+                    <p class="text-[18px] text-gray-500">Remise total :</p>
+                    <h6 class="text-[18px]">{{this.allDiscount|format_currency('EUR')}}</h6>
+                </div>
+                <div class="flex justify-between">
+                    <p class="text-[18px] text-gray-500">Sous total :</p>
+                    <h6 class="text-[18px]">{{ this.subtotal|format_currency('EUR') }}</h6>
+                </div>
+                <div class="flex justify-between">
+                    <p class="text-[18px] text-gray-500">TVA :</p>
+                    <h6 class="flex justify-end text-[18px]">
+                        {% if quotation is defined %}
+                        <div class="flex {{ _errors.has('quotation.taxe') ? 'is-invalid' : '' }}">
+                            <input
+                                type="number"
+                                data-model="quotation.taxe"
+                                class="bg-bg-white dark:bg-dark-pr-blue w-12 text-end"
+                                value="{{ quotation.taxe }}"
+                            >
+                            <span class="input-group-text">%</span>
+                        </div>
+                        {% if _errors.has('quotation.taxe') %}
+                            <div class="invalid-feedback">
+                                {{ _errors.get('quotation.taxe') }}
+                            </div>
+                        {% endif %}
+                            {% else %}
+                            <div class="flex {{ _errors.has('invoice.taxe') ? 'is-invalid' : '' }}">
+                            <input
+                                type="number"
+                                data-model="invoice.taxe"
+                                class="bg-bg-white dark:bg-dark-pr-blue w-12 text-end"
+                                value="{{ invoice.taxe }}"
+                            >
+                            <span class="input-group-text">%</span>
+                        </div>
+                        {% if _errors.has('invoice.taxe') %}
+                            <div class="invalid-feedback">
+                                {{ _errors.get('invoice.taxe') }}
+                            </div>
+                        {% endif %}
+                        {% endif %}
+                        
+                    </h6>
+                </div>
+
+                <div class="flex justify-between">
+                    <p class="text-[18px] text-gray-500">Total:</p>
+                    <h6 class="text-[18px]">{{ this.total|format_currency('EUR') }}</h6>
+                </div>
+            </div>
+        </div>
+
+         <button 
+            class="text-gray-900 bg-bg-white border border-gray-300 focus:outline-none hover:bg-pr-blue hover:text-white focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 p-2.5 mb-2 dark:bg-dark-pr-blue dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+            {{ areAnyLineItemsEditing ? 'disabled' : '' }}
+            >
+            Enregistrer
+        </button>
+        {% if saveFailed %}
+            <small class="text-red-500 ml-2">Veuillez remplir tous les champs</small>
+        {% endif %}
+        {% if areAnyLineItemsEditing %}
+            <small class="text-red-500 ml-2">Enregistrez tous les éléments avant de continuer.</small>
+        {% endif %}
+        </form> 
+</div>

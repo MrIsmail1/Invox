@@ -1,0 +1,183 @@
+{%- block vich_file_row -%}
+    {%- set force_error = true -%}
+    {{- form_label(form) -}}
+    <div x-data="{ src: '{{ asset('build/images/upload.png') | raw }}', uploaded: false }"
+         class="relative inline-flex items-center justify-between border border-pr-grey rounded-lg bg-bg-white pr-3 cursor-pointer dark:bg-pr-blue">
+        <input
+                id="{{- id -}}" name="{{ full_name }}[file]"
+                x-ref="fileInput"
+                type="file"
+                @change="src = URL.createObjectURL($event.target.files[0]); uploaded = true;"
+                class="hidden "/>
+        <img :src="src" alt="" :class="uploaded ? 'w-full h-auto' : 'w-[3.5rem] h-[3.5rem]'"
+             class="rounded-lg transition-all duration-300 ease-in-out dark:bg-pr-blue"
+             @click="$refs.fileInput.click()"/>
+        <div x-show="uploaded" class="absolute top-0 right-0 p-1 bg-white bg-opacity-75 rounded-bl-lg">
+            <svg @click="$refs.fileInput.click()" class="w-6 h-6 text-gray-700 cursor-pointer"
+                 viewBox="0 0 24 24">
+                <path fill="currentColor"
+                      d="m12.05 19l2.85-2.825l-2.85-2.825L11 14.4l1.075 1.075q-.7.025-1.362-.225t-1.188-.775q-.5-.5-.763-1.15t-.262-1.3q0-.425.113-.85t.312-.825l-1.1-1.1q-.425.625-.625 1.325T7 12q0 .95.375 1.875t1.1 1.65q.725.725 1.625 1.088t1.85.387l-.95.95zm4.125-4.25q.425-.625.625-1.325T17 12q0-.95-.363-1.888T15.55 8.45q-.725-.725-1.638-1.075t-1.862-.35L13 6.05L11.95 5L9.1 7.825l2.85 2.825L13 9.6l-1.1-1.1q.675 0 1.375.263t1.2.762q.5.5.763 1.15t.262 1.3q0 .425-.112.85t-.313.825zM12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"/>
+            </svg>
+        </div>
+        <span x-show="!uploaded" class="transition-opacity duration-300 ease-in-out" @click="$refs.fileInput.click()">Choisir un fichier</span>
+    </div>
+{%- endblock -%}
+{%- block vich_file_widget -%}
+    {%- if errors|length > 0 -%}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}
+    {%- endif -%}
+    {{- form_widget(form.file, {attr: attr}) -}}
+    {%- if form.delete is defined -%}
+        {{- form_row(form.delete) -}}
+    {%- endif -%}
+
+    {%- if download_uri -%}
+        <a href="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}" download>
+            {{ translation_domain is same as(false) ? download_label : download_label|trans({}, translation_domain) }}
+        </a>
+    {%- endif -%}
+{%- endblock -%}
+{# CUSTOM MONEY INPUT #}
+{% block money_widget %}
+    <div class="relative">
+        <div class="absolute inset-y-0 end-4 flex items-center ps-3.5 pointer-events-none">
+            <!-- You can replace 'euroIcon.svg' with your actual Euro icon file -->
+            <img src="{{ asset('build/images/euroIcon.svg') }}" alt="euro-icon">
+        </div>
+        <input type="text" {{ block('widget_attributes') }}
+               class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5"
+                {% if value is not empty %} value="{{ value }}" {% endif %}
+               placeholder="{{ money_pattern|replace({ '{{ widget }}': '', '{{ currency_symbol }}': '€' }) }}"/>
+    </div>
+{% endblock money_widget %}
+
+
+{# CUSTOM CHOICE INPUT #}
+{% block _user_roles_widget %}
+    <select {{ block('widget_attributes') }}
+            class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5">
+        {% for choice in choices %}
+            <option value="{{ choice.value }}"
+                    {% if choice.value in value %} selected="selected" {% endif %}>
+                {{ choice.label }}
+            </option>
+        {% endfor %}
+    </select>
+{% endblock %}
+
+
+{# CUSTOM FORM LABEL #}
+{%- block form_label -%}
+    <label class="block mb-2 text-md font-medium text-bg-black" for="{{- id -}}">{{- label -}}</label>
+{%- endblock form_label -%}
+
+{# CUSTOM FORM ERRORS #}
+{% block form_errors %}
+    {%- if errors|length > 0 -%}
+        <ul class="text-red-500 mt-2">
+            {%- for error in errors -%}
+                <li>{{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{% endblock form_errors %}
+
+{# CUSTOM EMAIL INPUT #}
+{% block email_widget %}
+    <div class="relative">
+        <div class="absolute inset-y-0 end-4 flex items-center ps-3.5 pointer-events-none">
+            <img src="{{ asset('build/images/emailIcon.svg') }}" alt="email-icon">
+        </div>
+        <input type="email" {{ block('widget_attributes') }}
+               class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5"
+                {% if value is not empty %} value="{{ value }}" {% endif %} />
+    </div>
+{% endblock email_widget %}
+
+{# CUSTOM PASSWORD INPUT #}
+{% block password_widget %}
+    <div class="relative">
+        <div class="absolute inset-y-0 end-4 flex items-center ps-3.5 pointer-events-none">
+            <img src="{{ asset('build/images/passwordIcon.svg') }}" alt="password-icon">
+        </div>
+        <input type="password" {{ block('widget_attributes') }}
+               class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 "
+                {% if value is not empty %} value="{{ value }}" {% endif %} />
+    </div>
+{% endblock password_widget %}
+
+{# CUSTOM NUMBER INPUT #}
+{% block number_widget %}
+    <input type="number" {{ block('widget_attributes') }}
+           class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 "
+            {% if value is not empty %} value="{{ value }}" {% endif %} />
+{% endblock number_widget %}
+
+{# CUSTOM DATE INPUT #}
+{% block date_widget %}
+    <input type="date" {{ block('widget_attributes') }}
+           class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5 "
+            {% if value is not empty %} value="{{ value }}" {% endif %} />
+{% endblock date_widget %}
+
+{# CUSTOM TEXTAREA INPUT #}
+{% block textarea_widget %}
+    <textarea {{ block('widget_attributes') }}
+              class="border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5"
+              rows="4">
+        {{ value is not empty ? value : '' }}
+    </textarea>
+{% endblock textarea_widget %}
+
+{# CUSTOM RADIO INPUT WITH CUSTOM LABEL #}
+{% block radio_row %}
+    <div class="flex items-center">
+        <input type="radio" id="{{- id -}}" name="{{- full_name -}}"
+               class="w-4 h-4 text-pr-blue bg-transparent border-pr-grey rounded"
+                {% if value is not empty %} value="{{ value }}" {% endif %} >
+        <label for="{{- id -}}" class="ms-2 text-sm font-medium text-bg-black">
+            {{- label -}}</label>
+    </div>
+{% endblock radio_row %}
+
+{# CUSTOM CHECKBOX INPUT WITH CUSTOM LABEL #}
+{% block checkbox_row %}
+    <div class="flex items-center">
+        <input type="checkbox" id="{{- id -}}" name="{{- full_name -}}"
+               class="w-4 h-4 text-pr-blue bg-transparent border-pr-grey rounded"
+                {% if value is not empty %} value="{{ value }}" {% endif %} >
+        <label for="{{- id -}}" class="ms-2 text-sm font-medium text-bg-black">
+            {{- label -}}</label>
+    </div>
+{% endblock checkbox_row %}
+
+{# CUSTOM AGREE_TERMS CHECKBOX INPUT WITH CUSTOM LABEL #}
+{% block _registration_form_agreeTerms_row %}
+    <div class="flex items-center">
+        <input type="checkbox" id="{{- id -}}" name="{{- full_name -}}"
+               class="w-4 h-4 text-pr-blue bg-transparent border-pr-grey rounded">
+        <label for="{{- id -}}" class=" underline ms-2 text-sm font-medium text-bg-black">
+            {{- label -}}</label>
+    </div>
+{% endblock _registration_form_agreeTerms_row %}
+
+{# CUSTOM SELECT INPUT #}
+{% block select_widget %}
+    <select {{ block('widget_attributes') }}
+            class="bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-lg rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5">
+        {% if placeholder is defined %}
+            <option value="">{{ placeholder }}</option>
+        {% endif %}
+    </select>
+{% endblock select_widget %}
+
+{# CUSTOM DEFAULT FROM ROW #}
+{%- block form_row -%}
+    <div class="w-full mx-auto">
+        {{- form_label(form) -}}
+        {{- form_widget(form, {'attr' : { 'class' : 'bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-lg rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-3.5'}}) -}}
+        <p class="text-red-500 font-weight-light">
+            {{- form_errors(form) -}}
+        </p>
+    </div>
+{%- endblock form_row -%}

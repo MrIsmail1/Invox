@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+   {% set title = "Invox | Inscription " %}
+
+   {% block body %}
+   <body
+        x-cloak
+        class="antialiased default lg:bg-none bg-bg-button"
+        x-data="{
+        darkMode: false,
+        showMenu: window.innerWidth > 768,
+        updateMenu() {
+            this.showMenu = window.innerWidth > 768;
+        }
+        }"
+        @resize.window="updateMenu()"
+        x-init="
+         darkMode = JSON.parse(localStorage.getItem('darkMode'));
+         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))">
+       <main class="h-screen px-5 py-8 w-full ">
+           <div class="lg:border border-none bg-bg-button lg:h-full h-auto rounded-2xl">
+               <div class="flex lg:flex-row flex-col h-full justify-between">
+                   <div class="flex items-center lg:w-1/2 w-full justify-center lg:border-r-2 border-none my-16">
+                       <img src="{{ asset('build/images/logoAuthentication.png') }}" alt="logoInvox" height="450"
+                            width="450">
+                   </div>
+                   <div class="flex justify-center lg:w-1/2 w-full">
+                       {{ form_start(registrationForm, {'attr': {'class': 'flex flex-col justify-center w-full h-full'}}) }}
+                       <div class="flex flex-col justify-center gap-3 w-full lg:px-20 px-6 h-5/6">
+                           <h1 class="h1 mb-8 font-weight-bold text-bg-black">Créez votre compte, vous y êtes
+                               presque.</h1>
+                           {{ form_row(registrationForm.email) }}
+                           {{ form_row(registrationForm.password) }}
+                           {{ form_row(registrationForm.agreeTerms, {'label_attr' : { 'class' : 'underline'}}) }}
+                           <input type="hidden" name="_csrf_token"
+                                  value="{{ csrf_token('authenticate') }}"
+                           >
+                           <div class="flex flex-col text-center h-4/6">
+                               <div class="mt-4">
+                                   <twig:ButtonDarkDefault type="submit" text="S'inscrire"/>
+                                   <div class="mt-5">
+                                       <twig:ButtonDarkGoogleIcon type="button" text="S'inscrire avec Google"
+                                                                  icon="{{ asset('build/images/googleIcon.svg') }}"/>
+                                   </div>
+                               </div>
+                               <h6 class="text-bg-black mt-4">Êtes-vous déjà inscrit ? <a href="{{ path('app_login') }}"
+                                                                                          class="font-bold text-pr-blue underline">Connectez-vous
+                                       !</a></h6>
+                               {{ form_end(registrationForm) }}
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </main>
+       </body>
+   {% endblock %}

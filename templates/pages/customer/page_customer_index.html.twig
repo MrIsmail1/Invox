@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% set title = "Invox | Clients " %}
+
+{% block alert %}
+    {% if app.request.query.get('alert') == 'true' %}
+        <div class="absolute z-50 inset-3 w-1/5 transition-opacity ease-in duration-1000 opacity-100"
+             x-data="{show: true}"
+             x-init="setTimeout(() => { show = false; window.location.href = '/customers'; }, 5000)" x-show="show">
+            <twig:Alert headerMessage="Erreur"
+                        message="Ce client est lié à une ou plusieurs factures et ne peut être supprimé"
+            />
+        </div>
+    {% endif %}
+{% endblock alert %}
+{% block content %}
+    <div class="flex justify-between text-black-font dark:text-white-font">
+        <h1>Clients</h1>
+    </div>
+    <div class="flex justify-end mt-6 gap-2">
+        <twig:Button content="Ajouter un client" path="{{ path('app_customer_new') }}"/>
+    </div>
+    <div>
+        <twig:Table modal="{{ modal }}"
+                    theads="{{ {"firstName":"Prénom","lastName":"Nom","email":"E-mail","address":"Adresse"} }}"
+                    pathEdit="app_customer_edit"
+                    pathDelete="app_customer_delete" data="{{ data }}" form="{{ SearchBar }}"/>
+    </div>
+{% endblock content %}

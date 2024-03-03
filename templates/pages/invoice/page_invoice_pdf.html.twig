@@ -1,0 +1,105 @@
+<div style="position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;">
+    <div style="height: 100%;">
+        {% set totalDiscount = 0 %}
+
+        <!-- User & Customer Details on the same line -->
+        <table style="width: 100%; margin-top: 1rem;">
+            <tr>
+                <!-- Company Details -->
+                <td style="width: 50%; vertical-align: top;">
+                    <p style="font-weight:bold;">{{ companyDetails.companyName }}</p>
+                    <p>{{ companyDetails.companyEmail }}</p>
+                    <p>{{ companyDetails.address }} {{ companyDetails.postalCode }} {{ companyDetails.city }} {{ companyDetails.country }}</p>
+                    <p>{{ companyDetails.website }}</p>
+                </td>
+                
+                <!-- Customer Details -->
+                <td style="width: 50%; vertical-align: top;padding-left:5rem;">
+                    <p style="font-weight:bold;">{{ customer.firstName }} {{ customer.lastName }}</p>
+                    <p>{{ customer.email }}</p>
+                    <p>{{ customer.address }}</p>
+                </td>
+            </tr>
+        </table>
+
+        <div style="margin-top:2rem;">
+            <table style="width: 100%; text-align: left; color: #6b7280;">
+                <thead style="background-color: #364959; color: #f9fafb;">
+                    <tr>
+                        <th style="padding: 0.75rem; width: 6rem;">Description</th>
+                        <th style="padding: 0.75rem; width: 3rem;">Catégorie</th>
+                        <th style="padding: 0.75rem; width: 3rem;">Quantité</th>
+                        <th style="padding: 0.75rem; width: 3rem;">Prix</th>
+                        <th style="padding: 0.75rem; width: 3rem;">Remise</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for product in products %}
+                    {% set totalDiscount = totalDiscount + product.discount %}
+                            <tr>
+                                <td>
+                                    {{ product.name }}
+                                </td>
+                                <td>
+                                    {{ product.category }}
+                                </td>
+                                <td>
+                                    {{ product.quantity }}
+                                </td>
+                                <td>
+                                    {{ product.price|format_currency('EUR') }}
+                                </td>
+                                <td>
+                                    {{ product.discount|format_currency('EUR') }}
+                                </td>
+                            </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if data.createdAt is defined and data.createdAt is not empty %}
+    <table style="width: 100%; margin-bottom: 1rem; margin-top: 3rem;">
+        <tr>
+            <td style="font-weight: bold; text-align: left;">Date de création:</td>
+            <td style="text-align: right;">{{ data.createdAt.format('d-m-Y') }}</td>
+        </tr>
+    </table>
+{% endif %}
+
+{% if data.updatedAt is defined and data.updatedAt is not empty %}
+    <table style="width: 100%; margin-bottom: 1rem;">
+        <tr>
+            <td style="font-weight: bold; text-align: left;">Date de modification:</td>
+            <td style="text-align: right;">{{ data.updatedAt|date('d-m-Y') }}</td>
+        </tr>
+    </table>
+{% endif %}
+
+<table style="width: 100%; border-top: 1px solid #d1d5db; margin-top: 1rem;">
+    <tr>
+        <td style="font-size: 18px; color: #6b7280; text-align: left;">Remise :</td>
+        <td style="font-size: 18px; text-align: right;">{{ totalDiscount|format_currency('EUR') }}</td>
+    </tr>
+    <tr>
+        <td style="font-size: 18px; color: #6b7280; text-align: left;">Sous total :</td>
+        <td style="font-size: 18px; text-align: right;">{{ data.totalWithOutTaxe|format_currency('EUR') }}</td>
+    </tr>
+    <tr>
+        <td style="font-size: 18px; color: #6b7280; text-align: left;">TVA :</td>
+        <td style="font-size: 18px; text-align: right;">{{ data.taxe }}%</td>
+    </tr>
+    <tr>
+        <td style="font-size: 18px; color: #6b7280; text-align: left;">Total:</td>
+        <td style="font-size: 18px; text-align: right;">{{ data.total|format_currency('EUR') }}</td>
+    </tr>
+</table>
+        <div style="text-align: center;margin-top:4rem;" >
+            <p style="font-weight:bold;"> {{ companyDetails.companyName }} {% if companyDetails.legalStatus is not empty %} - {{ companyDetails.legalStatus }} {% endif %}</p>
+            <p>{{ companyDetails.address }} {{ companyDetails.postalCode }} {{ companyDetails.city }} {{ companyDetails.country }}</p>
+            {% if companyDetails.siretNumber is defined and companyDetails.siretNumber is not empty %}
+                <p> Numéro de siret : {{ companyDetails.siretNumber }}</p>
+            {% endif %}
+        </div>
+        </div>
+    </div>
+</div>

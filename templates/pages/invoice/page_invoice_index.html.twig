@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% set title = "Invox | Invoice" %}
+
+{% block content %}
+{% if type == 'invoice' %}
+    {% set theads = {"customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le"} %}
+    {% else %}
+    {% set theads = {"customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le", "updatedAt":"modifié le"} %}
+{% endif %}
+    <div class="flex justify-between">
+        <h1>{{ type == 'quotation' ? 'Devis' : 'Facture' }}</h1>
+    </div>
+    <div class="flex justify-end mt-6 gap-2">
+        <twig:Button content="{{ type == 'quotation' ? 'Créer un devis' : 'Créer une facture' }}"
+                     path="{{ type == 'quotation' ? 'quotation/new' : 'invoice/new' }}"/>
+    </div>
+    <div>
+    <twig:Table modal="{{ modal }}"
+        theads="{{ theads }}"
+        pathEdit="{{ pathEdit is defined ? pathEdit : '' }}"
+        pathDelete="{{pathDelete is defined ? pathDelete : ''}}" data="{{ data }}" invoiceItem="{{ invoiceItem }}"
+        products="{{ products }}" type="{{ type }}" form="{{SearchBar}}" pathExport="{{pathExport}}" companyDetails="{{companyDetails}}" />
+    </div>
+    {% if app.session.flashbag.has('success') %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Cette ligne récupère le message flash
+                const message = "{{ app.session.flashbag.get('success')[0]|escape('js') }}";
+                // Cette ligne utilise Notyf pour afficher le message flash
+                notyf.success("Success message");
+            });
+        </script>
+    {% endif %}
+
+{% endblock %}

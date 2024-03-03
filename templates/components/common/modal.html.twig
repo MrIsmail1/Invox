@@ -1,0 +1,281 @@
+<div x-show="open" @click.stop class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50">
+    <div class="w-[95%] lg:w-1/2 flex items-center justify-center h-[70%] bg-gray-100 dark:bg-dark-pr-blue rounded">
+        <div class="w-full h-[104%] bg-bg-white dark:bg-dark-pr-blue p-8 rounded shadow-2xl">
+            <div class="w-full flex justify-end">
+                <button @click="open = false"
+                        class="p-2 rounded-full transition duration-300 ease-in-out hover:shadow-md">
+                    <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.33333"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            {% if modal == "invoiceModal" %}
+                {% set totalDiscount = 0 %}
+                <twig:Status styles="w-24" status="{{ data.status }}"/>
+                <div class="mt-4 flex items-center justify-between">
+                    <h2 class="text-2xl font-bold">{{ type == 'quotation' ? 'Devis' : 'Facture' }} {{ data.id }}</h2>
+                    {% if pathExport is defined and pathExport is not empty %}
+                        <div class="flex gap-x-2">
+                            <a href="{{ path(pathExport, {'id': data.id}) }}" class="font-medium text-link-color">
+                                <twig:Button js=""
+                                >
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M20.25 10.5V19.5C20.25 19.8978 20.092 20.2793 19.8107 20.5606C19.5294 20.8419 19.1478 21 18.75 21H5.25C4.85218 21 4.47064 20.8419 4.18934 20.5606C3.90804 20.2793 3.75 19.8978 3.75 19.5V10.5C3.75 10.1022 3.90804 9.72062 4.18934 9.43932C4.47064 9.15802 4.85218 8.99998 5.25 8.99998H7.5C7.69891 8.99998 7.88968 9.079 8.03033 9.21965C8.17098 9.3603 8.25 9.55107 8.25 9.74998C8.25 9.94889 8.17098 10.1397 8.03033 10.2803C7.88968 10.421 7.69891 10.5 7.5 10.5H5.25V19.5H18.75V10.5H16.5C16.3011 10.5 16.1103 10.421 15.9697 10.2803C15.829 10.1397 15.75 9.94889 15.75 9.74998C15.75 9.55107 15.829 9.3603 15.9697 9.21965C16.1103 9.079 16.3011 8.99998 16.5 8.99998H18.75C19.1478 8.99998 19.5294 9.15802 19.8107 9.43932C20.092 9.72062 20.25 10.1022 20.25 10.5ZM8.78063 6.53061L11.25 4.06029V12.75C11.25 12.9489 11.329 13.1397 11.4697 13.2803C11.6103 13.421 11.8011 13.5 12 13.5C12.1989 13.5 12.3897 13.421 12.5303 13.2803C12.671 13.1397 12.75 12.9489 12.75 12.75V4.06029L15.2194 6.53061C15.3601 6.67134 15.551 6.7504 15.75 6.7504C15.949 6.7504 16.1399 6.67134 16.2806 6.53061C16.4214 6.38987 16.5004 6.199 16.5004 5.99998C16.5004 5.80096 16.4214 5.61009 16.2806 5.46935L12.5306 1.71935C12.461 1.64962 12.3783 1.5943 12.2872 1.55656C12.1962 1.51882 12.0986 1.49939 12 1.49939C11.9014 1.49939 11.8038 1.51882 11.7128 1.55656C11.6217 1.5943 11.539 1.64962 11.4694 1.71935L7.71937 5.46935C7.57864 5.61009 7.49958 5.80096 7.49958 5.99998C7.49958 6.199 7.57864 6.38987 7.71938 6.5306C7.86011 6.67133 8.05098 6.7504 8.25 6.7504C8.44902 6.7504 8.63989 6.67134 8.78063 6.53061Z"/>
+                                    </svg>
+                                </twig:Button>
+                            </a>
+                        {% if pathEdit is defined and pathEdit is not empty and data.status != "Payé" %}
+                            <a href="{{ path(pathEdit, {'id': data.id}) }}" class="font-medium text-link-color">
+                                <twig:Button>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M5 19H6.425L16.2 9.225L14.775 7.8L5 17.575V19ZM3 21V16.75L16.2 3.575C16.4 3.39167 16.621 3.25 16.863 3.15C17.105 3.05 17.359 3 17.625 3C17.8917 3 18.15 3.05 18.4 3.15C18.65 3.25 18.8667 3.4 19.05 3.6L20.425 5C20.625 5.18333 20.771 5.4 20.863 5.65C20.955 5.9 21.0007 6.15 21 6.4C21 6.66667 20.9543 6.921 20.863 7.163C20.7717 7.405 20.6257 7.62567 20.425 7.825L7.25 21H3ZM15.475 8.525L14.775 7.8L16.2 9.225L15.475 8.525Z"/>
+                                    </svg>
+                                </twig:Button>
+                            </a>
+
+                            <a href="{{ path(pathDelete, {'id': data.id, 'token': csrf_token('delete' ~ data.id)}) }}"
+                               class="font-medium text-link-color">
+                                <twig:Button>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7 21C6.45 21 5.97933 20.8043 5.588 20.413C5.19667 20.0217 5.00067 19.5507 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8043 20.021 18.413 20.413C18.0217 20.805 17.5507 21.0007 17 21H7ZM17 6H7V19H17V6ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z"/>
+                                    </svg>
+                                </twig:Button>
+                            </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {# ------------------------------------------------------------------------ Start Invoice ------------------------------------------------------------------------ #}
+                 <!-- User & Customer Details on the same line -->
+                <div class="flex justify-between mt-4 lg:flex-row flex-col">
+                    <!-- Company Details -->
+                    <div class="pr-4">
+                        <h5 class="font-bold">{{ companyDetails.companyName }}</h5>
+                        <p class="dark:text-svg-color mt-2">{{ companyDetails.companyEmail }}</p>
+                        <p class="dark:text-svg-color"> {% if companyDetails.address is not empty %}{{ companyDetails.address }},{% endif %} <br> {% if companyDetails.postalCode is not empty %}{{ companyDetails.postalCode }},{% endif %}  {{ companyDetails.city }}</p>
+                        <p class="dark:text-svg-color">{{ companyDetails.website }}</p>
+                    </div>
+
+                    <!-- Customer Details -->
+                    <div class="lg:mt-0 mt-4" >
+                        <h5 class="font-bold">{{ data.customer.firstName }} {{ data.customer.lastName }}</h5>
+                        <p class="dark:text-svg-color mt-2">{{ data.customer.email }}</p>
+                        <p class="dark:text-svg-color">{{ data.customer.address }}</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 mb-8 overflow-x-auto rounded-lg border-border-color border-border-width">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:bg-dark-pr-blue">
+                        <thead class="rounded-bl-lg rounded-br-lg dark:bg-bg-hover-sidebar text-sm uppercase dark:text-white-font border-b-border-width border-border-color">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 w-96 rounded-bl-lg">Description</th>
+                            <th scope="col" class="px-6 py-3 w-44">Catégorie</th>
+                            <th scope="col" class="px-6 py-3 w-44">Quantité</th>
+                            <th scope="col" class="px-6 py-3 w-44">Prix</th>
+                            <th scope="col" class="px-6 py-3 w-44 rounded-br-lg">Remise</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for productKey, productData in products %}
+                            {% if data.id == productKey %}
+                                {% for product in productData %}
+                                    {% set totalDiscount = totalDiscount + product.discount %}
+                                    <tr>
+                                        <td class="pl-4 pt-2">
+                                            {{ product.name }}
+                                        </td>
+                                        <td class="pt-2">
+                                            {{ product.category }}
+                                        </td>
+                                        <td class="pt-2">
+                                            {{ product.quantity }}
+                                        </td>
+                                        <td class="pt-2">
+                                            {{ product.price|format_currency('EUR') }}
+                                        </td>
+                                        <td class="pt-2">
+                                            {{ product.discount|format_currency('EUR') }} {# {{ product.priceInCents|format_currency('EUR') }} #}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if data.createdAt is defined and data.createdAt is not empty %}
+                    <div class="flex justify-between mb-4">
+                        <span class="font-semibold">Date de création:</span>
+                        <span>{{ data.createdAt.format('d-m-Y') }}</span>
+                    </div>
+                {% endif %}
+
+                {% if  data.updatedAt is defined and data.updatedAt is not empty %}
+                    <div class="flex justify-between mb-4">
+                        <span class="font-semibold">Date de modification:</span>
+                        <span>{{ data.updatedAt|date('d-m-Y') }}</span>
+                    </div>
+                {% endif %}
+                <div class="border-t border-gray-300 flex justify-end">
+                    <div class="text-end w-60 mt-4">
+                        <div class="flex justify-between">
+                            <p class="text-[18px] text-gray-500">Remise :</p>
+                            <h6 class="text-[18px]">{{ totalDiscount|format_currency('EUR') }}</h6>
+                        </div>
+                        <div class="flex justify-between">
+                            <p class="text-[18px] text-gray-500">Sous total :</p>
+                            <h6 class="text-[18px]">{{ data.totalWithOutTaxe|format_currency('EUR') }}</h6>
+                        </div>
+                        <div class="flex justify-between">
+                            <p class="text-[18px] text-gray-500">TVA :</p>
+                            <h6 class="flex text-[18px]">
+                                <div class="w-20 flex justify-end">
+                                    <span class="text-xl font-bold">{{ data.taxe }}%</span>
+                                </div>
+                            </h6>
+                        </div>
+                        <div class="flex justify-between">
+                            <p class="text-[18px] text-gray-500">Total:</p>
+                            <h6 class="text-[18px]">{{ data.total|format_currency('EUR') }}</h6>
+                        </div>
+                    </div>
+                </div>
+                {# ------------------------------------------------------------------------ End Invoice ------------------------------------------------------------------------ #}
+            {% endif %}
+            {% if modal == "productModal" %}
+                <div class=" mt-4 flex items-center justify-between
+            ">
+                    <h2 class="text-2xl font-bold">Produit n° {{ data.id }} </h2>
+                    <div class="flex gap-x-2">
+                        <a href="{{ path(pathEdit, {'id': data.id}) }}" class="font-medium text-link-color">
+                            <twig:Button js=""
+                            >
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 19H6.425L16.2 9.225L14.775 7.8L5 17.575V19ZM3 21V16.75L16.2 3.575C16.4 3.39167 16.621 3.25 16.863 3.15C17.105 3.05 17.359 3 17.625 3C17.8917 3 18.15 3.05 18.4 3.15C18.65 3.25 18.8667 3.4 19.05 3.6L20.425 5C20.625 5.18333 20.771 5.4 20.863 5.65C20.955 5.9 21.0007 6.15 21 6.4C21 6.66667 20.9543 6.921 20.863 7.163C20.7717 7.405 20.6257 7.62567 20.425 7.825L7.25 21H3ZM15.475 8.525L14.775 7.8L16.2 9.225L15.475 8.525Z"/>
+                                </svg>
+                            </twig:Button>
+                        </a>
+                        <a href="{{ path(pathDelete, {'id': data.id, 'token': csrf_token('delete' ~ data.id)}) }}"
+                           class="font-medium text-link-color">
+                            <twig:Button>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 21C6.45 21 5.97933 20.8043 5.588 20.413C5.19667 20.0217 5.00067 19.5507 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8043 20.021 18.413 20.413C18.0217 20.805 17.5507 21.0007 17 21H7ZM17 6H7V19H17V6ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z"/>
+                                </svg>
+                            </twig:Button>
+                        </a>
+                    </div>
+                </div>
+                <div class="w-full">
+                </div>
+                <div class="flex flex-col gap-y-7 mt-5" id="replaced-on-button-click"
+                >
+                    <h3>Nom :</h3>
+                    <h4>{{ data.name }}</h4>
+                    <hr/>
+                    <h3>Total TTC :</h3>
+                    <h4>{{ data.price }} €</h4>
+                    <hr/>
+                    <h3>Catégorie :</h3>
+                    <h4>{{ data.category }}</h4>
+                    <hr/>
+                </div>
+            {% endif %}
+            {% if modal == "customerModal" %}
+                <div class=" mt-4 flex items-center justify-between
+            ">
+                    <h2 class="text-2xl font-bold">Client n° {{ data.id }} </h2>
+                    <div class="flex gap-x-2">
+                        <a href="{{ path(pathEdit, {'id': data.id}) }}" class="font-medium text-link-color">
+                            <twig:Button js=""
+                            >
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 19H6.425L16.2 9.225L14.775 7.8L5 17.575V19ZM3 21V16.75L16.2 3.575C16.4 3.39167 16.621 3.25 16.863 3.15C17.105 3.05 17.359 3 17.625 3C17.8917 3 18.15 3.05 18.4 3.15C18.65 3.25 18.8667 3.4 19.05 3.6L20.425 5C20.625 5.18333 20.771 5.4 20.863 5.65C20.955 5.9 21.0007 6.15 21 6.4C21 6.66667 20.9543 6.921 20.863 7.163C20.7717 7.405 20.6257 7.62567 20.425 7.825L7.25 21H3ZM15.475 8.525L14.775 7.8L16.2 9.225L15.475 8.525Z"/>
+                                </svg>
+                            </twig:Button>
+                        </a>
+                        <a href="{{ path(pathDelete, {'id': data.id, 'token': csrf_token('delete' ~ data.id)}) }}"
+                           class="font-medium text-link-color">
+                            <twig:Button>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 21C6.45 21 5.97933 20.8043 5.588 20.413C5.19667 20.0217 5.00067 19.5507 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8043 20.021 18.413 20.413C18.0217 20.805 17.5507 21.0007 17 21H7ZM17 6H7V19H17V6ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z"/>
+                                </svg>
+                            </twig:Button>
+                        </a>
+                    </div>
+                </div>
+                <div class="w-full">
+                </div>
+                <div class="flex flex-col gap-y-7 mt-5" id="replaced-on-button-click"
+                >
+                    <h3>Nom :</h3>
+                    <h4>{{ data.firstName }}</h4>
+                    <hr/>
+                    <h3>Prénom :</h3>
+                    <h4>{{ data.lastName }} €</h4>
+                    <hr/>
+                    <h3>Catégorie :</h3>
+                    <h4>{{ data.email }}</h4>
+                    <hr/>
+                    <h3>Catégorie :</h3>
+                    <h4>{{ data.address }}</h4>
+                    <hr/>
+                </div>
+            {% endif %}
+            {% if modal == "userModal" %}
+                <div class=" mt-4 flex items-center justify-between
+            ">
+                    <h2 class="text-2xl font-bold">Utilisateur n° {{ data.id }} </h2>
+                    <div class="flex gap-x-2">
+                        <a href="{{ path(pathEdit, {'id': data.id}) }}" class="font-medium text-link-color">
+                            <twig:Button js=""
+                            >
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 19H6.425L16.2 9.225L14.775 7.8L5 17.575V19ZM3 21V16.75L16.2 3.575C16.4 3.39167 16.621 3.25 16.863 3.15C17.105 3.05 17.359 3 17.625 3C17.8917 3 18.15 3.05 18.4 3.15C18.65 3.25 18.8667 3.4 19.05 3.6L20.425 5C20.625 5.18333 20.771 5.4 20.863 5.65C20.955 5.9 21.0007 6.15 21 6.4C21 6.66667 20.9543 6.921 20.863 7.163C20.7717 7.405 20.6257 7.62567 20.425 7.825L7.25 21H3ZM15.475 8.525L14.775 7.8L16.2 9.225L15.475 8.525Z"/>
+                                </svg>
+                            </twig:Button>
+                        </a>
+                        <a href="{{ path(pathDelete, {'id': data.id, 'token': csrf_token('delete' ~ data.id)}) }}"
+                           class="font-medium text-link-color">
+                            <twig:Button>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 21C6.45 21 5.97933 20.8043 5.588 20.413C5.19667 20.0217 5.00067 19.5507 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8043 20.021 18.413 20.413C18.0217 20.805 17.5507 21.0007 17 21H7ZM17 6H7V19H17V6ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z"/>
+                                </svg>
+                            </twig:Button>
+                        </a>
+                    </div>
+                </div>
+                <div class="w-full">
+                </div>
+                <div class="flex flex-col gap-y-7 mt-5" id="replaced-on-button-click"
+                >
+                    <h3>E-mail :</h3>
+                    <h4>{{ data.email }}</h4>
+                    <hr/>
+                    <h3>Nom :</h3>
+                    <h4>{{ data.lastName }} </h4>
+                    <hr/>
+                    <h3>Prénom :</h3>
+                    <h4>{{ data.firstName }}</h4>
+                    <hr/>
+                    <h3>Poste :</h3>
+                    <h4>{{ data.job }}</h4>
+                    <hr/>
+                    <h3>Role :</h3>
+                    <h4>{{ data.roles[0] }}</h4>
+                    <hr/>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

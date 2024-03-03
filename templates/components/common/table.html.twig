@@ -1,0 +1,110 @@
+<div {{ attributes }} class="mb-4">
+    <div class="px-8 mt-4 rounded-lg p-4 flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-bg-white dark:bg-dark-pr-blue border-border-width border-border-color">
+
+        {# <div x-data="{ open: false }">
+            <p class="ml-1 dark:text-white-font">Status</p>
+            <button @click="open = ! open"
+                    class="dark:text-white-font mt-2 inline-flex items-center text-gray-500 bg-bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-dark-pr-blue dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                    type="button">
+                Tout
+                <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                     viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="m1 1 4 4 4-4"/>
+                </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <div x-show="open" @click.outside="open = false"
+                 class="mt-4 absolute z-10 bg-bg-white divide-y divide-gray-100 rounded-lg shadow w-44 #}{# dark:bg-gray-700 dark:divide-gray-600 #}{# ">
+                <ul class="py-1 text-sm text-gray-700 #}{# dark:text-gray-200 #}{# ">
+                    <li>
+                        <a href="#"
+                           class="block px-4 py-2 hover:bg-gray-100 #}{# dark:hover:bg-gray-600 dark:hover:text-white-font #}{# ">Non
+                            payé</a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="block px-4 py-2 hover:bg-gray-100 #}{# dark:hover:bg-gray-600 dark:hover:text-white-font #}{# ">En
+                            cours</a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="block px-4 py-2 hover:bg-gray-100 #}{# dark:hover:bg-gray-600 dark:hover:text-white-font #}{# ">En
+                            retard</a>
+                    </li>
+                </ul>
+            </div>
+        #}{# ------------------------------------------------------------------------------  SEARCH BAR AUTOCOMPLETE ------------------------------------------------------------------------  #}{#
+        </div> #}
+        <div>
+            {{ form_start(form) }}
+            <div class="flex space-x-1.5">
+                {{ form_widget(form) }}
+                <twig:Button styles="mt-4">Valider</twig:Button>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <div x-data="{ showModal: false }"
+         class="mt-6 mb-8 overflow-x-auto rounded-lg border-border-color border-border-width">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:bg-dark-pr-blue">
+            <thead class="text-sm uppercase bg-bg-white dark:bg-dark-pr-blue dark:text-white-font border-b-border-width border-border-color">
+            <tr
+                    data-action="live#$render"
+                    data-model="Hamza"
+                    placeholder="Rechercher un client"
+
+                    data-action="live#emit"
+                    data-event="Hamza"
+            >
+                {% for theadKey, theadLabel in theads %}
+                    <th scope="col" class="px-6 py-3">
+                        {{ knp_pagination_sortable(data, theadLabel, 'a.' ~ theadKey) }}
+                    </th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% if data|length > 0 %}
+                {% for dataItem in data %}
+                    <tr x-data="{ open: false }" data-loading="addClass(opacity-50)"
+                        @click="open = true; $dispatch('open-modal')"
+                        class="bg-bg-white border-b border-b-border-color dark:bg-dark-pr-blue dark:border-gray-700 hover:bg-bg-hover-light dark:hover:bg-gray-600">
+                        {% for key, label in theads %}
+                            <td class="px-6 py-4">
+                                {% set value = attribute(dataItem, key) is defined ? attribute(dataItem, key) : null %}
+                                {% if key == 'id' %}
+                                    <span class="font-bold">{{ value }}</span>
+                                {% elseif key in ['total', 'price'] and value is not null %}
+                                    {{ value }} €
+                                {% elseif key == 'status' %}
+                                    <div class="flex items-center">
+                                        <twig:Status status="{{ value }}"/>
+                                    </div>
+                                {% elseif key in ['createdAt', 'updatedAt'] and value is not null %}
+                                    {{ value|date('d-m-Y') }}
+                                {% elseif value is iterable %}
+                                    {{ value|first }}
+                                {% else %}
+                                    {{ value }}
+                                    <twig:Modal data="{{ dataItem }}" pathEdit="{{ pathEdit }}"
+                                                pathDelete="{{ pathDelete }}"
+                                                modal="{{ modal }}" invoiceItem="{{ invoiceItem }}"
+                                                products="{{ products }}" type="{{ type }}"
+                                                pathExport="{{ pathExport }}" companyDetails="{{ companyDetails }}"/>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    {# ------------------------------------------------------------------------------  Pagination ------------------------------------------------------------------------ #}
+
+    {{ knp_pagination_render(data, 'components/common/pagination.html.twig') }}
+</div>

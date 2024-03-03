@@ -1,0 +1,86 @@
+<tr {{ attributes }}>
+    <td class="pl-4">
+        {% if isEditing %}
+            <select
+                    data-model="product"
+                    class="bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5"
+            >
+                <option value="" {{ not product ? 'selected' }}>Choisir un produit</option>
+                {% for productOption in products %}
+                    <option
+                            value="{{ productOption.id }}"
+                            {% if productOption == product %}selected{% endif %}
+                    >
+                        {{ productOption.name }} ({{ productOption.price|format_currency('USD') }})
+                    </option>
+                {% endfor %}
+            </select>
+            {% if _errors.has('product') %}
+                <div class="invalid-feedback text-red-500">
+                    {{ _errors.get('product') }}
+                </div>
+            {% endif %}
+
+        {% else %}
+            {{ product.name }}
+        {% endif %}
+    </td>
+    <td class="pl-4">
+    {% if not isEditing %}
+        {{ product.category }}
+    {% endif %}
+    </td>
+
+    <td class="pl-4">
+        {% if isEditing %}
+            <input
+                    type="number"
+                    data-model="quantity"
+                    aria-label="Quantity"
+                    class="w-20 bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5"
+            >
+            {% if _errors.has('quantity') %}
+                <div class="invalid-feedback text-red-500">
+                    {{ _errors.get('quantity') }}
+                </div>
+            {% endif %}
+        {% else %}
+            {{ quantity }}
+        {% endif %}
+    </td>
+    <td>
+        {% if not isEditing %}
+            {{ product.price|format_currency('EUR') }}
+        {% endif %}
+    </td>
+    <td class="pl-4">
+        {% if isEditing %}
+            <input
+                type="number"
+                data-model="discount"
+                aria-label="Discount"
+                class="w-20 bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5"
+            >
+        {% else %}
+            {{ discount|format_currency('EUR') }}
+        {% endif %}
+    </td>
+    <td class="text-end pr-4 flex gap-2">
+        {% if isEditing %}
+            <twig:Button action="live#action" actionName="save" styles="mt-3">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5.55008 13.3076L0.580078 8.33761L1.29408 7.62461L5.55008 11.8806L14.7061 2.72461L15.4191 3.43761L5.55008 13.3076Z" fill="currentColor"/>
+                </svg>
+            </twig:Button>
+        {% else %}
+            <twig:Button action="live#action" actionName="edit" styles="mt-3" >
+                Edit
+            </twig:Button>
+        {% endif %}
+        <twig:Button action="live#emitUp" event="removeLineItem(key={{ key }})" styles="mt-3">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2.39989 14.3074L1.69189 13.5994L7.29189 7.99941L1.69189 2.39941L2.39989 1.69141L7.99989 7.29141L13.5999 1.69141L14.3079 2.39941L8.70789 7.99941L14.3079 13.5994L13.5999 14.3074L7.99989 8.70741L2.39989 14.3074Z" fill="currentColor"/>
+            </svg>
+        </twig:Button>
+    </td>
+</tr>

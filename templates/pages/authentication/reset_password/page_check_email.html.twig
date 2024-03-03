@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% set title = 'Invox | Email de réinitialisation envoyé' %}
+
+{% block body %}
+    <main class="h-screen px-5 py-8 w-full ">
+        <div class="border bg-bg-button h-full rounded-2xl">
+            <div class="flex h-full justify-between">
+                <div class="flex items-center w-1/2 justify-center border-r-2 my-16">
+                    <img src="{{ asset('build/images/logoAuthentication.png') }}" alt="logoInvox" height="450"
+                         width="450">
+                </div>
+                <div class="flex justify-center w-1/2">
+                    <div class="flex flex-col justify-center w-full h-full">
+                        <div class="flex flex-col justify-center gap-4 w-full px-20 h-5/6">
+                            <h1 class="h1 mb-5 font-weight-bold text-bg-black">Email de réinitialisation envoyé.</h1>
+                            <p class="font-medium text-pr-blue text-lg">
+                                Si un compte associé à votre adresse e-mail existe, un e-mail vient d'être envoyé. Ce
+                                message contient un lien que vous pouvez utiliser pour réinitialiser votre mot de passe.
+                                Veuillez noter que ce lien expirera
+                                dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') ~ '.' }}
+                            </p>
+                            <p class="font-medium text-pr-blue text-lg">Veuillez patienter avant de
+                                demander un nouveau e-mail de réinitialisation.
+                                Si vous ne recevez pas d'e-mail, veuillez vérifier votre dossier de courrier indésirable
+                                ou
+                                <a class="text-bg-black underline font-semibold"
+                                   href="{{ path('app_forgot_password_request') }}">réessayer</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+{% endblock body %}
