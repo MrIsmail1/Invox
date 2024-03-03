@@ -2,6 +2,17 @@
 
 {% set title = "Invox | Clients " %}
 
+{% block alert %}
+    {% if app.request.query.get('alert') == 'true' %}
+        <div class="absolute z-50 inset-3 w-1/5 transition-opacity ease-in duration-1000 opacity-100"
+             x-data="{show: true}"
+             x-init="setTimeout(() => show = false, 5000)" x-show="show">
+            <twig:Alert headerMessage="Erreur"
+                        message="Ce client est lié à une ou plusieurs factures et ne peut être supprimé"
+            />
+        </div>
+    {% endif %}
+{% endblock alert %}
 {% block content %}
     <div class="flex justify-between text-black-font dark:text-white-font">
         <h1>Clients</h1>
