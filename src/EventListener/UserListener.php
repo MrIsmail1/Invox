@@ -3,6 +3,7 @@
 namespace App\EventListener;
 
 use App\Entity\CompanyDetails;
+use App\Entity\Theme;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\prePersistEventArgs;
@@ -17,8 +18,10 @@ class UserListener
         $objectManager = $event->getObjectManager();
         if ($user->getRoles() === ['ROLE_USER']) {
             $companyDetails = new CompanyDetails();
+            $theme = $objectManager->getRepository(Theme::class)->findOneBy(['value' => 'default']);
             $companyDetails->setCompanyEmail($user->getEmail());
             $user->setCompanyDetails($companyDetails);
+            $user->setTheme($theme);
             $objectManager->persist($companyDetails);
             $objectManager->flush();
         }

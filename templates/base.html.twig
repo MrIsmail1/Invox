@@ -7,7 +7,7 @@
 <body
         {% block body %}
         x-cloak
-        class="antialiased default"
+        class="antialiased {{ app.session.get('theme') ?? 'default' }}"
         x-data="{
         darkMode: false,
         showMenu: window.innerWidth > 769,

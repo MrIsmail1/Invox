@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Theme;
 use App\Entity\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -40,6 +42,16 @@ class UserProfileFormType extends AbstractType
             ])
             ->add('media', MediaFormType::class, [
                 'label' => false,
+            ])
+            ->add('theme', EntityType::class, [
+                'class' => Theme::class,
+                'choice_label' => 'name',
+                'choice_value' => 'id', // Assuming 'slug' is a unique identifier for the theme, like 'default', 'pikachu', 'girly'.
+                'label' => "Thème de l'interface",
+                'placeholder' => 'Sélectionnez un thème',
+                'required' => true,
+                'expanded' => false,
+                'multiple' => false, // Set to false because you want the user to select only one theme.
             ]);
 
     }
