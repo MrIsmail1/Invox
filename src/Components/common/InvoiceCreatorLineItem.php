@@ -95,9 +95,4 @@ class InvoiceCreatorLineItem
         return $this->productRepository->findAll();
     }
 
-    /* #[ExposeInTemplate]
-    public function getCategorys(): array
-    {
-        return $this->categoryRepository->findAll();
-    } */
 }

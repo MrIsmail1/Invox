@@ -57,10 +57,9 @@
                     <div class="pr-4">
                         <h5 class="font-bold">{{ companyDetails.companyName }}</h5>
                         <p class="dark:text-svg-color mt-2">{{ companyDetails.companyEmail }}</p>
-                        <p class="dark:text-svg-color">{{ companyDetails.address }}, <br> {{ companyDetails.postalCode }}, {{ companyDetails.city }}</p>
+                        <p class="dark:text-svg-color"> {% if companyDetails.address is not empty %}{{ companyDetails.address }},{% endif %} <br> {% if companyDetails.postalCode is not empty %}{{ companyDetails.postalCode }},{% endif %}  {{ companyDetails.city }}</p>
                         <p class="dark:text-svg-color">{{ companyDetails.website }}</p>
                     </div>
-                    
                     <!-- Customer Details -->
                     <div class="lg:mt-0 mt-4" >
                         <h5 class="font-bold">{{ data.customer.firstName }} {{ data.customer.lastName }}</h5>

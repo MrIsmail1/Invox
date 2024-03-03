@@ -151,15 +151,13 @@ public function index(Request $request, QuotationRepository $quotationRepository
 
 
     #[Route('quotation/new', name: 'app_quotation_new', methods: ['GET', 'POST'])]
-    public function new(ProductRepository $productRepository, Request $request): Response
+    public function new(ProductRepository $productRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $quotation = new Quotation();
-        /* $form = $this->createForm(SelectFormType::class, $quotation);
-        $form->handleRequest($request);
-        
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Traitez l'enregistrement de l'entité $quotation comme d'habitude
-        } */
+        $user = $this->getUser();
+
+        $companyDetails = $user->getCompanyDetails();
+        $entityManager->initializeObject($companyDetails);
 
         $invoiceItem = new InvoiceItem();
         $products = $productRepository->findAll();
@@ -172,6 +170,7 @@ public function index(Request $request, QuotationRepository $quotationRepository
             'invoiceItem' => $invoiceItem,
             'products' => $products,
             'type' => 'quotation',
+            'companyDetails' => $companyDetails,
         ]);
     }
 

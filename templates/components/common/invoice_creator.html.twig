@@ -5,40 +5,39 @@
         {% else %}
         <form data-action="live#action" data-action-name="prevent|saveInvoice">
     {% endif %}
-        <div class="flex lg:items-end items-start flex-col mb-8">
-            <h2>Logo</h2>
-            <div class="items-center">
-        <select class="bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5" x-model="selectedCustomerId" data-model="selectedCustomerId">
-            <option value="">Sélectionnez un client</option>
-            {% for customerId, customerDetails in customers %}
-                <option value="{{ customerId }}">{{ customerDetails.name }}</option>
-            {% endfor %}
-        </select>
-        </div>
-        {% if selectedCustomerId is not null %}
-            <div>
-            <h6>Adresse : <span>{{ customers[selectedCustomerId]['address'] }}</span></h6>
-            <h6>Email : <span>{{ customers[selectedCustomerId]['email'] }}</span></h6>
-        </div>    
-        {% endif %}
-{#         {{ form_widget(selectFormType.status, {
-        'attr': {
-            'x-model': 'invoice.status',
-            'data-model': 'invoice.status',
-            'class': 'bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block m-full p-2.5'
-        }
-        }) }}
 
-        {{ form_widget(selectFormType.customer, {
-    'attr': {
-        'x-model': 'selectedCustomerId',
-        'data-model': 'selectedCustomerId',
-        'class': 'bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-sd-blue text-md rounded-lg focus:ring-pr-blue focus:border-pr-blue block w-full p-2.5'
-    }
-}) }} #}
+<section class="flex justify-between lg:flex-row flex-col" >
+                <!-- User & Customer Details on the same line -->
+                <div>
+                    <!-- Company Details -->
+                    <h5 class="font-bold">{{ companyDetails.companyName }}</h5>
+                    <p class="dark:text-svg-color mt-2">{{ companyDetails.companyEmail }}</p>
+                    <p class="dark:text-svg-color"> {% if companyDetails.address is not empty %}{{ companyDetails.address }},{% endif %} <br> {% if companyDetails.postalCode is not empty %}{{ companyDetails.postalCode }},{% endif %}  {{ companyDetails.city }}</p>
+                    <p class="dark:text-svg-color">{{ companyDetails.website }}</p>
+                </div>
+                    
+                <div>
+                    <h2>Logo</h2>
+                    <div class="items-center">
+                <select class="bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5" x-model="selectedCustomerId" data-model="selectedCustomerId">
+                    <option value="">Sélectionnez un client</option>
+                    {% for customerId, customerDetails in customers %}
+                        <option value="{{ customerId }}">{{ customerDetails.name }}</option>
+                    {% endfor %}
+                </select>
+                </div>
+                {% if selectedCustomerId is not null %}
+                    <div>
+                    <h6>Adresse : <span>{{ customers[selectedCustomerId]['address'] }}</span></h6>
+                    <h6>Email : <span>{{ customers[selectedCustomerId]['email'] }}</span></h6>
+                </div>    
+            </div>
+            {% endif %}
+</section>
 
-        </div>
-        <div class="flex items-center">
+
+
+        <div class="flex items-center lg:mt-0 mt-6">
             <label>Statut :</label>
             {% if quotation is defined %}
                 <select class="ml-2 bg-bg-white dark:bg-dark-pr-blue border border-pr-grey text-base rounded-lg focus:ring-pr-blue focus:border-pr-blue block p-2.5 " id="quotation_status" x-model="quotation.status" data-model="quotation.status">
