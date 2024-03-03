@@ -4,11 +4,10 @@
 
 {% block content %}
 {% if type == 'invoice' %}
-    {% set theads = {"id":"Numéro","customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le"} %}
+    {% set theads = {"customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le"} %}
     {% else %}
-    {% set theads = {"id":"Numéro","customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le", "updatedAt":"modifié le"} %}
+    {% set theads = {"customer":"Client","total":"Total TTC","status":"Status","createdAt":"Crée le", "updatedAt":"modifié le"} %}
 {% endif %}
-
     <div class="flex justify-between">
         <h1>{{ type == 'quotation' ? 'Devis' : 'Facture' }}</h1>
     </div>
@@ -23,7 +22,6 @@
         pathDelete="{{pathDelete is defined ? pathDelete : ''}}" data="{{ data }}" invoiceItem="{{ invoiceItem }}"
         products="{{ products }}" type="{{ type }}" form="{{SearchBar}}" pathExport="{{pathExport}}" companyDetails="{{companyDetails}}" />
     </div>
-
     {% if app.session.flashbag.has('success') %}
         <script>
             document.addEventListener('DOMContentLoaded', function () {

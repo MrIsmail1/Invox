@@ -2,9 +2,11 @@
 
 namespace App\Components\common;
 
+use App\Entity\CompanyDetails;
 use App\Entity\Quotation;
 use App\Entity\InvoiceItem;
 use App\Entity\Product;
+use App\Repository\CompanyDetailsRepository;
 use App\Repository\ProductRepository;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,6 +20,7 @@ use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 use Symfony\UX\LiveComponent\ValidatableComponentTrait;
 use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[AsLiveComponent(template: 'components/common/invoice_creator.html.twig')]
 class QuotationCreator extends AbstractController
@@ -43,16 +46,17 @@ class QuotationCreator extends AbstractController
 
     public bool $savedSuccessfully = false;
     public bool $saveFailed = false;
-    /* public ?object $selectFormType = null; */
+    private $tokenStorage;
 
     private CustomerRepository $customerRepository;
     private ProductRepository $productRepository;
 
     // Injectez CustomerRepository via le constructeur
-    public function __construct(ProductRepository $productRepository, CustomerRepository $customerRepository)
+    public function __construct(ProductRepository $productRepository, CustomerRepository $customerRepository,TokenStorageInterface $tokenStorage)
     {
         $this->customerRepository = $customerRepository;
         $this->productRepository = $productRepository;
+        $this->tokenStorage = $tokenStorage;
     }
 
     public function mount(Quotation $quotation): void
@@ -257,6 +261,16 @@ private function isNewQuotation(): bool
         }
 
         return false;
+    }
+
+    #[ExposeInTemplate]
+    public function getCompanyDetails(): ?CompanyDetails
+    {
+        $token = $this->tokenStorage->getToken();
+
+        $user = $token->getUser();
+
+        return $user->getCompanyDetails();
     }
 
 }

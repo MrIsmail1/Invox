@@ -9,7 +9,7 @@
                 <td style="width: 50%; vertical-align: top;">
                     <p style="font-weight:bold;">{{ companyDetails.companyName }}</p>
                     <p>{{ companyDetails.companyEmail }}</p>
-                    <p>{{ companyDetails.address }}, {{ companyDetails.postalCode }}, {{ companyDetails.city }}, {{ companyDetails.country }}</p>
+                    <p>{{ companyDetails.address }} {{ companyDetails.postalCode }} {{ companyDetails.city }} {{ companyDetails.country }}</p>
                     <p>{{ companyDetails.website }}</p>
                 </td>
                 
@@ -94,9 +94,11 @@
     </tr>
 </table>
         <div style="text-align: center;margin-top:4rem;" >
-            <p style="font-weight:bold;"> {{ companyDetails.companyName }} - {{ companyDetails.legalStatus }}</p>
-            <p>{{ companyDetails.address }}, {{ companyDetails.postalCode }}, {{ companyDetails.city }}, {{ companyDetails.country }}</p>
-            <p> Numéro de siret : {{ companyDetails.siretNumber }}</p>
+            <p style="font-weight:bold;"> {{ companyDetails.companyName }} {% if companyDetails.legalStatus is not empty %} - {{ companyDetails.legalStatus }} {% endif %}</p>
+            <p>{{ companyDetails.address }} {{ companyDetails.postalCode }} {{ companyDetails.city }} {{ companyDetails.country }}</p>
+            {% if companyDetails.siretNumber is defined and companyDetails.siretNumber is not empty %}
+                <p> Numéro de siret : {{ companyDetails.siretNumber }}</p>
+            {% endif %}
         </div>
         </div>
     </div>
