@@ -7,7 +7,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class CustomerFixtures extends Fixture
+class YCustomerFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -21,19 +21,14 @@ class CustomerFixtures extends Fixture
             $customer->setAddress($faker->address);
 
             $randomUserId = rand(1, 9);
-            $user = $this->getReference('user_'.$randomUserId);
+            $user = $this->getReference('user_' . $randomUserId);
             $customer->setUsers($user);
 
             $manager->persist($customer);
+            $this->addReference('customer_' . $i, $customer);
+
         }
 
         $manager->flush();
-    }
-
-    public function getDependencies()
-    {
-        return [
-            UserFixtures::class,
-        ];
     }
 }

@@ -37,7 +37,7 @@
             {% else %}
                 {% for headerItem in this.headerItems %}
                     {% if headerItem.role is defined and headerItem.role == 'ROLE_ADMIN' %}
-                        {% if is_admin %}
+                        {% if is_granted("ROLE_ADMIN") %}
                             <twig:Item icon="{{ asset(headerItem['icon']) }}" ul="{{ headerItem['name'] }}"
                                        linkUl="{{ headerItem['route'] }}">
                                 {% block svg %}

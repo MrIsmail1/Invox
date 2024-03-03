@@ -3,7 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\CompanyDetails;
-use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -39,5 +38,13 @@ class CompanyDetailsFixtures extends Fixture
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            ThemeFixtures::class,
+            UserFixtures::class,
+        ];
     }
 }

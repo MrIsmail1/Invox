@@ -10,6 +10,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture
 {
+
     private UserPasswordHasherInterface $passwordHasher;
 
     public function __construct(UserPasswordHasherInterface $passwordHasher)
@@ -17,7 +18,7 @@ class UserFixtures extends Fixture
         $this->passwordHasher = $passwordHasher;
     }
 
-   public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager)
     {
         $faker = Factory::create();
 
@@ -34,6 +35,8 @@ class UserFixtures extends Fixture
             $password = $this->passwordHasher->hashPassword($user, 'password123');
             $user->setPassword($password);
 
+            $theme = $this->getReference(ThemeFixtures::THEME_REF . '_' . 1);
+            $user->setTheme($theme);
             $companyDetails = $this->getReference(CompanyDetailsFixtures::COMPANY_DETAILS_REF . '_' . rand(0, 4));
             $user->setCompanyDetails($companyDetails);
 
@@ -45,7 +48,7 @@ class UserFixtures extends Fixture
         $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             ThemeFixtures::class,
